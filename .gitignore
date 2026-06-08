@@ -1,0 +1,58 @@
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/*.log
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/lerna-debug.log*
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
+# Backend
+backend/backend/target/
+backend/backend/.mvn/
+backend/backend/mvnw
+backend/backend/mvnw.cmd
+backend/backend/*.jar
+backend/backend/*.war
+backend/backend/*.ear
+backend/backend/.classpath
+backend/backend/.project
+backend/backend/.settings/
+backend/backend/.factorypath
+backend/backend/.apt_generated
+backend/backend/.springBeans
+backend/backend/*.iml
+backend/backend/.idea/
+backend/backend/nbproject/
+backend/backend/build/
+backend/backend/gradle/
+backend/backend/*.gradle
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Misc
+*.tmp
+*.temp
+*.bak
+*.backup
