@@ -2229,7 +2229,8 @@ function App() {
             <span onClick={() => setVistaActual('landing')} style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px', cursor: 'pointer' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
           </div>
           <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-            <span onClick={() => setVistaActual('pricing')} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '14px', color: 'var(--text-muted)', transition: '0.2s' }}>Pricing</span>
+            <span onClick={() => setVistaActual('landing')} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '14px', color: 'var(--text-muted)', transition: '0.2s' }}>Inicio</span>
+            <span onClick={() => setVistaActual('pricing')} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '14px', color: 'var(--text-main)', transition: '0.2s' }}>Pricing</span>
             {getToken() ? (
               <>
                 <motion.button onClick={() => setVistaActual('dashboard')} whileHover={{ scale: 1.04, backgroundColor: '#D4B87A' }} whileTap={{ scale: 0.97 }} style={CTA_PRIMARY}>Dashboard</motion.button>
