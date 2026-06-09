@@ -1449,7 +1449,9 @@ function App() {
   const NAVBAR_STYLE = {
     position: 'sticky', top: 0, zIndex: 50,
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    padding: '16px 32px',
+    padding: '12px 16px',
+    flexWrap: 'wrap',
+    gap: '8px',
     background: 'var(--nav-bg)',
     backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
     borderBottom: '1px solid var(--nav-border)'
@@ -1478,9 +1480,9 @@ function App() {
         <nav style={NAVBAR_STYLE}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={16} color="#C9A96E" /></div>
-            <span style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
+            <span style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px', whiteSpace: 'nowrap' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
           </div>
-          <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
             <span onClick={() => setVistaActual('pricing')} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '14px', color: 'var(--text-muted)', transition: '0.2s' }}>Pricing</span>
             {getToken() ? (
               <>
@@ -1506,7 +1508,7 @@ function App() {
         {/* HERO */}
         <section style={{ position: 'relative', overflow: 'hidden', flex: '1 0 auto' }}>
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(201,169,110,0.06) 0%, transparent 60%)' }} />
-          <div style={{ position: 'relative', zIndex: 10, maxWidth: '1024px', margin: '0 auto', textAlign: 'center', padding: '96px 24px 64px' }}>
+          <div style={{ position: 'relative', zIndex: 10, maxWidth: '1024px', margin: '0 auto', textAlign: 'center', padding: '48px 16px 48px' }}>
             <motion.div initial="hidden" animate="visible" variants={stagger}>
               <motion.div variants={fadeUp} transition={{ duration: 0.6 }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(201,169,110,0.3)', borderRadius: '9999px', padding: '6px 16px', fontSize: '13px', fontWeight: '500', color: '#C9A96E', backgroundColor: 'rgba(201,169,110,0.05)', marginBottom: '28px' }}>
@@ -1530,7 +1532,7 @@ function App() {
             </motion.div>
 
             {/* STATS BAR */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.8 }} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px', maxWidth: '672px', margin: '64px auto 0' }}>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.8 }} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '24px', maxWidth: '672px', margin: '48px auto 0' }}>
               {STATS.map((s, i) => (
                 <div key={i} style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '28px', fontWeight: '800', color: '#C9A96E' }}>{s.value}</div>
