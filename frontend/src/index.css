@@ -134,6 +134,14 @@ html, body {
 }
 
 /* =========================================
+   CHAT TYPING ANIMATION
+   ========================================= */
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-4px); }
+}
+
+/* =========================================
    METHOD BADGES
    ========================================= */
 .badge-get {

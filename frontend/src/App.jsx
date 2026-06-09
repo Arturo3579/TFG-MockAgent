@@ -12,22 +12,74 @@ const getToken = () => sessionStorage.getItem('token') || localStorage.getItem('
 // ============================
 // SMART AI ASSISTANT
 // ============================
-const getAIResponse = (question) => {
+const getAIResponse = (question, context) => {
   const q = question.toLowerCase().trim();
-  if (!q) return '¡Hola! ¿En qué puedo ayudarte?';
+  if (!q) return { text: '¡Hola! ¿En qué puedo ayudarte?', suggestions: ['¿Qué es un mock?', 'Ver planes', 'Cómo empezar'], newContext: context };
 
-  // --- 1. Greetings & goodbyes (detected first for natural flow) ---
-  const GREETINGS = ['hola', 'hey', 'buenas', 'saludos', 'buenos dias', 'buenas tardes', 'buenas noches', 'qué tal', 'que tal', 'holi', 'hello', 'hi'];
+  // --- 0. Follow-up detection using context ---
+  const followUps = {
+    yes: ['sí', 'si', 'claro', 'por supuesto', 'cuéntame', 'cuentame', 'dime', 'ok', 'vale', 'perfecto', 'adelante', 'más', 'mas', 'mas info', 'más info', 'en serio', 'genial', 'interesante'],
+    no: ['no', 'nope', 'nop', 'para nada', 'no gracias', 'no necesito'],
+    more: ['por qué', 'porque', 'como', 'cómo', 'cuanto', 'cuánto', 'cuando', 'dónde', 'donde', 'cuál', 'cual', 'quien', 'quién', 'ejemplo', 'ejemplos']
+  };
+
+  const isFollowUpYes = followUps.yes.some(w => q === w || q.startsWith(w + ' '));
+  const isFollowUpNo = followUps.no.some(w => q === w || q.startsWith(w + ' '));
+  const isFollowUpMore = followUps.more.some(w => q.includes(w));
+
+  // If follow-up and we have context
+  if (context.lastTopic && (isFollowUpYes || isFollowUpMore)) {
+    const followUpResponses = {
+      pricing: `Si eliges el plan **Pro ($4.99/mes)**, obtienes endpoints ilimitados y 5.000 peticiones/día. Con **Premium ($7.99/mes)** subes a 10.000 peticiones/día y logs de 14 días.\n\n¿Te gustaría saber cómo hacer el upgrade o prefieres probar primero el plan Free?`,
+      mock_creation: `Para crear tu primer mock:\n1. Ve al Dashboard tras registrarte\n2. Haz clic en "Nuevo Endpoint"\n3. Define la ruta, método HTTP y código de estado\n4. Pega tu JSON de respuesta\n5. Publica y copia la URL\n\n¿Quieres que te explique algún paso en más detalle?`,
+      security: `Además de JWT y bcrypt, MockAgent tiene rate limiting por IP, consultas SQL parametrizadas contra inyección, y cada usuario solo accede a sus propios datos. La infraestructura usa TLS/SSL en producción.\n\n¿Te preocupa algún aspecto específico de seguridad?`,
+      auth: `Una vez registrado, tu token JWT se guarda automáticamente. Puedes elegir "Recuérdame" para persistir la sesión. El token expira en 24 horas.\n\n¿Necesitas ayuda con el login o registro?`,
+      rate_limits: `Si llegas al límite, recibirás un 429 Too Many Requests. El contador se reinicia a las 00:00 UTC. Si necesitas más capacidad, el upgrade a Pro es inmediato.\n\n¿Quieres saber cómo upgrade?`,
+      logs: `En el dashboard, la sección "Logs" te muestra cada petición con timestamp, método, ruta, status y body. Puedes filtrar por fecha.\n\n¿Te gustaría saber cómo exportar logs?`,
+    };
+    return {
+      text: followUpResponses[context.lastTopic] || `Sobre ${context.lastTopic}, ¿hay algo más específico que quieras saber?`,
+      suggestions: ['Sí, cuéntame más', 'No, gracias', 'Ver planes y precios'],
+      newContext: { ...context, messageCount: context.messageCount + 1 }
+    };
+  }
+
+  // --- 1. Time-aware Greetings ---
+  const hour = new Date().getHours();
+  let timeGreeting = '¡Hola!';
+  if (hour >= 5 && hour < 12) timeGreeting = '¡Buenos días!';
+  else if (hour >= 12 && hour < 20) timeGreeting = '¡Buenas tardes!';
+  else timeGreeting = '¡Buenas noches!';
+
+  const GREETINGS = ['hola', 'hey', 'buenas', 'saludos', 'buenos dias', 'buenas tardes', 'buenas noches', 'qué tal', 'que tal', 'holi', 'hello', 'hi', 'qué onda', 'que onda', 'qué hay', 'que hay'];
   if (GREETINGS.some(w => q.includes(w))) {
-    return '¡Hola! Soy el asistente de MockAgent. ¿En qué puedo ayudarte hoy? Puedo responderte sobre planes, precios, cómo crear mocks, seguridad, comparativas y mucho más.';
+    return {
+      text: `${timeGreeting} Soy el asistente de MockAgent. ¿En qué puedo ayudarte hoy? Puedo responderte sobre planes, precios, cómo crear mocks, seguridad, comparativas y mucho más.`,
+      suggestions: ['¿Qué es un mock?', 'Ver planes y precios', 'Cómo empezar'],
+      newContext: { lastTopic: 'greeting', lastQuestion: q, messageCount: context.messageCount + 1 }
+    };
   }
 
-  const GOODBYES = ['gracias', 'adios', 'bye', 'hasta luego', 'nos vemos', 'chao', 'cuídate', 'perfecto', 'vale gracias', 'ok gracias', 'muchas gracias'];
+  // --- 2. Goodbyes & Thanks ---
+  const GOODBYES = ['gracias', 'adios', 'bye', 'hasta luego', 'nos vemos', 'chao', 'cuídate', 'perfecto', 'vale gracias', 'ok gracias', 'muchas gracias', 'gracias por todo', 'nos vemos', 'hasta pronto'];
   if (GOODBYES.some(w => q.includes(w))) {
-    return '¡Un placer! Si necesitas algo más, aquí estaré. ¡Que tengas un buen día! 😊';
+    return {
+      text: '¡Un placer ayudarte! Si necesitas algo más, aquí estaré. ¡Que tengas un buen día! 😊',
+      suggestions: ['Volver al inicio', 'Ver documentación', 'Contactar soporte'],
+      newContext: { ...context, messageCount: context.messageCount + 1 }
+    };
   }
 
-  // --- 2. Out-of-topic detection ---
+  // --- 3. Short/ambiguous queries detection ---
+  if (q.length < 3 && !['ok', 'sí', 'si', 'no'].includes(q)) {
+    return {
+      text: 'Veo que tu mensaje es muy corto. ¿Te refieres a alguno de estos temas?',
+      suggestions: ['Planes y precios', 'Crear un mock', 'Soporte técnico', 'Seguridad'],
+      newContext: { ...context, messageCount: context.messageCount + 1 }
+    };
+  }
+
+  // --- 4. Out-of-topic detection ---
   const OFF_TOPIC = [
     'clima', 'tiempo', 'weather', 'llueve', 'soleado', 'temperatura', 'grados',
     'política', 'politica', 'elecciones', 'gobierno', 'presidente', 'ministro', 'partido',
@@ -49,7 +101,7 @@ const getAIResponse = (question) => {
     'hijo', 'hija', 'padre', 'madre', 'familia', 'bebé', 'bebe', 'colegio', 'universidad',
     'iphone', 'android', 'samsung', 'apple', 'google', 'microsoft', 'windows', 'linux', 'mac',
     'instagram', 'tiktok', 'facebook', 'twitter', 'x.com', 'red social', 'whatsapp', 'telegram',
-    'chatgpt', 'openai', 'gpt', 'bard', 'gemini', 'claude', 'copilot', 'ai', 'ia ', 'inteligencia artificial',
+    'chatgpt', 'openai', 'gpt', 'bard', 'gemini', 'claude', 'copilot',
     'python', 'javascript', 'java', 'react', 'angular', 'vue', 'programar', 'codigo', 'coding', 'dev',
     'dios', 'religión', 'religion', 'iglesia', 'fe', 'biblia', 'quran', 'allah', 'jesus',
     'guerra', 'ejercito', 'arma', 'paz', 'onu', 'otan', 'nato', 'conflicto',
@@ -66,11 +118,10 @@ const getAIResponse = (question) => {
 
   const hasOffTopic = OFF_TOPIC.some(w => q.includes(w));
 
-  // --- 3. Topic detection & scoring ---
+  // --- 5. Topic detection & scoring with suggestions ---
   const TOPICS = {
     pricing: {
-      keywords: ['precio', 'plan', 'costo', 'cuanto', 'gratis', 'free', 'pro', 'premium', 'starter', 'pagar', 'pago', 'tarjeta', 'factura', 'billing', 'suscripcion', 'subscripcion', 'mes', 'anual', 'mensual', '€', '$', 'usd', 'euro', 'dollar', 'cuota', 'tarifa', 'descuento', 'oferta', 'promocion', 'promoción', 'prueba', 'trial', 'dinero', 'barato', 'caro', 'vale la pena', 'rentable', 'economico', 'barato', 'rebaja', 'cupon', 'coupon', 'código promocional', 'codigo promocional'],
-      score: 0,
+      keywords: ['precio', 'plan', 'costo', 'cuanto', 'gratis', 'free', 'pro', 'premium', 'starter', 'pagar', 'pago', 'tarjeta', 'factura', 'billing', 'suscripcion', 'subscripcion', 'mes', 'anual', 'mensual', '€', '$', 'usd', 'euro', 'dollar', 'cuota', 'tarifa', 'descuento', 'oferta', 'promocion', 'promoción', 'prueba', 'trial', 'dinero', 'barato', 'caro', 'vale la pena', 'rentable', 'economico', 'rebaja', 'cupon', 'coupon', 'código promocional', 'codigo promocional'],
       response: `MockAgent tiene 3 planes diseñados para escalar contigo:
 
 **Free** — $0/mes
@@ -84,326 +135,148 @@ const getAIResponse = (question) => {
 • 5.000 peticiones/día
 • 1.000 req/min
 • Logs de 7 días
-• 1 usuario
 
-**Premium** — $7.99/mes (o $5.99/mes facturado anualmente)
-• Endpoints ilimitados
+**Premium** — $7.99/mes (o $5.99/mes anual)
 • 10.000 peticiones/día
 • 1.500 req/min
-• Logs de 14 días
-• Webhooks (próximamente)
-• Soporte prioritario <24h
+• Logs de 14 días + Webhooks + Soporte <24h
 
-Puedes cambiar de plan en cualquier momento. Sin permanencia.`
+Puedes cambiar de plan en cualquier momento. Sin permanencia.`,
+      suggestions: ['Cómo hacer upgrade', 'Probar plan Free', ' Comparar con competidores']
     },
     mock_creation: {
       keywords: ['mock', 'endpoint', 'api', 'crear', 'como funciona', 'funcionamiento', 'simular', 'simulacion', 'simulación', 'fake', 'dummy', 'stub', 'contrato', 'ruta', 'path', 'url', 'host', 'servidor', 'server', 'deploy', 'publicar', 'configurar', 'setup', 'empezar a usar', 'tutorial', 'guia', 'guía', 'paso a paso', 'quickstart', 'inicio rapido', 'uso', 'usar', 'utilizar', 'herramienta', 'plataforma', 'producto', 'servicio', 'que es', 'qué es', 'para que sirve', 'para qué sirve', 'instant', 'express', 'rapido', 'rápido', 'demo', 'ejemplo', 'ejemplos', 'prueba', 'test', 'testing', 'desarrollo', 'dev', 'prototipo', 'prototipar'],
-      score: 0,
-      response: `MockAgent te permite crear endpoints de API simulados en segundos, sin depender de servidores externos. Ideal para desarrollo, testing y prototipado de agentes de IA.
+      response: `MockAgent te permite crear endpoints de API simulados en segundos. Ideal para desarrollo, testing y prototipado de agentes de IA.
 
-**Cómo crear un mock:**
-1. Define la ruta (ej: /api/v1/users)
-2. Elige el método HTTP: GET, POST, PUT o DELETE
-3. Configura el código de estado: 200, 201, 404, 500...
-4. Pega tu JSON de respuesta en el editor
-5. Publica y recibe tu URL instantánea: http://localhost:9090/mock/tu-ruta
+**Cómo crear un mock (3 pasos):**
+1. Regístrate gratis → Dashboard → "Nuevo Endpoint"
+2. Define ruta (ej: /api/v1/users), método HTTP y código de estado
+3. Pega tu JSON de respuesta y publica
 
-**También puedes probarlo sin registro:** en la página principal usa *Crear Mock Express* en la sección Instant Mock. No necesitas cuenta.
-
-**Puntos clave:**
-• Tus mocks publicados son públicos y accesibles via http://localhost:9090/mock/tu-ruta
-• Los mocks registrados desde el dashboard son privados y solo tú puedes gestionarlos
-• El editor valida el JSON en tiempo real antes de publicar`
+**Mock Express (sin registro):**
+En la landing page, escribe un nombre y haz clic en "Crear Mock Express". Recibes una URL pública al instante.`,
+      suggestions: ['Ver tutorial paso a paso', 'Probar Mock Express', 'Ver planes y precios']
     },
     auth: {
       keywords: ['login', 'registrar', 'cuenta', 'signup', 'sign up', 'empezar', 'acceso', 'entrar', 'sesion', 'sesión', 'conectar', 'autenticar', 'password', 'contraseña', 'olvide', 'olvidé', 'recuperar', 'reset', 'email', 'correo', 'usuario', 'user', 'perfil', 'logout', 'salir', 'register', 'registro', 'nueva cuenta', 'crear cuenta', 'nuevo usuario', 'bienvenida', 'first time', 'primera vez', 'no tengo cuenta', 'cómo me registro', 'como me registro'],
-      score: 0,
       response: `Crear una cuenta en MockAgent es rápido y gratuito:
 
-1. Haz clic en **"Empezar Gratis"** o **"Crear Perfil"** en el navbar
-2. Introduce tu email y una contraseña segura (mínimo 8 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 especial)
-3. Confirma y ¡listo! Tu token JWT se guarda automáticamente
+1. Haz clic en **"Empezar Gratis"** en el navbar
+2. Introduce email + contraseña segura (8+ chars, mayúscula, minúscula, número, especial)
+3. ¡Listo! Tu token JWT se guarda automáticamente
 
 **Datos importantes:**
-• No se requiere tarjeta de crédito
-• Puedes elegir "Recuérdame" para mantener la sesión activa
-• Si olvidas tu contraseña, contacta a hello@mockagent.ai (próximamente recuperación automática)
-• Tu cuenta incluye el plan Free por defecto con 5 endpoints y 100 peticiones/día`
+• No requiere tarjeta de crédito
+• Puedes elegir "Recuérdame" para persistir sesión
+• Plan Free por defecto: 5 endpoints + 100 peticiones/día
+• ¿Olvidaste tu contraseña? Contacta a hello@mockagent.ai`,
+      suggestions: ['Crear cuenta ahora', 'Ver seguridad', 'Qué es un JWT']
     },
     rate_limits: {
       keywords: ['rate', 'limite', 'límite', 'peticiones', 'requests', 'cuantas', 'cuántas', 'cuanto puedo', 'cuánto puedo', 'throttle', 'quota', 'cuota', 'restriccion', 'restricción', 'capacidad', 'carga', 'overload', 'too many requests', '429', 'bloqueo', 'bloqueado', 'no puedo hacer', 'superar', 'exceder', 'daily limit', 'límite diario', 'limite diario'],
-      score: 0,
-      response: `Cada plan tiene límites claros para proteger la infraestructura:
+      response: `Cada plan tiene límites claros:
 
-**Free:**
-• 100 peticiones/día al endpoint /mock/**
-• 100 peticiones/minuto
-• 5 endpoints máximo
+**Free:** 100 peticiones/día | 100/min | 5 endpoints
+**Pro:** 5.000 peticiones/día | 1.000/min | Ilimitados
+**Premium:** 10.000 peticiones/día | 1.500/min | Ilimitados
 
-**Pro ($4.99/mes):**
-• 5.000 peticiones/día
-• 1.000 peticiones/minuto
-• Endpoints ilimitados
-
-**Premium ($7.99/mes):**
-• 10.000 peticiones/día
-• 1.500 peticiones/minuto
-• Endpoints ilimitados
-
-**¿Qué pasa si llegas al límite?**
-Recibes un error **429 Too Many Requests** con el header \`Retry-After\` indicando cuándo puedes volver a intentar. El contador se reinicia automáticamente cada 24 horas a las 00:00 UTC.
-
-**Consejo:** Si estás en desarrollo intenso, considera el plan Pro para no tener interrupciones.`
+Si llegas al límite, recibes **429 Too Many Requests**. El contador se reinicia a las 00:00 UTC. El upgrade a Pro es inmediato desde tu perfil.`,
+      suggestions: ['Cómo upgrade a Pro', 'Ver planes completos', 'Qué son los 429']
     },
     logs: {
-      keywords: ['log', 'logs', 'historial', 'registro', 'peticiones pasadas', 'trazas', 'audit', 'auditoría', 'auditoria', 'monitoring', 'monitoreo', 'seguimiento', 'tracking', 'ver peticiones', 'ver requests', 'quien ha llamado', 'quién ha llamado', 'analisis', 'análisis', 'debug', 'debugging', 'inspeccionar', 'inspeccionar'],
-      score: 0,
-      response: `MockAgent registra automáticamente cada petición recibida por tus endpoints:
+      keywords: ['log', 'logs', 'historial', 'registro', 'peticiones pasadas', 'trazas', 'audit', 'auditoría', 'auditoria', 'monitoring', 'monitoreo', 'seguimiento', 'tracking', 'ver peticiones', 'ver requests', 'quien ha llamado', 'quién ha llamado', 'analisis', 'análisis', 'debug', 'debugging', 'inspeccionar'],
+      response: `MockAgent registra automáticamente cada petición:
 
-**Retención por plan:**
-• **Free:** Últimas 24 horas
-• **Pro:** Últimos 7 días
-• **Premium:** Últimos 14 días
+**Retención:** Free 24h | Pro 7 días | Premium 14 días
 
-**Datos registrados por cada petición:**
-• Timestamp exacto (fecha y hora)
-• Método HTTP (GET, POST, PUT, DELETE, etc.)
-• Ruta completa del endpoint
-• Código de estado devuelto
-• Cuerpo de la petición (request body)
-• Headers relevantes
+**Datos por petición:**
+• Timestamp, método HTTP, ruta, status code
+• Request body, headers relevantes
 • IP de origen (anonimizada)
 
-**Acceso:** En el dashboard, ve a la sección "Logs de Peticiones" después de hacer al menos una llamada a tu endpoint /mock/**. Es útil para debugging, testing y auditoría.`
+Accede desde el dashboard en "Logs de Peticiones". Ideal para debugging y auditoría.`,
+      suggestions: ['Ver planes para más retención', 'Cómo exportar logs', 'Dashboard']
     },
     security: {
       keywords: ['seguridad', 'seguro', 'privado', 'datos', 'jwt', 'token', 'proteccion', 'protección', 'encriptar', 'cifrado', 'encriptado', 'hash', 'bcrypt', 'sql injection', 'injection', 'autenticación', 'autenticacion', 'auth', 'oauth', 'vulnerable', 'vulnerabilidad', 'exploit', 'brecha', 'hack', 'hackear', 'robo', 'filtración', 'filtracion', 'privacidad', 'gdpr', 'rgpd', 'confidencial', 'blindado', 'blindaje', 'aislamiento', 'sandbox', 'isolado'],
-      score: 0,
-      response: `La seguridad es un pilar fundamental de MockAgent:
+      response: `La seguridad es un pilar fundamental:
 
-**Autenticación y autorización:**
-• Tokens JWT con firma HMAC-SHA256 y expiración de 24 horas
-• Refresh tokens próximamente
-• Contraseñas hasheadas con bcrypt (cost factor 12)
-
-**Aislamiento de datos:**
-• Cada usuario solo puede ver y modificar sus propios endpoints
-• Consultas SQL parametrizadas para prevenir inyección
-• MySQL con usuarios dedicados y permisos mínimos
-
-**Infraestructura:**
-• Cifrado TLS/SSL en todas las conexiones (cuando se despliegue con certificado)
-• Rate limiting por IP y por usuario para prevenir abuso
-• Sanitización de entradas en todos los endpoints
-
-**Privacidad:**
-• No compartimos datos con terceros
-• No usamos cookies de tracking
-• Los datos permanecen en tu instancia local/auto-alojada
-• Puedes solicitar eliminación completa de tu cuenta en cualquier momento`
+**Autenticación:** JWT HMAC-SHA256 con expiración 24h + bcrypt (cost 12)
+**Aislamiento:** Cada usuario solo ve sus endpoints. SQL parametrizado anti-inyección.
+**Infraestructura:** TLS/SSL en producción + rate limiting por IP/usuario.
+**Privacidad:** Sin cookies de tracking. Datos en tu instancia. Eliminación bajo solicitud.`,
+      suggestions: ['Más sobre JWT', 'Ver compliance GDPR', 'Cómo cambiar contraseña']
     },
     comparison: {
       keywords: ['comparar', 'beeceptor', 'postman', 'competidor', 'alternativa', 'vs', 'versus', 'mejor que', 'diferencia', 'diferencias', 'por qué mockagent', 'porque mockagent', 'por qué elegir', 'porque elegir', 'ventaja', 'ventajas', 'desventaja', 'desventajas', 'superior', 'inferior', 'mejor opción', 'recomendación', 'recomendacion', 'consejo', 'consejos', 'comparativa', 'benchmark', 'review', 'opinion', 'opinión', 'vale la pena', 'rentable'],
-      score: 0,
-      response: `MockAgent se posiciona como la alternativa auto-alojable y económica:
+      response: `MockAgent vs la competencia:
 
-**vs Beeceptor ($12/mes):**
-• MockAgent: $4.99/mes | Beeceptor: $12/mes
-• MockAgent es auto-alojable (tus datos, tu servidor)
-• Beeceptor depende de su nube
+**vs Beeceptor ($12/mes):** MockAgent $4.99, auto-alojable, datos tuyos.
+**vs Postman ($14/mes):** Específico para mocking, sin ruido de features innecesarias.
+**vs WireMock:** UI visual sin código Java/Groovy.
+**vs Mockbin:** Persistencia MySQL real (no volátil).
 
-**vs Postman ($14/mes):**
-• MockAgent es específico para mocking, sin ruido
-• Postman tiene 100+ features que no necesitas para mocking
-• MockAgent se configura en 30 segundos
-
-**vs WireMock:**
-• MockAgent tiene UI visual, WireMock requiere código Java/Groovy
-• Curva de aprendizaje mucho más baja
-
-**vs Mockbin:**
-• MockAgent usa MySQL real (persistencia garantizada)
-• Mockbin es volátil (se pierde al reiniciar)
-
-**vs Broadcom DevTest:**
-• MockAgent: $4.99/mes | DevTest: miles de euros/año
-• Setup: 30 segundos vs semanas
-
-**Diferenciador único:** rate limiting configurable por plan y retención de logs ajustable. Ningún competidor lo ofrece.`
-    },
-    theme: {
-      keywords: ['theme', 'modo', 'oscuro', 'claro', 'dark', 'light', 'tema', 'color', 'fondo', 'apariencia', 'visual', 'estilo', 'interfaz', 'ui', 'diseño', 'diseño', 'cambiar color', 'fondo oscuro', 'fondo claro', 'black', 'white', 'negro', 'blanco', 'contraste', 'brillo', 'noche', 'dia', 'día'],
-      score: 0,
-      response: `MockAgent soporta modo oscuro y claro:
-
-• Haz clic en el botón del **sol/luna** en la esquina superior derecha del navbar
-• El cambio es instantáneo y sin recarga de página
-• Tu preferencia se guarda automáticamente en localStorage
-• La próxima vez que visites, recordará tu elección
-
-El tema oscuro está optimizado para sesiones largas de desarrollo con menos fatiga visual.`
+**Diferenciador:** Rate limiting por plan + retención de logs ajustable.`,
+      suggestions: ['Ver planes y precios', 'Crear cuenta gratis', 'Ver documentación']
     },
     docs: {
       keywords: ['docs', 'documentacion', 'documentación', 'api', 'referencia', 'swagger', 'openapi', 'spec', 'especificación', 'especificacion', 'manual', 'guia técnica', 'guia tecnica', 'api reference', 'endpoint list', 'lista de endpoints', 'rutas disponibles', 'métodos soportados', 'metodos soportados', 'curl', 'postman collection', 'insomnia', 'http client', 'sdk', 'cliente'],
-      score: 0,
-      response: `La documentación completa está disponible en la sección **"Docs"** del footer o navegando desde el menú.
+      response: `Documentación API completa disponible:
 
-**Endpoints documentados:**
-• **Autenticación:** POST /api/auth/signup, POST /api/auth/login, GET /api/auth/profile, POST /api/auth/upgrade
-• **Gestión de mocks:** GET /admin/endpoints, POST /admin/endpoints, PUT /admin/endpoints/{id}, DELETE /admin/endpoints/{id}
-• **Logs:** GET /admin/logs
-• **Mock server:** Cualquier método en /mock/** (público)
-• **Instant mock:** POST /api/instant/create, GET /api/instant/check/{id}
+**Autenticación:** POST /api/auth/signup, /login, /profile
+**Mocks:** GET/POST /admin/endpoints, PUT/DELETE /admin/endpoints/{id}
+**Logs:** GET /admin/logs
+**Público:** Cualquier método en /mock/** (sin auth)
+**Instant:** POST /api/instant/create, GET /api/instant/check/{id}
 
-Todos los endpoints administrativos requieren JWT Bearer token en el header \`Authorization\`.`
-    },
-    cancel: {
-      keywords: ['cancelar', 'borrar', 'eliminar', 'darme de baja', 'baja', 'dar de baja', 'dejar de usar', 'unsuscribe', 'unsubscribe', 'delete account', 'borrar cuenta', 'eliminar cuenta', 'cerrar cuenta', 'suprimir', 'remove', 'remover'],
-      score: 0,
-      response: `Tienes control total sobre tu cuenta:
-
-**Cancelar suscripción:**
-• Ve a tu perfil desde el dashboard
-• Haz clic en "Cancelar suscripción"
-• No hay permanencia ni penalizaciones
-• Tu plan vuelve a Free inmediatamente
-
-**Eliminar cuenta permanentemente:**
-• Contacta a hello@mockagent.ai solicitando la eliminación
-• Te responderemos en menos de 24 horas (Premium) o 48 horas (Free/Pro)
-• Todos tus endpoints, logs y datos personales se eliminan irrevocablemente
-
-**Nota:** En la versión actual, los pagos son simulados (no se procesan tarjetas reales).`
+Todos los endpoints admin requieren Bearer token JWT.`,
+      suggestions: ['Ver sección Docs', 'Ejemplos de curl', 'Crear cuenta']
     },
     support: {
       keywords: ['soporte', 'ayuda', 'contacto', 'email', 'problema', 'incidencia', 'bug', 'error', 'fallo', 'falla', 'no funciona', 'broken', 'issue', 'ticket', 'reclamación', 'reclamacion', 'queja', 'reportar', 'reporte', 'assistance', 'atención', 'atencion', 'servicio al cliente', 'customer service', 'help desk'],
-      score: 0,
-      response: `Estamos aquí para ayudarte:
+      response: `Canales de soporte:
 
-**Canales de soporte:**
-• **Email:** hello@mockagent.ai (respuesta en 24-48h)
-• **Documentación:** Sección "Docs" con ejemplos de curl
-• **Blog:** Artículos sobre mocking, testing y arquitectura de APIs
+**Email:** hello@mockagent.ai (respuesta 24-48h)
+**Documentación:** Sección Docs con ejemplos curl
+**Blog:** Artículos técnicos sobre mocking
 
-**Soporte prioritario (Premium $7.99/mes):**
-• Respuesta garantizada en menos de 24 horas
-• Acceso directo al equipo de ingeniería
-• Prioridad en reportes de bugs
+**Premium ($7.99/mes):** Soporte prioritario <24h + acceso directo al equipo.
 
-**Autodiagnóstico rápido:**
-• Si ves "API Offline" en el dashboard, verifica que el backend JAR esté corriendo en localhost:9090
-• Si recibes 401, prueba a cerrar sesión y volver a entrar
-• Si recibes 429, has alcanzado el límite diario de tu plan`
-    },
-    export_import: {
-      keywords: ['export', 'importar', 'json', 'openapi', 'swagger', 'backup', 'restore', 'migrar', 'migración', 'migracion', 'transferir', 'mover', 'copiar', 'duplicar', 'clonar', 'clone', 'template', 'plantilla', 'schema', 'esquema', 'spec', 'collection', 'postman collection', 'curl', 'script', 'automatizar', 'automatización', 'automatizacion'],
-      score: 0,
-      response: `Próximamente en MockAgent:
-
-**Exportación:**
-• Exportar mocks a JSON con toda su configuración
-• Exportar logs filtrados por fecha
-• Generar OpenAPI Specification 3.0 desde tus endpoints
-
-**Importación:**
-• Importar desde OpenAPI/Swagger YAML o JSON
-• Importar desde Postman Collections v2.1
-• Importar desde Beeceptor (migración directa)
-
-**Backup:**
-• Backup automático diario de configuraciones (Premium)
-• Restauración punto-en-tiempo de hasta 30 días atrás
-
-**De momento:** Puedes copiar la configuración manualmente desde el dashboard o usar la API REST para automatizar con scripts.`
+**Autodiagnóstico:** 401 = token expirado | 429 = límite alcanzado | 500 = error servidor`,
+      suggestions: ['Ver planes Premium', 'Reportar un bug', 'Ver documentación']
     },
     webhooks: {
       keywords: ['webhook', 'notificacion', 'notificación', 'alerta', 'alert', 'evento', 'event', 'callback', 'hook', 'trigger', 'disparador', 'avisar', 'aviso', 'notificar', 'push', 'slack', 'discord', 'email alert', 'sms', 'telegram bot', 'zapier', 'integracion', 'integración', 'conectar', 'connect'],
-      score: 0,
-      response: `Los webhooks están disponibles en el plan **Premium** ($7.99/mes):
+      response: `Webhooks disponibles en plan **Premium** ($7.99/mes):
 
-**Eventos configurables:**
-• Petición recibida en tu endpoint (con payload resumido)
-• Límite de rate alcanzado (80% y 100%)
-• Error 5xx en el servidor
-• Endpoint creado/modificado/eliminado
-
-**Formato:**
-• POST a tu URL configurada
-• Payload JSON con evento, timestamp y datos relevantes
-• Headers de autenticación HMAC-SHA256 para verificar origen
-
-**Próximamente también:**
-• Integración nativa con Slack y Discord
-• Webhooks condicionales (solo si statusCode > 400)
-• Reintentos automáticos con backoff exponencial`
-    },
-    team: {
-      keywords: ['equipo', 'team', 'workspace', 'compartir', 'colaborar', 'colaboración', 'colaboracion', 'organizacion', 'organización', 'empresa', 'business', 'enterprise', 'corporate', 'ssO', 'single sign on', 'saml', 'ldap', 'active directory', 'rol', 'roles', 'permiso', 'permisos', 'admin', 'miembro', 'invitar', 'invitación', 'invitacion', 'multi-usuario', 'multiuser', 'gestion de usuarios', 'gestión de usuarios'],
-      score: 0,
-      response: `Actualmente MockAgent está optimizado para **usuarios individuales** y desarrolladores freelance.
-
-**Hoja de ruta para equipos:**
-• **Q3 2026:** Workspaces compartidos (hasta 5 miembros)
-• **Q4 2026:** SSO con SAML 2.0 y Google Workspace
-• **Q1 2027:** Roles avanzados (Admin, Developer, Viewer)
-• **Q2 2027:** Auditoría extendida con exportación a CSV
-
-**Para empresas grandes ahora:**
-• Contacta con ventas en hello@mockagent.ai
-• Podemos preparar una instancia dedicada con tu branding
-• SLA garantizado y soporte 24/7 disponible bajo presupuesto`
+**Eventos:** Petición recibida, rate limit 80%/100%, error 5xx, cambios en endpoints.
+**Formato:** POST JSON a tu URL con HMAC-SHA256 para verificar origen.
+**Próximamente:** Slack/Discord nativo, webhooks condicionales, reintentos automáticos.`,
+      suggestions: ['Ver plan Premium', 'Qué son los webhooks', 'Ver planes']
     },
     database: {
       keywords: ['mysql', 'base de datos', 'bdd', 'persistencia', 'almacenamiento', 'storage', 'sql', 'schema', 'tabla', 'migración', 'migracion', 'docker', 'docker-compose', 'instalación', 'instalacion', 'setup', 'local', 'self-hosted', 'self hosted', 'on-premise', 'on premise', 'infraestructura', 'infra', 'hosting', 'cloud', 'aws', 'azure', 'gcp', 'deploy', 'desplegar', 'servidor', 'server', 'backend', 'port', 'puerto', '9090', '3306', 'configuración inicial', 'configuracion inicial', 'env', 'variable de entorno', 'entorno'],
-      score: 0,
-      response: `MockAgent es **auto-alojable** por diseño:
+      response: `MockAgent es auto-alojable:
 
-**Requisitos técnicos:**
-• Java 17+ (para el backend Spring Boot)
-• MySQL 8.0+ (localhost:3306 por defecto)
-• Node.js 18+ (para el frontend Vite)
-
-**Configuración por defecto:**
-• Backend: http://localhost:9090
-• Frontend: http://localhost:5173
-• Base de datos: mockagent en localhost:3306
-
-**Docker (próximamente):**
-\`docker-compose up\` levantará todo el stack en un solo comando.
-
-**Ventajas del auto-alojado:**
-• Tus datos nunca salen de tu infraestructura
-• Sin dependencia de terceros para disponibilidad
-• Cumplimiento RGPD/GDPR simplificado
-• Coste predecible (solo tu servidor)`
-    },
-    currency: {
-      keywords: ['moneda', 'divisa', 'currency', 'cambio', 'exchange', 'usd', 'eur', 'gbp', 'jpy', 'cny', 'aud', 'cad', 'chf', 'sek', 'mxn', 'dollar', 'euro', 'yen', 'yuan', 'libra', 'franco', 'corona', 'peso', 'convertir', 'conversion', 'conversión', 'tipo de cambio', 'rate', 'cotización', 'cotizacion', 'precio en', 'costo en'],
-      score: 0,
-      response: `MockAgent soporta **10 monedas** en el selector de Pricing:
-
-USD ($), EUR (€), GBP (£), JPY (¥), CNY (¥), AUD (A$), CAD (C$), CHF (Fr), SEK (kr), MXN ($)
-
-Los precios se convierten automáticamente usando tasas aproximadas. El cambio se aplica al instante sin recargar la página.
-
-**Nota:** Las tasas son aproximadas para referencia. El cobro real (cuando implementemos pasarela de pagos) se hará en USD y tu banco aplicará su tipo de cambio.`
+**Requisitos:** Java 17+, MySQL 8.0+, Node.js 18+
+**Default:** Backend localhost:9090 | Frontend localhost:5173 | MySQL localhost:3306
+**Docker:** Próximamente docker-compose completo.
+**Ventajas:** Tus datos nunca salen de tu infraestructura. Cumplimiento GDPR simplificado.`,
+      suggestions: ['Guía de despliegue', 'Configurar variables de entorno', 'Ver documentación']
     },
     status_codes: {
       keywords: ['200', '201', '400', '401', '403', '404', '429', '500', '502', '503', 'status code', 'código de estado', 'codigo de estado', 'http', 'response code', 'error code', 'codigo de error', 'código de error', 'ok', 'not found', 'unauthorized', 'forbidden', 'bad request', 'internal server error', 'service unavailable', 'timeout', 'time out', 'gateway'],
-      score: 0,
-      response: `MockAgent soporta cualquier código de estado HTTP que configures:
+      response: `Códigos HTTP soportados en MockAgent:
 
-**Códigos comunes:**
-• **200 OK** — Petición exitosa
-• **201 Created** — Recurso creado (ideal para POST)
-• **400 Bad Request** — JSON inválido o campos ausentes
-• **401 Unauthorized** — Token JWT inválido o expirado
-• **403 Forbidden** — Límite de plan excedido
-• **404 Not Found** — Endpoint no existe para esa ruta/método
-• **429 Too Many Requests** — Rate limit diario o por minuto excedido
-• **500 Internal Server Error** — Error inesperado del servidor
+**200** OK | **201** Created | **400** Bad Request
+**401** Unauthorized (JWT inválido)
+**403** Forbidden (límite de plan)
+**404** Not Found (endpoint no existe)
+**429** Too Many Requests (rate limit)
+**500** Internal Server Error
 
-En el dashboard, configura el statusCode deseado al crear o editar tu endpoint. MockAgent responderá exactamente con ese código.`
+Configura el status que necesites al crear tu mock.`,
+      suggestions: ['Crear un mock', 'Ver planes', 'Documentación API']
     },
   };
 
@@ -413,67 +286,66 @@ En el dashboard, configura el statusCode deseado al crear o editar tu endpoint. 
   let hasRelevantTopic = false;
 
   for (const [key, topic] of Object.entries(TOPICS)) {
-    topic.score = 0;
+    let score = 0;
     for (const kw of topic.keywords) {
       if (q.includes(kw)) {
-        topic.score += 1;
-        // Bonus for longer, more specific keyword matches
-        if (kw.length > 6) topic.score += 0.5;
-        if (kw.length > 10) topic.score += 0.5;
+        score += 1;
+        if (kw.length > 6) score += 0.5;
+        if (kw.length > 10) score += 0.5;
       }
     }
-    if (topic.score > 0) {
+    if (score > 0) {
       hasRelevantTopic = true;
-      if (topic.score > maxScore) {
-        maxScore = topic.score;
-        bestTopic = topic;
+      if (score > maxScore) {
+        maxScore = score;
+        bestTopic = key;
       }
     }
   }
 
-  // --- 4. Out-of-topic fallback ---
+  // --- 6. Out-of-topic fallback ---
   if (hasOffTopic && !hasRelevantTopic) {
-    return `Lo siento, soy el asistente especializado de MockAgent y solo puedo ayudarte con temas relacionados con nuestra plataforma de mocking de APIs.
-
-Puedo responderte sobre:
-• Cómo crear y usar mocks
-• Planes, precios y facturación
-• Límites y rate limiting
-• Seguridad, autenticación y privacidad
-• Comparativas con otras herramientas
-• Documentación de la API
-• Soporte y configuración
-
-¿Te gustaría saber algo sobre alguno de estos temas?`;
+    return {
+      text: `Lo siento, solo puedo ayudarte con temas de MockAgent: mocks, planes, seguridad, documentación, soporte...\n\n¿Te gustaría saber algo sobre alguno de estos temas?`,
+      suggestions: ['¿Qué es un mock?', 'Ver planes y precios', 'Cómo empezar'],
+      newContext: { ...context, messageCount: context.messageCount + 1 }
+    };
   }
 
-  // --- 5. No topic matched at all (neutral fallback) ---
+  // --- 7. No topic matched (smart fallback with suggestions) ---
   if (!hasRelevantTopic) {
-    return `¡Buena pregunta! Soy el asistente de MockAgent y puedo ayudarte con:
-
-• Cómo crear endpoints de API simulados
-• Planes y precios (Free, Pro, Premium)
-• Límites de peticiones y rate limiting
-• Seguridad, JWT y privacidad de datos
-• Comparativas con Beeceptor, Postman, WireMock...
-• Documentación de la API REST
-• Configuración, logs y soporte
-
-¿Sobre qué tema te gustaría saber más?`;
+    return {
+      text: `¡Buena pregunta! Puedo ayudarte con estos temas. ¿Cuál te interesa?`,
+      suggestions: ['Crear mocks', 'Planes y precios', 'Seguridad y JWT', 'Soporte técnico'],
+      newContext: { ...context, messageCount: context.messageCount + 1 }
+    };
   }
 
-  // --- 6. Return best matching response ---
-  return bestTopic.response;
+  // --- 8. Return best matching response with context ---
+  const topic = TOPICS[bestTopic];
+  return {
+    text: topic.response,
+    suggestions: topic.suggestions,
+    newContext: { lastTopic: bestTopic, lastQuestion: q, messageCount: context.messageCount + 1 }
+  };
 };
 
 const ChatWidget = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
-    { sender: 'ai', text: '¡Hola! Soy el asistente de MockAgent. ¿En qué puedo ayudarte?' }
+    { sender: 'ai', text: '¡Hola! Soy el asistente de MockAgent. ¿En qué puedo ayudarte?', suggestions: ['¿Qué es un mock?', 'Ver planes y precios', 'Cómo empezar'] }
   ]);
   const [chatInput, setChatInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [chatContext, setChatContext] = useState({ lastTopic: null, lastQuestion: null, messageCount: 0 });
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
   const chatEndRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -483,19 +355,20 @@ const ChatWidget = () => {
     scrollToBottom();
   }, [chatMessages]);
 
-  const sendMessage = () => {
-    if (!chatInput.trim()) return;
+  const sendMessage = (textOverride = null) => {
+    const userMsg = textOverride || chatInput.trim();
+    if (!userMsg) return;
     
-    const userMsg = chatInput.trim();
+    if (!textOverride) setChatInput('');
     setChatMessages(prev => [...prev, { sender: 'user', text: userMsg }]);
-    setChatInput('');
     setIsTyping(true);
     
     setTimeout(() => {
-      const response = getAIResponse(userMsg);
-      setChatMessages(prev => [...prev, { sender: 'ai', text: response }]);
+      const result = getAIResponse(userMsg, chatContext);
+      setChatMessages(prev => [...prev, { sender: 'ai', text: result.text, suggestions: result.suggestions }]);
+      setChatContext(result.newContext);
       setIsTyping(false);
-    }, 800 + Math.random() * 1000);
+    }, 600 + Math.random() * 800);
   };
 
   const handleKeyPress = (e) => {
@@ -504,6 +377,11 @@ const ChatWidget = () => {
       sendMessage();
     }
   };
+
+  const panelWidth = isMobile ? 'calc(100vw - 24px)' : '360px';
+  const panelHeight = isMobile ? 'calc(100vh - 120px)' : '520px';
+  const panelRight = isMobile ? '12px' : '24px';
+  const panelBottom = isMobile ? '80px' : '90px';
 
   return (
     <>
@@ -514,10 +392,10 @@ const ChatWidget = () => {
         whileTap={{ scale: 0.95 }}
         style={{
           position: 'fixed',
-          bottom: '24px',
-          right: '24px',
-          width: '56px',
-          height: '56px',
+          bottom: isMobile ? '16px' : '24px',
+          right: isMobile ? '16px' : '24px',
+          width: '52px',
+          height: '52px',
           borderRadius: '50%',
           backgroundColor: '#C9A96E',
           color: '#0a0a1e',
@@ -527,11 +405,11 @@ const ChatWidget = () => {
           alignItems: 'center',
           justifyContent: 'center',
           boxShadow: '0 4px 20px rgba(201,169,110,0.4), 0 0 40px rgba(201,169,110,0.2)',
-          zIndex: 1000,
-          fontSize: '24px'
+          zIndex: 9999,
+          fontSize: '22px'
         }}
       >
-        {chatOpen ? <X size={24} /> : <MessageCircle size={24} />}
+        {chatOpen ? <X size={22} /> : <MessageCircle size={22} />}
       </motion.button>
 
       {/* Chat Panel */}
@@ -541,18 +419,19 @@ const ChatWidget = () => {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
             style={{
               position: 'fixed',
-              bottom: '90px',
-              right: '24px',
-              width: '360px',
-              maxHeight: '500px',
+              bottom: panelBottom,
+              right: panelRight,
+              width: panelWidth,
+              maxHeight: panelHeight,
+              height: panelHeight,
               backgroundColor: 'var(--card-bg)',
               border: '1px solid var(--border-color)',
-              borderRadius: '16px',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.3), 0 0 40px rgba(201,169,110,0.1)',
-              zIndex: 1000,
+              borderRadius: isMobile ? '12px' : '16px',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(201,169,110,0.1)',
+              zIndex: 9998,
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden'
@@ -560,12 +439,13 @@ const ChatWidget = () => {
           >
             {/* Header */}
             <div style={{
-              padding: '16px 20px',
+              padding: isMobile ? '12px 16px' : '14px 18px',
               backgroundColor: 'rgba(201,169,110,0.1)',
               borderBottom: '1px solid var(--border-color)',
               display: 'flex',
               alignItems: 'center',
-              gap: '10px'
+              gap: '10px',
+              flexShrink: 0
             }}>
               <div style={{
                 width: '32px',
@@ -579,40 +459,67 @@ const ChatWidget = () => {
               }}>
                 <Zap size={18} />
               </div>
-              <div>
+              <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text-main)' }}>Asistente MockAgent</div>
                 <div style={{ fontSize: '12px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981' }} />
                   En línea
                 </div>
               </div>
+              <button onClick={() => setChatOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '4px' }}>
+                <X size={18} />
+              </button>
             </div>
 
             {/* Messages */}
             <div style={{
               flex: 1,
               overflowY: 'auto',
-              padding: '16px 20px',
+              padding: isMobile ? '12px 14px' : '14px 18px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '12px'
+              gap: '10px'
             }}>
               {chatMessages.map((msg, i) => (
-                <div
-                  key={i}
-                  style={{
-                    alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                    maxWidth: '85%',
-                    padding: '10px 14px',
-                    borderRadius: msg.sender === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
-                    backgroundColor: msg.sender === 'user' ? '#C9A96E' : 'var(--bg-color)',
-                    color: msg.sender === 'user' ? '#0a0a1e' : 'var(--text-main)',
-                    fontSize: '13px',
-                    lineHeight: '1.5',
-                    whiteSpace: 'pre-line'
-                  }}
-                >
-                  {msg.text}
+                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start', maxWidth: '88%' }}>
+                  <div
+                    style={{
+                      alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+                      padding: '10px 14px',
+                      borderRadius: msg.sender === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
+                      backgroundColor: msg.sender === 'user' ? '#C9A96E' : 'var(--bg-color)',
+                      color: msg.sender === 'user' ? '#0a0a1e' : 'var(--text-main)',
+                      fontSize: '13px',
+                      lineHeight: '1.5',
+                      whiteSpace: 'pre-line'
+                    }}
+                  >
+                    {msg.text}
+                  </div>
+                  {msg.sender === 'ai' && msg.suggestions && msg.suggestions.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', paddingLeft: '4px' }}>
+                      {msg.suggestions.map((s, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => sendMessage(s)}
+                          style={{
+                            padding: '6px 12px',
+                            borderRadius: '999px',
+                            border: '1px solid rgba(201,169,110,0.25)',
+                            backgroundColor: 'rgba(201,169,110,0.06)',
+                            color: '#C9A96E',
+                            fontSize: '12px',
+                            cursor: 'pointer',
+                            transition: '0.2s'
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'rgba(201,169,110,0.15)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'rgba(201,169,110,0.06)'; }}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
               
@@ -636,10 +543,12 @@ const ChatWidget = () => {
 
             {/* Input */}
             <div style={{
-              padding: '12px 16px',
+              padding: isMobile ? '10px 12px' : '12px 16px',
               borderTop: '1px solid var(--border-color)',
               display: 'flex',
-              gap: '8px'
+              gap: '8px',
+              flexShrink: 0,
+              backgroundColor: 'var(--card-bg)'
             }}>
               <input
                 type="text"
@@ -654,12 +563,13 @@ const ChatWidget = () => {
                   border: '1px solid var(--border-color)',
                   backgroundColor: 'var(--bg-color)',
                   color: 'var(--text-main)',
-                  fontSize: '13px',
-                  outline: 'none'
+                  fontSize: '14px',
+                  outline: 'none',
+                  minWidth: 0
                 }}
               />
               <button
-                onClick={sendMessage}
+                onClick={() => sendMessage()}
                 style={{
                   padding: '10px 14px',
                   borderRadius: '10px',
@@ -669,7 +579,8 @@ const ChatWidget = () => {
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  flexShrink: 0
                 }}
               >
                 <Send size={16} />
