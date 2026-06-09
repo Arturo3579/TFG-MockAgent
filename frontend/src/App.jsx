@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, Zap, Check, Sparkles, ArrowLeft, Mail, UserPlus, AlertTriangle, Trash2, X, Terminal, Play, Code, HelpCircle, Shield, Clock, Server, ChevronDown, ChevronUp, ExternalLink, Lock, FileJson, Globe, CreditCard, Users, BookOpen, FileText, Scale, Calendar, Copy, CheckCircle, ArrowUp, Loader2, Activity, MessageCircle, Send } from 'lucide-react';
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:9090',
+  baseURL: 'http://localhost:9090',
 });
 
 const getToken = () => sessionStorage.getItem('token') || localStorage.getItem('token');
