@@ -2229,8 +2229,7 @@ function App() {
             <span onClick={() => setVistaActual('landing')} style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px', cursor: 'pointer' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
           </div>
           <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-            <span onClick={() => setVistaActual('landing')} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '14px', color: 'var(--text-muted)', transition: '0.2s' }}>Inicio</span>
-            <span onClick={() => setVistaActual('pricing')} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '14px', color: 'var(--text-main)', transition: '0.2s' }}>Pricing</span>
+            <span onClick={() => setVistaActual('pricing')} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '14px', color: 'var(--text-muted)', transition: '0.2s' }}>Pricing</span>
             {getToken() ? (
               <>
                 <motion.button onClick={() => setVistaActual('dashboard')} whileHover={{ scale: 1.04, backgroundColor: '#D4B87A' }} whileTap={{ scale: 0.97 }} style={CTA_PRIMARY}>Dashboard</motion.button>
@@ -2247,6 +2246,29 @@ function App() {
         </nav>
 
         <div style={{ maxWidth: '1280px', margin: '0 auto', width: '100%', padding: '96px 24px', flex: '1 0 auto' }}>
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} style={{ marginBottom: '32px' }}>
+            <button
+              onClick={() => setVistaActual('landing')}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 16px',
+                borderRadius: '999px',
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'var(--card-bg)',
+                color: 'var(--text-muted)',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: '0.2s'
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#C9A96E'; e.currentTarget.style.borderColor = 'rgba(201,169,110,0.3)'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-color)'; }}
+            >
+              <ArrowLeft size={16} /> Volver al inicio
+            </button>
+          </motion.div>
           <motion.div initial="hidden" animate="visible" variants={stagger} style={{ textAlign: 'center', marginBottom: '48px' }}>
             <motion.h1 variants={fadeUp} style={{ fontSize: 'clamp(30px, 4vw, 48px)', fontWeight: '800', letterSpacing: '-0.5px', marginBottom: '12px' }}>Planes diseñados para crecer</motion.h1>
             <motion.p variants={fadeUp} style={{ color: 'var(--text-muted)', fontSize: '16px', maxWidth: '500px', margin: '0 auto' }}>Sin sorpresas. Escala cuando estés listo. Sin tarjeta para empezar.</motion.p>
