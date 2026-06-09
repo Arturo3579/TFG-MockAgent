@@ -10,324 +10,265 @@ const API = axios.create({
 const getToken = () => sessionStorage.getItem('token') || localStorage.getItem('token');
 
 // ============================
-// SMART AI ASSISTANT
+// SMART AI ASSISTANT - MockAgent.AI Specialist
 // ============================
-const getAIResponse = (question, context) => {
+const getAIResponse = (question, context, messageHistory = []) => {
   const q = question.toLowerCase().trim();
-  if (!q) return { text: '¡Hola! ¿En qué puedo ayudarte?', suggestions: ['¿Qué es un mock?', 'Ver planes', 'Cómo empezar'], newContext: context };
+  const history = messageHistory.filter(m => m.sender === 'user').map(m => m.text.toLowerCase());
+  const lastUserMessage = history.length > 0 ? history[history.length - 1] : null;
+  
+  // Helper: build response
+  const r = (text, suggestions = [], topic = null) => ({
+    text, suggestions,
+    newContext: { lastTopic: topic || context.lastTopic, lastQuestion: q, messageCount: (context.messageCount || 0) + 1 }
+  });
 
-  // --- 0. Follow-up detection using context ---
-  const followUps = {
-    yes: ['sí', 'si', 'claro', 'por supuesto', 'cuéntame', 'cuentame', 'dime', 'ok', 'vale', 'perfecto', 'adelante', 'más', 'mas', 'mas info', 'más info', 'en serio', 'genial', 'interesante'],
-    no: ['no', 'nope', 'nop', 'para nada', 'no gracias', 'no necesito'],
-    more: ['por qué', 'porque', 'como', 'cómo', 'cuanto', 'cuánto', 'cuando', 'dónde', 'donde', 'cuál', 'cual', 'quien', 'quién', 'ejemplo', 'ejemplos']
-  };
+  if (!q) return r('¡Hola! Soy el asistente especialista de MockAgent.AI. ¿En qué puedo ayudarte?', ['Ver planes y precios', 'Cómo crear un mock', 'Qué es MockAgent']);
 
-  const isFollowUpYes = followUps.yes.some(w => q === w || q.startsWith(w + ' '));
-  const isFollowUpNo = followUps.no.some(w => q === w || q.startsWith(w + ' '));
-  const isFollowUpMore = followUps.more.some(w => q.includes(w));
-
-  // If follow-up and we have context
-  if (context.lastTopic && (isFollowUpYes || isFollowUpMore)) {
-    const followUpResponses = {
-      pricing: `Si eliges el plan **Pro ($4.99/mes)**, obtienes endpoints ilimitados y 5.000 peticiones/día. Con **Premium ($7.99/mes)** subes a 10.000 peticiones/día y logs de 14 días.\n\n¿Te gustaría saber cómo hacer el upgrade o prefieres probar primero el plan Free?`,
-      mock_creation: `Para crear tu primer mock:\n1. Ve al Dashboard tras registrarte\n2. Haz clic en "Nuevo Endpoint"\n3. Define la ruta, método HTTP y código de estado\n4. Pega tu JSON de respuesta\n5. Publica y copia la URL\n\n¿Quieres que te explique algún paso en más detalle?`,
-      security: `Además de JWT y bcrypt, MockAgent tiene rate limiting por IP, consultas SQL parametrizadas contra inyección, y cada usuario solo accede a sus propios datos. La infraestructura usa TLS/SSL en producción.\n\n¿Te preocupa algún aspecto específico de seguridad?`,
-      auth: `Una vez registrado, tu token JWT se guarda automáticamente. Puedes elegir "Recuérdame" para persistir la sesión. El token expira en 24 horas.\n\n¿Necesitas ayuda con el login o registro?`,
-      rate_limits: `Si llegas al límite, recibirás un 429 Too Many Requests. El contador se reinicia a las 00:00 UTC. Si necesitas más capacidad, el upgrade a Pro es inmediato.\n\n¿Quieres saber cómo upgrade?`,
-      logs: `En el dashboard, la sección "Logs" te muestra cada petición con timestamp, método, ruta, status y body. Puedes filtrar por fecha.\n\n¿Te gustaría saber cómo exportar logs?`,
-    };
-    return {
-      text: followUpResponses[context.lastTopic] || `Sobre ${context.lastTopic}, ¿hay algo más específico que quieras saber?`,
-      suggestions: ['Sí, cuéntame más', 'No, gracias', 'Ver planes y precios'],
-      newContext: { ...context, messageCount: context.messageCount + 1 }
-    };
+  // ============================================
+  // 1. SALUDOS NATURALES
+  // ============================================
+  const GREETINGS = ['hola', 'hey', 'buenas', 'saludos', 'buenos dias', 'buenas tardes', 'buenas noches', 'qué tal', 'que tal', 'holi', 'hello', 'hi', 'qué onda', 'que onda', 'qué hay', 'que hay', 'qué pasa', 'que pasa'];
+  if (GREETINGS.some(w => q === w || q.startsWith(w + ' '))) {
+    const hour = new Date().getHours();
+    let greeting = '¡Hola!';
+    if (hour >= 5 && hour < 12) greeting = '¡Buenos días! ☀️';
+    else if (hour >= 12 && hour < 20) greeting = '¡Buenas tardes!';
+    else greeting = '¡Buenas noches! 🌙';
+    
+    return r(
+      `${greeting} Soy el asistente de MockAgent.AI. Estoy aquí para ayudarte con todo lo relacionado con nuestra plataforma de mocking.\n\n¿Quieres crear mocks, ver planes, o necesitas ayuda con algo específico?`,
+      ['Ver planes y precios', 'Cómo crear un mock', 'Ver documentación']
+    );
   }
 
-  // --- 1. Time-aware Greetings ---
-  const hour = new Date().getHours();
-  let timeGreeting = '¡Hola!';
-  if (hour >= 5 && hour < 12) timeGreeting = '¡Buenos días!';
-  else if (hour >= 12 && hour < 20) timeGreeting = '¡Buenas tardes!';
-  else timeGreeting = '¡Buenas noches!';
-
-  const GREETINGS = ['hola', 'hey', 'buenas', 'saludos', 'buenos dias', 'buenas tardes', 'buenas noches', 'qué tal', 'que tal', 'holi', 'hello', 'hi', 'qué onda', 'que onda', 'qué hay', 'que hay'];
-  if (GREETINGS.some(w => q.includes(w))) {
-    return {
-      text: `${timeGreeting} Soy el asistente de MockAgent. ¿En qué puedo ayudarte hoy? Puedo responderte sobre planes, precios, cómo crear mocks, seguridad, comparativas y mucho más.`,
-      suggestions: ['¿Qué es un mock?', 'Ver planes y precios', 'Cómo empezar'],
-      newContext: { lastTopic: 'greeting', lastQuestion: q, messageCount: context.messageCount + 1 }
-    };
-  }
-
-  // --- 2. Goodbyes & Thanks ---
-  const GOODBYES = ['gracias', 'adios', 'bye', 'hasta luego', 'nos vemos', 'chao', 'cuídate', 'perfecto', 'vale gracias', 'ok gracias', 'muchas gracias', 'gracias por todo', 'nos vemos', 'hasta pronto'];
+  // ============================================
+  // 2. DESPEDIDAS
+  // ============================================
+  const GOODBYES = ['gracias', 'adios', 'bye', 'hasta luego', 'nos vemos', 'chao', 'cuídate', 'perfecto', 'vale gracias', 'ok gracias', 'muchas gracias', 'gracias por todo', 'hasta pronto', 'nos vemos luego'];
   if (GOODBYES.some(w => q.includes(w))) {
-    return {
-      text: '¡Un placer ayudarte! Si necesitas algo más, aquí estaré. ¡Que tengas un buen día! 😊',
-      suggestions: ['Volver al inicio', 'Ver documentación', 'Contactar soporte'],
-      newContext: { ...context, messageCount: context.messageCount + 1 }
-    };
+    return r('¡Ha sido un placer! Si necesitas algo más sobre MockAgent.AI, aquí estaré. ¡Que tengas un excelente día! 🚀', ['Volver a la web', 'Contactar soporte']);
   }
 
-  // --- 3. Short/ambiguous queries detection ---
-  if (q.length < 3 && !['ok', 'sí', 'si', 'no'].includes(q)) {
-    return {
-      text: 'Veo que tu mensaje es muy corto. ¿Te refieres a alguno de estos temas?',
-      suggestions: ['Planes y precios', 'Crear un mock', 'Soporte técnico', 'Seguridad'],
-      newContext: { ...context, messageCount: context.messageCount + 1 }
-    };
+  // ============================================
+  // 3. QUÉ ES MOCKAGENT (específico de la web)
+  // ============================================
+  if (q.includes('qué es mockagent') || q.includes('que es mockagent') || q.includes('quien es mockagent') || q.includes('mockagent.ai') || q.includes('sobre mockagent') || q.includes('qué hace mockagent') || q.includes('para qué sirve mockagent') || q.includes('qué es esta web') || q.includes('qué es esta página')) {
+    return r(
+      `MockAgent.AI es tu plataforma de mocking de APIs diseñada específicamente para equipos que desarrollan agentes de IA.\n\n**Lo que puedes hacer aquí:**\n• Crear endpoints de API simulados en segundos\n• Prototipar sin depender de servidores externos\n• Testar tus agentes de IA con respuestas JSON reales\n• Escalar desde Free hasta Premium según tus necesidades\n• Todo desde mockagentai.com, sin instalar nada\n\n¿Te gustaría probarlo ahora o ver los planes disponibles?`,
+      ['Probar Mock Express', 'Ver planes', 'Crear cuenta gratis'],
+      'mockagent_intro'
+    );
   }
 
-  // --- 4. Out-of-topic detection ---
+  // ============================================
+  // 4. CREAR MOCK / MOCK EXPRESS
+  // ============================================
+  if (q.includes('mock') || q.includes('endpoint') || q.includes('crear api') || q.includes('simular') || q.includes('fake api') || q.includes('dummy') || q.includes('stub') || q.includes('prueba api') || q.includes('test api') || q.includes('api falsa') || q.includes('express')) {
+    // Si pregunta específicamente por Mock Express
+    if (q.includes('express') || q.includes('sin registro') || q.includes('sin cuenta')) {
+      return r(
+        `**Mock Express** es la forma más rápida de probar MockAgent.AI sin crear cuenta:\n\n1. En la página principal (mockagentai.com), ve a la sección "Instant Mock"\n2. Escribe un nombre para tu API (ej: mi-api)\n3. Haz clic en **"Crear Mock Express"**\n4. ¡Listo! Recibes una URL pública al instante como:\n   https://tfg-mockagent-production.up.railway.app/mock/mi-api\n\nEs gratis, sin registro, y perfecto para pruebas rápidas.`,
+        ['Ver planes para más features', 'Crear cuenta gratis', 'Cómo funciona el dashboard']
+      );
+    }
+    
+    return r(
+      `En MockAgent.AI puedes crear mocks de dos formas:\n\n**1. Mock Express (sin registro):**\n• En la landing page, escribe un nombre y haz clic en "Crear Mock Express"\n• URL pública al instante\n\n**2. Desde el Dashboard (con cuenta):**\n• Regístrate gratis → Dashboard → "Nuevo Endpoint"\n• Define: ruta, método HTTP, status code, JSON de respuesta\n• Guarda y obtén tu URL privada\n\n¿Quieres probar el Mock Express o necesitas crear uno más avanzado?`,
+      ['Probar Mock Express', 'Crear cuenta gratis', 'Ver planes y precios'],
+      'mock_creation'
+    );
+  }
+
+  // ============================================
+  // 5. PLANES Y PRECIOS
+  // ============================================
+  if (q.includes('precio') || q.includes('plan') || q.includes('costo') || q.includes('cuanto cuesta') || q.includes('gratis') || q.includes('free') || q.includes('pro') || q.includes('premium') || q.includes('pago') || q.includes('tarjeta') || q.includes('suscripcion') || q.includes('subscripcion') || q.includes('mensual') || q.includes('anual') || q.includes('cuota') || q.includes('vale la pena') || q.includes('rentable') || q.includes('descuento') || q.includes('oferta')) {
+    return r(
+      `MockAgent.AI tiene **3 planes** para que escales según necesites:\n\n**Free — $0/mes**\n• 5 endpoints\n• 100 peticiones/día\n• Logs 24h\n• Sin tarjeta, para siempre\n\n**Pro — $4.99/mes** ($2.99 si pagas anual)\n• Endpoints ilimitados\n• 5.000 peticiones/día\n• 1.000 req/min\n• Logs 7 días\n\n**Premium — $7.99/mes** ($5.99 anual)\n• 10.000 peticiones/día\n• 1.500 req/min\n• Logs 14 días + Webhooks\n• Soporte prioritario <24h\n\nSin permanencia. Cambia o cancela cuando quieras.`,
+      ['Crear cuenta gratis', 'Probar Mock Express', 'Ver comparativa con competidores'],
+      'pricing'
+    );
+  }
+
+  // ============================================
+  // 6. LOGIN / REGISTRO / CUENTA
+  // ============================================
+  if (q.includes('login') || q.includes('registrar') || q.includes('cuenta') || q.includes('signup') || q.includes('acceso') || q.includes('entrar') || q.includes('sesion') || q.includes('password') || q.includes('contraseña') || q.includes('email') || q.includes('correo') || q.includes('usuario') || q.includes('olvide') || q.includes('recuperar')) {
+    return r(
+      `**Crear cuenta en MockAgent.AI es gratis y rápido:**\n\n1. Ve a mockagentai.com y haz clic en **"Empezar Gratis"**\n2. Introduce tu email y contraseña\n   (mínimo 8 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 especial)\n3. ¡Listo! Tu token JWT se guarda automáticamente\n\n**Datos importantes:**\n• No requiere tarjeta de crédito\n• Plan Free incluido: 5 endpoints + 100 peticiones/día\n• Puedes marcar "Recuérdame" para no cerrar sesión\n• ¿Olvidaste tu contraseña? Escríbenos a hello@mockagent.ai`,
+      ['Crear cuenta ahora', 'Ver seguridad', 'Probar sin registro'],
+      'auth'
+    );
+  }
+
+  // ============================================
+  // 7. DASHBOARD / MI CUENTA / PERFIL
+  // ============================================
+  if (q.includes('dashboard') || q.includes('panel') || q.includes('mi cuenta') || q.includes('perfil') || q.includes('admin') || q.includes('gestionar') || q.includes('mis endpoints') || q.includes('mis mocks') || q.includes('donde veo')) {
+    return r(
+      `El **Dashboard** de MockAgent.AI es tu centro de control:\n\n**Desde ahí puedes:**\n• Crear, editar y eliminar endpoints de mock\n• Ver todos tus mocks activos\n• Consultar logs de peticiones en tiempo real\n• Gestionar tu plan y upgrade\n• Copiar URLs de tus mocks para usar en tus proyectos\n\n**Acceso:** Inicia sesión en mockagentai.com y haz clic en "Mi cuenta" en el navbar.\n\n¿Necesitas ayuda con algo específico del dashboard?`,
+      ['Crear cuenta gratis', 'Ver planes', 'Cómo crear un mock'],
+      'dashboard'
+    );
+  }
+
+  // ============================================
+  // 8. LÍMITES Y RATE LIMITING
+  // ============================================
+  if (q.includes('limite') || q.includes('límite') || q.includes('peticiones') || q.includes('requests') || q.includes('cuantas') || q.includes('cuántas') || q.includes('429') || q.includes('too many') || q.includes('bloqueo') || q.includes('exceder') || q.includes('diario')) {
+    return r(
+      `Cada plan de MockAgent.AI tiene límites claros:\n\n**Free:** 100 peticiones/día | 100/min | 5 endpoints\n**Pro:** 5.000 peticiones/día | 1.000/min | Ilimitados\n**Premium:** 10.000 peticiones/día | 1.500/min | Ilimitados\n\n**¿Qué pasa si llegas al límite?**\nRecibes un error **429 Too Many Requests**. El contador se reinicia automáticamente a las 00:00 UTC cada día.\n\n**Para evitar interrupciones:** Puedes upgrade a Pro en cualquier momento desde tu perfil. Es inmediato.`,
+      ['Upgrade a Pro', 'Ver todos los planes', 'Crear cuenta gratis'],
+      'rate_limits'
+    );
+  }
+
+  // ============================================
+  // 9. SEGURIDAD
+  // ============================================
+  if (q.includes('seguridad') || q.includes('seguro') || q.includes('privado') || q.includes('jwt') || q.includes('token') || q.includes('proteccion') || q.includes('cifrado') || q.includes('bcrypt') || q.includes('auth') || q.includes('hackear') || q.includes('datos') || q.includes('gdpr') || q.includes('privacidad')) {
+    return r(
+      `La seguridad en MockAgent.AI es prioridad absoluta:\n\n**Autenticación:**\n• Tokens JWT con firma HMAC-SHA256\n• Expiración 24h + opción "Recuérdame"\n• Contraseñas hasheadas con bcrypt (cost factor 12)\n\n**Aislamiento:**\n• Cada usuario solo accede a sus propios endpoints y logs\n• Consultas SQL parametrizadas contra inyección\n• Rate limiting por IP y por usuario\n\n**Infraestructura:**\n• TLS/SSL en todas las conexiones\n• Datos almacenados en TiDB Cloud con encriptación\n• Sin cookies de tracking de terceros\n\nTu información nunca se comparte con terceros.`,
+      ['Ver planes con más seguridad', 'Crear cuenta gratis', 'Contactar soporte'],
+      'security'
+    );
+  }
+
+  // ============================================
+  // 10. LOGS
+  // ============================================
+  if (q.includes('log') || q.includes('historial') || q.includes('registro') || q.includes('peticiones pasadas') || q.includes('debug') || q.includes('tracking') || q.includes('quien ha llamado') || q.includes('ver requests')) {
+    return r(
+      `MockAgent.AI registra automáticamente cada petición que reciben tus endpoints:\n\n**Retención según plan:**\n• Free: últimas 24 horas\n• Pro: últimos 7 días\n• Premium: últimos 14 días\n\n**Datos que puedes ver:**\n• Timestamp exacto (fecha y hora)\n• Método HTTP (GET, POST, PUT, DELETE)\n• Ruta completa del endpoint\n• Código de estado devuelto\n• Request body y headers relevantes\n• IP de origen (anonimizada)\n\nAccede desde tu Dashboard → "Logs de Peticiones".`,
+      ['Ver planes para más retención', 'Ir al Dashboard', 'Crear cuenta gratis'],
+      'logs'
+    );
+  }
+
+  // ============================================
+  // 11. COMPARATIVA
+  // ============================================
+  if (q.includes('comparar') || q.includes('beeceptor') || q.includes('postman') || q.includes('competidor') || q.includes('alternativa') || q.includes('vs') || q.includes('versus') || q.includes('mejor que') || q.includes('diferencia') || q.includes('por qué mockagent') || q.includes('ventaja') || q.includes('review') || q.includes('opinion') || q.includes('vale la pena')) {
+    return r(
+      `¿Por qué elegir MockAgent.AI sobre la competencia?\n\n**vs Beeceptor ($12/mes):**\nMockAgent cuesta $4.99, es auto-alojable, y tus datos son tuyos.\n\n**vs Postman ($14/mes):**\nSin ruido de features innecesarias. Especializado 100% en mocking.\n\n**vs WireMock:**\nUI visual y web. No necesitas código Java/Groovy.\n\n**vs Mockbin:**\nPersistencia real con MySQL/TiDB. No se pierde nada al reiniciar.\n\n**Diferenciador único:** Rate limiting configurable por plan + retención de logs ajustable. Nadie más lo ofrece.`,
+      ['Ver planes y precios', 'Crear cuenta gratis', 'Probar Mock Express'],
+      'comparison'
+    );
+  }
+
+  // ============================================
+  // 12. SOPORTE / AYUDA / PROBLEMAS
+  // ============================================
+  if (q.includes('soporte') || q.includes('ayuda') || q.includes('contacto') || q.includes('problema') || q.includes('bug') || q.includes('error') || q.includes('fallo') || q.includes('no funciona') || q.includes('broken') || q.includes('issue') || q.includes('ticket') || q.includes('reportar') || q.includes('help')) {
+    return r(
+      `Estamos aquí para ayudarte con MockAgent.AI:\n\n**Canales de soporte:**\n• **Email:** hello@mockagent.ai (respuesta en 24-48h)\n• **Documentación:** Sección Docs en la web con ejemplos de curl\n• **Blog:** Artículos técnicos sobre mocking y testing\n\n**Soporte Prioritario (Premium $7.99/mes):**\n• Respuesta garantizada en menos de 24h\n• Acceso directo al equipo de ingeniería\n• Prioridad en reportes de bugs\n\n**Autodiagnóstico rápido:**\n• 401 = token JWT expirado (vuelve a loguearte)\n• 429 = has alcanzado tu límite diario\n• 500 = error inesperado del servidor`,
+      ['Ver planes Premium', 'Ver documentación', 'Crear cuenta gratis'],
+      'support'
+    );
+  }
+
+  // ============================================
+  // 13. DOCUMENTACIÓN / API / CURL
+  // ============================================
+  if (q.includes('docs') || q.includes('documentacion') || q.includes('api') || q.includes('referencia') || q.includes('swagger') || q.includes('openapi') || q.includes('curl') || q.includes('endpoint') || q.includes('rutas') || q.includes('metodos') || q.includes('código de estado') || q.includes('status code')) {
+    return r(
+      `Documentación completa de la API de MockAgent.AI:\n\n**Autenticación (requiere JWT):**\n• POST /api/auth/signup — Crear cuenta\n• POST /api/auth/login — Iniciar sesión\n• GET /api/auth/profile — Ver perfil\n\n**Gestión de Mocks (requiere JWT):**\n• GET /admin/endpoints — Listar tus mocks\n• POST /admin/endpoints — Crear mock\n• PUT /admin/endpoints/{id} — Editar\n• DELETE /admin/endpoints/{id} — Eliminar\n\n**Público (sin auth):**\n• Cualquier método en /mock/** — Llamar a tu mock\n• POST /api/instant/create — Crear mock express\n\nTodos los endpoints admin requieren header: Authorization: Bearer <token>`,
+      ['Ver sección Docs', 'Ejemplos con curl', 'Crear cuenta gratis'],
+      'docs'
+    );
+  }
+
+  // ============================================
+  // 14. WEBHOOKS
+  // ============================================
+  if (q.includes('webhook') || q.includes('notificacion') || q.includes('alerta') || q.includes('evento') || q.includes('callback') || q.includes('slack') || q.includes('discord') || q.includes('zapier')) {
+    return r(
+      `Los webhooks están disponibles en el plan **Premium** ($7.99/mes):\n\n**Eventos que puedes recibir:**\n• Petición recibida en tu endpoint\n• Límite de rate alcanzado (80% y 100%)\n• Error 5xx en el servidor\n• Endpoint creado/modificado/eliminado\n\n**Formato:** POST a tu URL con payload JSON + HMAC-SHA256 para verificar origen.\n\n**Próximamente:**\n• Integración nativa con Slack y Discord\n• Webhooks condicionales\n• Reintentos automáticos con backoff`,
+      ['Ver plan Premium', 'Ver todos los planes', 'Crear cuenta gratis'],
+      'webhooks'
+    );
+  }
+
+  // ============================================
+  // 15. INFRAESTRUCTURA / DESPLIEGUE
+  // ============================================
+  if (q.includes('hosting') || q.includes('deploy') || q.includes('desplegar') || q.includes('servidor') || q.includes('infraestructura') || q.includes('railway') || q.includes('vercel') || q.includes('tidb') || q.includes('base de datos') || q.includes('mysql') || q.includes('nube') || q.includes('cloud')) {
+    return r(
+      `MockAgent.AI está desplegada en la nube con arquitectura moderna:\n\n**Frontend:** Vercel (mockagentai.com)\n**Backend:** Railway + Docker (Spring Boot)\n**Base de datos:** TiDB Cloud (MySQL distribuido)\n**CDN:** Cloudflare para assets estáticos\n\n**Ventajas:**\n• Uptime 99.9% garantizado\n• SSL/TLS automático en todos los dominios\n• Escalado automático según demanda\n• Backups diarios de la base de datos\n\nTodo gestionado por nosotros. Tú solo te preocupas de crear mocks.`,
+      ['Ver planes', 'Crear cuenta gratis', 'Soporte técnico'],
+      'infra'
+    );
+  }
+
+  // ============================================
+  // 16. SHORT / AMBIGUOUS
+  // ============================================
+  if (q.length < 4 || ['ok', 'sí', 'si', 'no', 'ya', 'genial', 'perfecto', 'vale', 'bueno'].includes(q)) {
+    // Si hay contexto previo
+    if (context.lastTopic) {
+      return r(
+        `Entiendo. ¿Quieres que profundice en ese tema o prefieres que te muestre otras opciones de MockAgent.AI?`,
+        ['Sí, cuéntame más', 'Ver otros temas', 'Ir a la web']
+      );
+    }
+    return r(
+      `Veo que tu mensaje es muy corto. ¿Te refieres a alguno de estos temas de MockAgent.AI?`,
+      ['Planes y precios', 'Crear un mock', 'Ver documentación', 'Soporte técnico']
+    );
+  }
+
+  // ============================================
+  // 17. OFF-TOPIC
+  // ============================================
   const OFF_TOPIC = [
-    'clima', 'tiempo', 'weather', 'llueve', 'soleado', 'temperatura', 'grados',
-    'política', 'politica', 'elecciones', 'gobierno', 'presidente', 'ministro', 'partido',
-    'deporte', 'fútbol', 'football', 'baloncesto', 'tenis', 'nba', 'champions', 'liga', 'mundial',
-    'música', 'musica', 'canción', 'cancion', 'artista', 'spotify', 'album', 'disco',
-    'película', 'pelicula', 'netflix', 'serie', 'cine', 'actor', 'director', 'hollywood',
-    'cocina', 'receta', 'comida', 'restaurante', 'chef', 'cocinar', 'gourmet',
-    'coche', 'carro', 'auto', 'moto', 'motor', 'conductor', 'carrera', 'formula 1', 'f1',
-    'viaje', 'vuelo', 'hotel', 'vacaciones', 'turismo', 'avion', 'tren',
-    'bitcoin', 'ethereum', 'crypto', 'cripto', 'invertir', 'bolsa', 'acciones', 'trading',
-    'noticia', 'periodico', 'diario', 'tv', 'television', 'canal', 'programa',
-    'juego', 'videojuego', 'gaming', 'gamer', 'console', 'playstation', 'xbox', 'nintendo',
-    'moda', 'ropa', 'zapatos', 'tendencia', 'estilo', 'marca', 'diseñador',
-    'perro', 'gato', 'mascota', 'animal', 'veterinario', 'pasear',
-    'casa', 'mueble', 'decoración', 'decoracion', 'jardín', 'jardin', 'planta',
-    'salud', 'médico', 'medico', 'hospital', 'enfermedad', 'sintoma', 'doctor', 'farmacia',
-    'relación', 'relacion', 'pareja', 'amor', 'novio', 'novia', 'divorcio', 'boda',
-    'trabajo', 'empleo', 'cv', 'curriculum', 'entrevista', 'sueldo', 'salario', 'jefe',
-    'hijo', 'hija', 'padre', 'madre', 'familia', 'bebé', 'bebe', 'colegio', 'universidad',
-    'iphone', 'android', 'samsung', 'apple', 'google', 'microsoft', 'windows', 'linux', 'mac',
-    'instagram', 'tiktok', 'facebook', 'twitter', 'x.com', 'red social', 'whatsapp', 'telegram',
-    'chatgpt', 'openai', 'gpt', 'bard', 'gemini', 'claude', 'copilot',
-    'python', 'javascript', 'java', 'react', 'angular', 'vue', 'programar', 'codigo', 'coding', 'dev',
-    'dios', 'religión', 'religion', 'iglesia', 'fe', 'biblia', 'quran', 'allah', 'jesus',
-    'guerra', 'ejercito', 'arma', 'paz', 'onu', 'otan', 'nato', 'conflicto',
-    'hack', 'hacker', 'virus', 'malware', 'ransomware', 'phishing', 'estafa', 'fraude',
-    'droga', 'alcohol', 'tabaco', 'cigarro', 'marihuana', 'coca', 'heroina',
-    'sexo', 'sexual', 'porn', 'porno', 'desnudo', 'nude', 'onlyfans', 'escort', 'prostitut',
-    'suicidio', 'matar', 'muerte', 'morir', 'asesinar', 'violencia', 'golpear', 'tortura',
-    'racismo', 'nazi', 'hitler', 'fascismo', 'comunismo', 'extremismo', 'terrorismo',
-    'chiste', 'broma', 'divertido', 'risa', 'gracioso', 'humor', 'meme',
-    'carta', 'astrologia', 'horoscopo', 'zodiaco', 'signo', 'tarot', 'bruj',
-    'ufo', 'ovni', 'extraterrestre', 'fantasma', 'espiritu', 'aparicion', 'paranormal',
-    'cumpleaños', 'cumpleanos', 'fiesta', 'navidad', 'halloween', 'san valentin', 'aniversario',
+    'clima', 'tiempo', 'weather', 'llueve', 'soleado', 'temperatura',
+    'política', 'politica', 'elecciones', 'gobierno', 'presidente',
+    'deporte', 'fútbol', 'football', 'baloncesto', 'tenis', 'nba',
+    'música', 'musica', 'canción', 'cancion', 'artista', 'spotify',
+    'película', 'pelicula', 'netflix', 'serie', 'cine', 'actor',
+    'cocina', 'receta', 'comida', 'restaurante', 'chef',
+    'coche', 'carro', 'auto', 'moto', 'motor', 'formula 1',
+    'viaje', 'vuelo', 'hotel', 'vacaciones', 'turismo',
+    'bitcoin', 'ethereum', 'crypto', 'cripto', 'invertir', 'bolsa',
+    'noticia', 'periodico', 'diario', 'tv', 'television',
+    'juego', 'videojuego', 'gaming', 'playstation', 'xbox',
+    'moda', 'ropa', 'zapatos', 'marca', 'diseñador',
+    'perro', 'gato', 'mascota', 'animal', 'veterinario',
+    'salud', 'médico', 'medico', 'hospital', 'enfermedad', 'doctor',
+    'relación', 'pareja', 'amor', 'novio', 'novia', 'boda',
+    'trabajo', 'empleo', 'cv', 'curriculum', 'entrevista', 'sueldo',
+    'iphone', 'android', 'samsung', 'apple', 'google', 'microsoft',
+    'instagram', 'tiktok', 'facebook', 'twitter', 'whatsapp',
+    'chatgpt', 'openai', 'gpt', 'bard', 'gemini',
+    'python', 'javascript', 'java', 'react', 'angular', 'programar',
+    'dios', 'religión', 'iglesia', 'fe', 'biblia',
+    'guerra', 'ejercito', 'arma', 'onu', 'otan', 'nato',
+    'hack', 'hacker', 'virus', 'malware', 'estafa',
+    'droga', 'alcohol', 'tabaco', 'marihuana',
+    'sexo', 'porn', 'onlyfans', 'escort',
+    'suicidio', 'matar', 'muerte', 'asesinar', 'violencia',
+    'racismo', 'nazi', 'hitler', 'terrorismo',
+    'chiste', 'broma', 'humor', 'meme',
+    'horoscopo', 'zodiaco', 'tarot', 'bruj',
+    'ovni', 'extraterrestre', 'fantasma',
+    'cumpleaños', 'fiesta', 'navidad', 'halloween'
   ];
 
-  const hasOffTopic = OFF_TOPIC.some(w => q.includes(w));
-
-  // --- 5. Topic detection & scoring with suggestions ---
-  const TOPICS = {
-    pricing: {
-      keywords: ['precio', 'plan', 'costo', 'cuanto', 'gratis', 'free', 'pro', 'premium', 'starter', 'pagar', 'pago', 'tarjeta', 'factura', 'billing', 'suscripcion', 'subscripcion', 'mes', 'anual', 'mensual', '€', '$', 'usd', 'euro', 'dollar', 'cuota', 'tarifa', 'descuento', 'oferta', 'promocion', 'promoción', 'prueba', 'trial', 'dinero', 'barato', 'caro', 'vale la pena', 'rentable', 'economico', 'rebaja', 'cupon', 'coupon', 'código promocional', 'codigo promocional'],
-      response: `MockAgent tiene 3 planes diseñados para escalar contigo:
-
-**Free** — $0/mes
-• 5 endpoints activos
-• 100 peticiones/día
-• Logs de 24 horas
-• Sin tarjeta, para siempre
-
-**Pro** — $4.99/mes (o $2.99/mes facturado anualmente)
-• Endpoints ilimitados
-• 5.000 peticiones/día
-• 1.000 req/min
-• Logs de 7 días
-
-**Premium** — $7.99/mes (o $5.99/mes anual)
-• 10.000 peticiones/día
-• 1.500 req/min
-• Logs de 14 días + Webhooks + Soporte <24h
-
-Puedes cambiar de plan en cualquier momento. Sin permanencia.`,
-      suggestions: ['Cómo hacer upgrade', 'Probar plan Free', ' Comparar con competidores']
-    },
-    mock_creation: {
-      keywords: ['mock', 'endpoint', 'api', 'crear', 'como funciona', 'funcionamiento', 'simular', 'simulacion', 'simulación', 'fake', 'dummy', 'stub', 'contrato', 'ruta', 'path', 'url', 'host', 'servidor', 'server', 'deploy', 'publicar', 'configurar', 'setup', 'empezar a usar', 'tutorial', 'guia', 'guía', 'paso a paso', 'quickstart', 'inicio rapido', 'uso', 'usar', 'utilizar', 'herramienta', 'plataforma', 'producto', 'servicio', 'que es', 'qué es', 'para que sirve', 'para qué sirve', 'instant', 'express', 'rapido', 'rápido', 'demo', 'ejemplo', 'ejemplos', 'prueba', 'test', 'testing', 'desarrollo', 'dev', 'prototipo', 'prototipar'],
-      response: `MockAgent te permite crear endpoints de API simulados en segundos. Ideal para desarrollo, testing y prototipado de agentes de IA.
-
-**Cómo crear un mock (3 pasos):**
-1. Regístrate gratis → Dashboard → "Nuevo Endpoint"
-2. Define ruta (ej: /api/v1/users), método HTTP y código de estado
-3. Pega tu JSON de respuesta y publica
-
-**Mock Express (sin registro):**
-En la landing page, escribe un nombre y haz clic en "Crear Mock Express". Recibes una URL pública al instante.`,
-      suggestions: ['Ver tutorial paso a paso', 'Probar Mock Express', 'Ver planes y precios']
-    },
-    auth: {
-      keywords: ['login', 'registrar', 'cuenta', 'signup', 'sign up', 'empezar', 'acceso', 'entrar', 'sesion', 'sesión', 'conectar', 'autenticar', 'password', 'contraseña', 'olvide', 'olvidé', 'recuperar', 'reset', 'email', 'correo', 'usuario', 'user', 'perfil', 'logout', 'salir', 'register', 'registro', 'nueva cuenta', 'crear cuenta', 'nuevo usuario', 'bienvenida', 'first time', 'primera vez', 'no tengo cuenta', 'cómo me registro', 'como me registro'],
-      response: `Crear una cuenta en MockAgent es rápido y gratuito:
-
-1. Haz clic en **"Empezar Gratis"** en el navbar
-2. Introduce email + contraseña segura (8+ chars, mayúscula, minúscula, número, especial)
-3. ¡Listo! Tu token JWT se guarda automáticamente
-
-**Datos importantes:**
-• No requiere tarjeta de crédito
-• Puedes elegir "Recuérdame" para persistir sesión
-• Plan Free por defecto: 5 endpoints + 100 peticiones/día
-• ¿Olvidaste tu contraseña? Contacta a hello@mockagent.ai`,
-      suggestions: ['Crear cuenta ahora', 'Ver seguridad', 'Qué es un JWT']
-    },
-    rate_limits: {
-      keywords: ['rate', 'limite', 'límite', 'peticiones', 'requests', 'cuantas', 'cuántas', 'cuanto puedo', 'cuánto puedo', 'throttle', 'quota', 'cuota', 'restriccion', 'restricción', 'capacidad', 'carga', 'overload', 'too many requests', '429', 'bloqueo', 'bloqueado', 'no puedo hacer', 'superar', 'exceder', 'daily limit', 'límite diario', 'limite diario'],
-      response: `Cada plan tiene límites claros:
-
-**Free:** 100 peticiones/día | 100/min | 5 endpoints
-**Pro:** 5.000 peticiones/día | 1.000/min | Ilimitados
-**Premium:** 10.000 peticiones/día | 1.500/min | Ilimitados
-
-Si llegas al límite, recibes **429 Too Many Requests**. El contador se reinicia a las 00:00 UTC. El upgrade a Pro es inmediato desde tu perfil.`,
-      suggestions: ['Cómo upgrade a Pro', 'Ver planes completos', 'Qué son los 429']
-    },
-    logs: {
-      keywords: ['log', 'logs', 'historial', 'registro', 'peticiones pasadas', 'trazas', 'audit', 'auditoría', 'auditoria', 'monitoring', 'monitoreo', 'seguimiento', 'tracking', 'ver peticiones', 'ver requests', 'quien ha llamado', 'quién ha llamado', 'analisis', 'análisis', 'debug', 'debugging', 'inspeccionar'],
-      response: `MockAgent registra automáticamente cada petición:
-
-**Retención:** Free 24h | Pro 7 días | Premium 14 días
-
-**Datos por petición:**
-• Timestamp, método HTTP, ruta, status code
-• Request body, headers relevantes
-• IP de origen (anonimizada)
-
-Accede desde el dashboard en "Logs de Peticiones". Ideal para debugging y auditoría.`,
-      suggestions: ['Ver planes para más retención', 'Cómo exportar logs', 'Dashboard']
-    },
-    security: {
-      keywords: ['seguridad', 'seguro', 'privado', 'datos', 'jwt', 'token', 'proteccion', 'protección', 'encriptar', 'cifrado', 'encriptado', 'hash', 'bcrypt', 'sql injection', 'injection', 'autenticación', 'autenticacion', 'auth', 'oauth', 'vulnerable', 'vulnerabilidad', 'exploit', 'brecha', 'hack', 'hackear', 'robo', 'filtración', 'filtracion', 'privacidad', 'gdpr', 'rgpd', 'confidencial', 'blindado', 'blindaje', 'aislamiento', 'sandbox', 'isolado'],
-      response: `La seguridad es un pilar fundamental:
-
-**Autenticación:** JWT HMAC-SHA256 con expiración 24h + bcrypt (cost 12)
-**Aislamiento:** Cada usuario solo ve sus endpoints. SQL parametrizado anti-inyección.
-**Infraestructura:** TLS/SSL en producción + rate limiting por IP/usuario.
-**Privacidad:** Sin cookies de tracking. Datos en tu instancia. Eliminación bajo solicitud.`,
-      suggestions: ['Más sobre JWT', 'Ver compliance GDPR', 'Cómo cambiar contraseña']
-    },
-    comparison: {
-      keywords: ['comparar', 'beeceptor', 'postman', 'competidor', 'alternativa', 'vs', 'versus', 'mejor que', 'diferencia', 'diferencias', 'por qué mockagent', 'porque mockagent', 'por qué elegir', 'porque elegir', 'ventaja', 'ventajas', 'desventaja', 'desventajas', 'superior', 'inferior', 'mejor opción', 'recomendación', 'recomendacion', 'consejo', 'consejos', 'comparativa', 'benchmark', 'review', 'opinion', 'opinión', 'vale la pena', 'rentable'],
-      response: `MockAgent vs la competencia:
-
-**vs Beeceptor ($12/mes):** MockAgent $4.99, auto-alojable, datos tuyos.
-**vs Postman ($14/mes):** Específico para mocking, sin ruido de features innecesarias.
-**vs WireMock:** UI visual sin código Java/Groovy.
-**vs Mockbin:** Persistencia MySQL real (no volátil).
-
-**Diferenciador:** Rate limiting por plan + retención de logs ajustable.`,
-      suggestions: ['Ver planes y precios', 'Crear cuenta gratis', 'Ver documentación']
-    },
-    docs: {
-      keywords: ['docs', 'documentacion', 'documentación', 'api', 'referencia', 'swagger', 'openapi', 'spec', 'especificación', 'especificacion', 'manual', 'guia técnica', 'guia tecnica', 'api reference', 'endpoint list', 'lista de endpoints', 'rutas disponibles', 'métodos soportados', 'metodos soportados', 'curl', 'postman collection', 'insomnia', 'http client', 'sdk', 'cliente'],
-      response: `Documentación API completa disponible:
-
-**Autenticación:** POST /api/auth/signup, /login, /profile
-**Mocks:** GET/POST /admin/endpoints, PUT/DELETE /admin/endpoints/{id}
-**Logs:** GET /admin/logs
-**Público:** Cualquier método en /mock/** (sin auth)
-**Instant:** POST /api/instant/create, GET /api/instant/check/{id}
-
-Todos los endpoints admin requieren Bearer token JWT.`,
-      suggestions: ['Ver sección Docs', 'Ejemplos de curl', 'Crear cuenta']
-    },
-    support: {
-      keywords: ['soporte', 'ayuda', 'contacto', 'email', 'problema', 'incidencia', 'bug', 'error', 'fallo', 'falla', 'no funciona', 'broken', 'issue', 'ticket', 'reclamación', 'reclamacion', 'queja', 'reportar', 'reporte', 'assistance', 'atención', 'atencion', 'servicio al cliente', 'customer service', 'help desk'],
-      response: `Canales de soporte:
-
-**Email:** hello@mockagent.ai (respuesta 24-48h)
-**Documentación:** Sección Docs con ejemplos curl
-**Blog:** Artículos técnicos sobre mocking
-
-**Premium ($7.99/mes):** Soporte prioritario <24h + acceso directo al equipo.
-
-**Autodiagnóstico:** 401 = token expirado | 429 = límite alcanzado | 500 = error servidor`,
-      suggestions: ['Ver planes Premium', 'Reportar un bug', 'Ver documentación']
-    },
-    webhooks: {
-      keywords: ['webhook', 'notificacion', 'notificación', 'alerta', 'alert', 'evento', 'event', 'callback', 'hook', 'trigger', 'disparador', 'avisar', 'aviso', 'notificar', 'push', 'slack', 'discord', 'email alert', 'sms', 'telegram bot', 'zapier', 'integracion', 'integración', 'conectar', 'connect'],
-      response: `Webhooks disponibles en plan **Premium** ($7.99/mes):
-
-**Eventos:** Petición recibida, rate limit 80%/100%, error 5xx, cambios en endpoints.
-**Formato:** POST JSON a tu URL con HMAC-SHA256 para verificar origen.
-**Próximamente:** Slack/Discord nativo, webhooks condicionales, reintentos automáticos.`,
-      suggestions: ['Ver plan Premium', 'Qué son los webhooks', 'Ver planes']
-    },
-    database: {
-      keywords: ['mysql', 'base de datos', 'bdd', 'persistencia', 'almacenamiento', 'storage', 'sql', 'schema', 'tabla', 'migración', 'migracion', 'docker', 'docker-compose', 'instalación', 'instalacion', 'setup', 'local', 'self-hosted', 'self hosted', 'on-premise', 'on premise', 'infraestructura', 'infra', 'hosting', 'cloud', 'aws', 'azure', 'gcp', 'deploy', 'desplegar', 'servidor', 'server', 'backend', 'port', 'puerto', '9090', '3306', 'configuración inicial', 'configuracion inicial', 'env', 'variable de entorno', 'entorno'],
-      response: `MockAgent es auto-alojable:
-
-**Requisitos:** Java 17+, MySQL 8.0+, Node.js 18+
-**Default:** Backend localhost:9090 | Frontend localhost:5173 | MySQL localhost:3306
-**Docker:** Próximamente docker-compose completo.
-**Ventajas:** Tus datos nunca salen de tu infraestructura. Cumplimiento GDPR simplificado.`,
-      suggestions: ['Guía de despliegue', 'Configurar variables de entorno', 'Ver documentación']
-    },
-    status_codes: {
-      keywords: ['200', '201', '400', '401', '403', '404', '429', '500', '502', '503', 'status code', 'código de estado', 'codigo de estado', 'http', 'response code', 'error code', 'codigo de error', 'código de error', 'ok', 'not found', 'unauthorized', 'forbidden', 'bad request', 'internal server error', 'service unavailable', 'timeout', 'time out', 'gateway'],
-      response: `Códigos HTTP soportados en MockAgent:
-
-**200** OK | **201** Created | **400** Bad Request
-**401** Unauthorized (JWT inválido)
-**403** Forbidden (límite de plan)
-**404** Not Found (endpoint no existe)
-**429** Too Many Requests (rate limit)
-**500** Internal Server Error
-
-Configura el status que necesites al crear tu mock.`,
-      suggestions: ['Crear un mock', 'Ver planes', 'Documentación API']
-    },
-  };
-
-  // Score all topics
-  let maxScore = 0;
-  let bestTopic = null;
-  let hasRelevantTopic = false;
-
-  for (const [key, topic] of Object.entries(TOPICS)) {
-    let score = 0;
-    for (const kw of topic.keywords) {
-      if (q.includes(kw)) {
-        score += 1;
-        if (kw.length > 6) score += 0.5;
-        if (kw.length > 10) score += 0.5;
-      }
-    }
-    if (score > 0) {
-      hasRelevantTopic = true;
-      if (score > maxScore) {
-        maxScore = score;
-        bestTopic = key;
-      }
-    }
+  if (OFF_TOPIC.some(w => q.includes(w))) {
+    return r(
+      `Lo siento, soy el asistente especialista de MockAgent.AI y solo puedo ayudarte con temas de nuestra plataforma de mocking de APIs.\n\n**Temas en los que puedo ayudarte:**\n• Crear y gestionar mocks\n• Planes y precios\n• Seguridad y autenticación\n• Documentación de la API\n• Logs y debugging\n• Soporte técnico\n\n¿Te gustaría saber algo sobre alguno de estos temas?`,
+      ['¿Qué es MockAgent?', 'Ver planes y precios', 'Cómo empezar']
+    );
   }
 
-  // --- 6. Out-of-topic fallback ---
-  if (hasOffTopic && !hasRelevantTopic) {
-    return {
-      text: `Lo siento, solo puedo ayudarte con temas de MockAgent: mocks, planes, seguridad, documentación, soporte...\n\n¿Te gustaría saber algo sobre alguno de estos temas?`,
-      suggestions: ['¿Qué es un mock?', 'Ver planes y precios', 'Cómo empezar'],
-      newContext: { ...context, messageCount: context.messageCount + 1 }
-    };
-  }
-
-  // --- 7. No topic matched (smart fallback with suggestions) ---
-  if (!hasRelevantTopic) {
-    return {
-      text: `¡Buena pregunta! Puedo ayudarte con estos temas. ¿Cuál te interesa?`,
-      suggestions: ['Crear mocks', 'Planes y precios', 'Seguridad y JWT', 'Soporte técnico'],
-      newContext: { ...context, messageCount: context.messageCount + 1 }
-    };
-  }
-
-  // --- 8. Return best matching response with context ---
-  const topic = TOPICS[bestTopic];
-  return {
-    text: topic.response,
-    suggestions: topic.suggestions,
-    newContext: { lastTopic: bestTopic, lastQuestion: q, messageCount: context.messageCount + 1 }
-  };
+  // ============================================
+  // 18. FALLBACK INTELIGENTE
+  // ============================================
+  return r(
+    `¡Buena pregunta! Como asistente de MockAgent.AI, puedo ayudarte con estos temas. ¿Cuál te interesa?`,
+    ['¿Qué es MockAgent?', 'Planes y precios', 'Crear un mock', 'Documentación API', 'Soporte técnico', 'Seguridad']
+  );
 };
 
 const ChatWidget = () => {
@@ -364,7 +305,8 @@ const ChatWidget = () => {
     setIsTyping(true);
     
     setTimeout(() => {
-      const result = getAIResponse(userMsg, chatContext);
+      const currentHistory = [...chatMessages, { sender: 'user', text: userMsg }];
+      const result = getAIResponse(userMsg, chatContext, currentHistory);
       setChatMessages(prev => [...prev, { sender: 'ai', text: result.text, suggestions: result.suggestions }]);
       setChatContext(result.newContext);
       setIsTyping(false);
