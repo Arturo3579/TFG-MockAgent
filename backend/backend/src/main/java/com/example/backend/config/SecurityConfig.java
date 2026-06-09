@@ -56,6 +56,7 @@ public class SecurityConfig {
             "http://localhost:5173",
             "http://localhost:3000",
             "http://localhost:4173",
+            "https://tfg-mockagent.vercel.app",
             "https://mockagent-ai.vercel.app",
             "https://mockagentai.com",
             "https://www.mockagentai.com"
