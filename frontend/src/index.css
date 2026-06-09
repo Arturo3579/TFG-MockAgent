@@ -134,6 +134,30 @@ html, body {
 }
 
 /* =========================================
+   NAVBAR RESPONSIVE
+   ========================================= */
+@media (min-width: 768px) {
+  .desktop-nav {
+    display: flex !important;
+  }
+  .mobile-nav {
+    display: none !important;
+  }
+  .mobile-menu-dropdown {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .mobile-nav {
+    display: flex !important;
+  }
+}
+
+/* =========================================
    CHAT TYPING ANIMATION
    ========================================= */
 @keyframes typingBounce {

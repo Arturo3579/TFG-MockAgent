@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sun, Moon, Zap, Check, Sparkles, ArrowLeft, Mail, UserPlus, AlertTriangle, Trash2, X, Terminal, Play, Code, HelpCircle, Shield, Clock, Server, ChevronDown, ChevronUp, ExternalLink, Lock, FileJson, Globe, CreditCard, Users, BookOpen, FileText, Scale, Calendar, Copy, CheckCircle, ArrowUp, Loader2, Activity, MessageCircle, Send } from 'lucide-react';
+import { Sun, Moon, Zap, Check, Sparkles, ArrowLeft, Mail, UserPlus, AlertTriangle, Trash2, X, Terminal, Play, Code, HelpCircle, Shield, Clock, Server, ChevronDown, ChevronUp, ExternalLink, Lock, FileJson, Globe, CreditCard, Users, BookOpen, FileText, Scale, Calendar, Copy, CheckCircle, ArrowUp, Loader2, Activity, MessageCircle, Send, Menu } from 'lucide-react';
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:9090',
@@ -1013,6 +1013,7 @@ function App() {
   const [mostrarPopupLogin, setMostrarPopupLogin] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [popupInicialCerrado, setPopupInicialCerrado] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [modal, setModal] = useState({ open: false, type: '', title: '', message: '', onConfirm: null });
   const closeModal = () => setModal({ open: false, type: '', title: '', message: '', onConfirm: null });
@@ -1335,17 +1336,13 @@ function App() {
             <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={16} color="#C9A96E" /></div>
             <span style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px', whiteSpace: 'nowrap' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
           </div>
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+
+          {/* Desktop Nav */}
+          <div style={{ display: 'none', gap: '12px', alignItems: 'center' }} className="desktop-nav">
             <span onClick={() => setVistaActual('pricing')} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '14px', color: 'var(--text-muted)', transition: '0.2s' }}>Pricing</span>
             {getToken() ? (
               <>
-                <motion.button onClick={() => {
-                  const email = getUserEmail();
-                  const plan = getUserPlan();
-                  if (email) setUsuario(email);
-                  if (plan) setUserPlan(plan);
-                  setVistaActual('dashboard');
-                }} whileHover={{ scale: 1.04, backgroundColor: '#D4B87A' }} whileTap={{ scale: 0.97 }} style={CTA_PRIMARY}>Mi cuenta</motion.button>
+                <motion.button onClick={() => { setVistaActual('dashboard'); }} whileHover={{ scale: 1.04, backgroundColor: '#D4B87A' }} whileTap={{ scale: 0.97 }} style={CTA_PRIMARY}>Mi cuenta</motion.button>
                 <motion.button onClick={cerrarSesion} whileHover={{ scale: 1.04, backgroundColor: 'rgba(239,68,68,0.9)' }} whileTap={{ scale: 0.97 }} style={{ ...CTA_SECONDARY, border: '1px solid rgba(239,68,68,0.3)', color: '#ef4444' }}>Cerrar sesión</motion.button>
               </>
             ) : (
@@ -1356,7 +1353,59 @@ function App() {
             )}
             <ThemeToggle />
           </div>
+
+          {/* Mobile Nav */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} className="mobile-nav">
+            <ThemeToggle />
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              style={{
+                width: '36px', height: '36px', borderRadius: '8px',
+                backgroundColor: 'var(--card-bg)',
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-main)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </nav>
+
+        {/* Mobile Menu Dropdown */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              style={{
+                backgroundColor: 'var(--card-bg)',
+                borderBottom: '1px solid var(--border-color)',
+                overflow: 'hidden',
+                zIndex: 49
+              }}
+              className="mobile-menu-dropdown"
+            >
+              <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <span onClick={() => { setVistaActual('pricing'); setMobileMenuOpen(false); }} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '15px', color: 'var(--text-muted)', padding: '8px 0', borderBottom: '1px solid var(--border-color)' }}>Pricing</span>
+                {getToken() ? (
+                  <>
+                    <span onClick={() => { setVistaActual('dashboard'); setMobileMenuOpen(false); }} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '15px', color: 'var(--text-muted)', padding: '8px 0', borderBottom: '1px solid var(--border-color)' }}>Mi cuenta</span>
+                    <span onClick={() => { cerrarSesion(); setMobileMenuOpen(false); }} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '15px', color: '#ef4444', padding: '8px 0' }}>Cerrar sesión</span>
+                  </>
+                ) : (
+                  <>
+                    <span onClick={() => { setVistaActual('login'); setMobileMenuOpen(false); }} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '15px', color: 'var(--text-muted)', padding: '8px 0', borderBottom: '1px solid var(--border-color)' }}>Login</span>
+                    <motion.button onClick={() => { setVistaActual('signup'); setMobileMenuOpen(false); }} whileTap={{ scale: 0.97 }} style={{ ...CTA_PRIMARY, width: '100%', marginTop: '8px' }}>Empezar Gratis</motion.button>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* HERO */}
         <section style={{ position: 'relative', overflow: 'hidden', flex: '1 0 auto' }}>
