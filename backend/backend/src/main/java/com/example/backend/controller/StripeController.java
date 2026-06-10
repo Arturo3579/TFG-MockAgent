@@ -41,4 +41,14 @@ public class StripeController {
     public ResponseEntity<?> getConfig() {
         return ResponseEntity.ok(stripeService.getConfigInfo());
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> testStripe() {
+        try {
+            Map<String, Object> result = stripeService.testStripeConnection();
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }

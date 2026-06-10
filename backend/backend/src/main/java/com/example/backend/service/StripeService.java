@@ -164,7 +164,27 @@ public class StripeService {
             "webhookSecretConfigured", webhookSecret != null && !webhookSecret.isEmpty(),
             "proPriceId", proPriceId != null ? proPriceId : "",
             "premiumPriceId", premiumPriceId != null ? premiumPriceId : "",
-            "stripeApiKey", stripeSecretKey != null ? stripeSecretKey.substring(0, Math.min(8, stripeSecretKey.length())) + "..." : ""
+            "stripeApiKeyPrefix", stripeSecretKey != null ? stripeSecretKey.substring(0, Math.min(20, stripeSecretKey.length())) : ""
         );
+    }
+
+    public Map<String, Object> testStripeConnection() throws Exception {
+        try {
+            // Intentar recuperar el Price object de Stripe
+            com.stripe.model.Price price = com.stripe.model.Price.retrieve(proPriceId);
+            return Map.of(
+                "success", true,
+                "priceId", price.getId(),
+                "productId", price.getProduct(),
+                "amount", price.getUnitAmount()
+            );
+        } catch (com.stripe.exception.StripeException e) {
+            return Map.of(
+                "success", false,
+                "error", e.getMessage(),
+                "errorCode", e.getCode() != null ? e.getCode() : "unknown",
+                "stripeApiKeyPrefix", stripeSecretKey != null ? stripeSecretKey.substring(0, Math.min(20, stripeSecretKey.length())) : ""
+            );
+        }
     }
 }

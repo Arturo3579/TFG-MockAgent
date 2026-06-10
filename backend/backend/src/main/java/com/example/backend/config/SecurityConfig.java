@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/instant/**").permitAll()
                 .requestMatchers("/api/stripe/webhook").permitAll()
                 .requestMatchers("/api/stripe/config").permitAll()
+                .requestMatchers("/api/stripe/test").permitAll()
                 .requestMatchers("/mock/**").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated()
