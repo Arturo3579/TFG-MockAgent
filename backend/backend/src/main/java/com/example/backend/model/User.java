@@ -21,6 +21,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(unique = true)
+    private String googleId;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default

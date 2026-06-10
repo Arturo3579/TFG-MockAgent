@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.AuthRequest;
 import com.example.backend.dto.AuthResponse;
+import com.example.backend.dto.GoogleAuthRequest;
 import com.example.backend.dto.UserProfileDto;
 import com.example.backend.service.AuthService;
 import jakarta.validation.Valid;
@@ -46,5 +47,11 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout() {
         return ResponseEntity.ok(java.util.Map.of("message", "Sesión cerrada correctamente"));
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<AuthResponse> googleAuth(@RequestBody GoogleAuthRequest request) {
+        AuthResponse response = authService.authenticateWithGoogle(request.getIdToken());
+        return ResponseEntity.ok(response);
     }
 }

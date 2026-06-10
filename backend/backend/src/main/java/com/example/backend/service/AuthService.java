@@ -12,9 +12,16 @@ import com.example.backend.repository.UserRepository;
 import com.example.backend.security.JwtUtil;
 import com.example.backend.util.EmailValidator;
 import com.example.backend.util.PasswordValidator;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +31,53 @@ public class AuthService {
     private final MockEndpointRepository endpointRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+
+    @Value("${google.client.id:}")
+    private String googleClientId;
+
+    public AuthResponse authenticateWithGoogle(String idTokenString) {
+        try {
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                    new NetHttpTransport(), new GsonFactory())
+                    .setAudience(Collections.singletonList(googleClientId))
+                    .build();
+
+            GoogleIdToken idToken = verifier.verify(idTokenString);
+            if (idToken == null) {
+                throw new RuntimeException("Token de Google inválido");
+            }
+
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            String email = payload.getEmail();
+            String googleId = payload.getSubject();
+
+            User user = userRepository.findByGoogleId(googleId)
+                    .orElseGet(() -> userRepository.findByEmail(email)
+                            .orElse(null));
+
+            if (user == null) {
+                user = User.builder()
+                        .email(email)
+                        .googleId(googleId)
+                        .password(passwordEncoder.encode(java.util.UUID.randomUUID().toString()))
+                        .plan(PlanType.STARTER)
+                        .build();
+            } else if (user.getGoogleId() == null) {
+                user.setGoogleId(googleId);
+            }
+
+            user = userRepository.save(user);
+            String token = jwtUtil.generateToken(user.getEmail(), user.getPlan().name());
+
+            return AuthResponse.builder()
+                    .token(token)
+                    .email(user.getEmail())
+                    .plan(user.getPlan().name().toLowerCase())
+                    .build();
+        } catch (Exception e) {
+            throw new RuntimeException("Error al autenticar con Google: " + e.getMessage());
+        }
+    }
 
     public AuthResponse signup(AuthRequest request) {
         if (!EmailValidator.isValid(request.getEmail())) {

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+import { GoogleLogin } from '@react-oauth/google';
 import { Sun, Moon, Zap, Check, Sparkles, ArrowLeft, Mail, UserPlus, AlertTriangle, Trash2, X, Terminal, Play, Code, HelpCircle, Shield, Clock, Server, ChevronDown, ChevronUp, ExternalLink, Lock, FileJson, Globe, CreditCard, Users, BookOpen, FileText, Scale, Calendar, Copy, CheckCircle, ArrowUp, Loader2, Activity, MessageCircle, Send, Menu } from 'lucide-react';
 
 const API = axios.create({
@@ -1182,6 +1183,23 @@ function App() {
     setIsLoadingLogin(false);
   };
 
+  const manejarGoogleLogin = async (credentialResponse) => {
+    setMensajeError(''); setIsLoadingLogin(true);
+    try {
+      const r = await API.post('/api/auth/google', { idToken: credentialResponse.credential });
+      if (r.status === 200) {
+        setToken(r.data.token, rememberMe);
+        saveUserPlan(r.data.plan, rememberMe);
+        saveUserEmail(r.data.email, rememberMe);
+        setUserPlan(r.data.plan);
+        localStorage.setItem('hasLoggedInBefore', 'true');
+        showToast('¡Bienvenido! Sesión iniciada con Google.');
+        setVistaActual('dashboard');
+      }
+    } catch (e) { setMensajeError(e.response?.data?.message || 'Error al iniciar sesión con Google.'); }
+    setIsLoadingLogin(false);
+  };
+
   const isValidJson = (str) => {
     try { JSON.parse(str); return true; } catch { return false; }
   };
@@ -1967,6 +1985,22 @@ function App() {
           <div onClick={() => setVistaActual('landing')} style={{ cursor: 'pointer', marginBottom: '20px', color: '#C9A96E', fontWeight: '500', fontSize: '14px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}><ArrowLeft size={14} /> Volver al inicio</div>
           <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '8px' }}>{isLogin ? 'Bienvenido de nuevo' : 'Crea tu cuenta'}</h2>
           <p style={{ color: 'var(--text-muted)', marginBottom: '28px', fontSize: '14px' }}>{isLogin ? 'Introduce tus datos para acceder.' : 'Únete a miles de desarrolladores.'}</p>
+
+          <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
+            <GoogleLogin
+              onSuccess={manejarGoogleLogin}
+              onError={() => setMensajeError('Error al iniciar sesión con Google.')}
+              theme="outline"
+              size="large"
+              text={isLogin ? "signin_with" : "signup_with"}
+            />
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
+            <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-color)' }} />
+            <span style={{ color: 'var(--text-muted)', fontSize: '12px', fontWeight: '500' }}>o</span>
+            <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-color)' }} />
+          </div>
 
           <form onSubmit={isLogin ? manejarLogin : manejarRegistro}>
             <div style={{ marginBottom: '16px' }}>
