@@ -37,6 +37,12 @@ public class StripeService {
 
     @PostConstruct
     public void init() {
+        System.out.println("=== STRIPE CONFIG ===");
+        System.out.println("Secret Key present: " + (stripeSecretKey != null && !stripeSecretKey.isEmpty()));
+        System.out.println("Webhook Secret present: " + (webhookSecret != null && !webhookSecret.isEmpty()));
+        System.out.println("Pro Price ID: " + proPriceId);
+        System.out.println("Premium Price ID: " + premiumPriceId);
+        System.out.println("=====================");
         if (stripeSecretKey != null && !stripeSecretKey.isEmpty()) {
             Stripe.apiKey = stripeSecretKey;
         }
