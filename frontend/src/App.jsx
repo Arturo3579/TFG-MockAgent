@@ -2235,7 +2235,8 @@ function App() {
   //       PERFIL DE USUARIO
   // ==========================================
   if (vistaActual === 'perfil') {
-    const avatarLetter = usuario ? usuario.charAt(0).toUpperCase() : 'A';
+    const currentEmail = getUserEmail() || usuario || 'usuario@mockagent.ai';
+    const avatarLetter = currentEmail ? currentEmail.charAt(0).toUpperCase() : 'A';
     const planName = (userPlan || 'starter').toUpperCase();
     const planColor = planName === 'PRO' ? '#10b981' : planName === 'PREMIUM' ? '#8b5cf6' : '#C9A96E';
     const planLabel = planName === 'STARTER' ? 'Gratis' : planName === 'PRO' ? 'Pro' : 'Premium';
@@ -2296,9 +2297,9 @@ function App() {
                 </motion.button>
               </div>
 
-              <SectionRow label="Nombre completo" value={usuario} action actionLabel="Cambiar nombre" onClick={() => showToast('Cambio de nombre: proximamente')} />
-              <SectionRow label="Usuario" value={usuario} action actionLabel="Cambiar usuario" onClick={() => showToast('Cambio de usuario: proximamente')} />
-              <SectionRow label="E-mail" value={usuario} action={false} />
+              <SectionRow label="Nombre completo" value={currentEmail} action actionLabel="Cambiar nombre" onClick={() => showToast('Cambio de nombre: proximamente')} />
+              <SectionRow label="Usuario" value={currentEmail.split('@')[0]} action actionLabel="Cambiar usuario" onClick={() => showToast('Cambio de usuario: proximamente')} />
+              <SectionRow label="E-mail" value={currentEmail} action={false} />
             </div>
 
             {/* Sección: Suscripción */}
@@ -2355,7 +2356,7 @@ function App() {
             {/* Sección: Sesión y Cuenta */}
             <div style={{ backgroundColor: 'var(--card-bg-50)', borderRadius: '12px', border: '1px solid var(--border-color)', padding: '24px', marginBottom: '24px' }}>
               <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', marginTop: 0 }}>Sesión</h3>
-              <SectionRow label="Cerrar sesión" value="Has iniciado sesión como {usuario}" action actionLabel="Cerrar sesión" onClick={cerrarSesion} danger />
+              <SectionRow label="Cerrar sesión" value={`Has iniciado sesión como ${currentEmail}`} action actionLabel="Cerrar sesión" onClick={cerrarSesion} danger />
               <SectionRow label="Cerrar sesión en todas las sesiones" value="Dispositivos o navegadores donde estás conectado" action actionLabel="Cerrar todo" onClick={() => { localStorage.clear(); sessionStorage.clear(); cerrarSesion(); showToast('Sesión cerrada en todos los dispositivos'); }} danger />
               <SectionRow label="Eliminar cuenta" value="Eliminar permanentemente tu cuenta y datos" action actionLabel="Más información" onClick={() => setModal({ open: true, type: 'confirm', title: 'Eliminar cuenta', message: '¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer. Todos tus endpoints y logs serán eliminados permanentemente.', onConfirm: () => { showToast('Eliminación de cuenta: contacta a mockagentai@gmail.com'); closeModal(); } })} danger />
             </div>
