@@ -546,12 +546,21 @@ const saveUserPlan = (plan, remember) => {
   else { sessionStorage.setItem('userPlan', plan); localStorage.removeItem('userPlan'); }
 };
 const removeUserPlan = () => { sessionStorage.removeItem('userPlan'); localStorage.removeItem('userPlan'); };
-const saveUserEmail = (email, remember) => {
-  if (remember) { localStorage.setItem('userEmail', email); sessionStorage.removeItem('userEmail'); }
-  else { sessionStorage.setItem('userEmail', email); localStorage.removeItem('userEmail'); }
-};
-const removeUserEmail = () => { sessionStorage.removeItem('userEmail'); localStorage.removeItem('userEmail'); };
-const getUserEmail = () => sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+  const saveUserEmail = (email, remember) => {
+    if (remember) { localStorage.setItem('userEmail', email); sessionStorage.removeItem('userEmail'); }
+    else { sessionStorage.setItem('userEmail', email); localStorage.removeItem('userEmail'); }
+  };
+  const removeUserEmail = () => { sessionStorage.removeItem('userEmail'); localStorage.removeItem('userEmail'); };
+  const getUserEmail = () => sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+  
+  const saveFullName = (name, remember) => {
+    if (remember) { localStorage.setItem('fullName', name); sessionStorage.removeItem('fullName'); }
+    else { sessionStorage.setItem('fullName', name); localStorage.removeItem('fullName'); }
+  };
+  const saveUserName = (name, remember) => {
+    if (remember) { localStorage.setItem('userName', name); sessionStorage.removeItem('userName'); }
+    else { sessionStorage.setItem('userName', name); localStorage.removeItem('userName'); }
+  };
 const hasRememberedSession = () => !!localStorage.getItem('token');
 
 API.interceptors.request.use((config) => {
@@ -1007,6 +1016,8 @@ function App() {
   const [usuario, setUsuario] = useState('');
   const [password, setPassword] = useState('');
   const [mensajeError, setMensajeError] = useState('');
+  const [fullName, setFullName] = useState(() => localStorage.getItem('fullName') || sessionStorage.getItem('fullName') || '');
+  const [userName, setUserName] = useState(() => localStorage.getItem('userName') || sessionStorage.getItem('userName') || '');
   const [isAnnual, setIsAnnual] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('theme') !== 'light');
   const [userPlan, setUserPlan] = useState(getUserPlan() || '');
@@ -1018,6 +1029,7 @@ function App() {
 
   const [modal, setModal] = useState({ open: false, type: '', title: '', message: '', onConfirm: null });
   const closeModal = () => setModal({ open: false, type: '', title: '', message: '', onConfirm: null });
+  const [modalInput, setModalInput] = useState('');
 
   // Toast notifications
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
@@ -1156,6 +1168,11 @@ function App() {
         setToken(r.data.token, rememberMe);
         saveUserPlan(r.data.plan, rememberMe);
         saveUserEmail(usuario, rememberMe);
+        const initialName = usuario.split('@')[0];
+        saveFullName(initialName, rememberMe);
+        saveUserName(initialName, rememberMe);
+        setFullName(initialName);
+        setUserName(initialName);
         setUserPlan(r.data.plan);
         localStorage.setItem('hasLoggedInBefore', 'true');
         showToast('¡Cuenta creada con éxito!');
@@ -1173,6 +1190,18 @@ function App() {
         setToken(r.data.token, rememberMe);
         saveUserPlan(r.data.plan, rememberMe);
         saveUserEmail(usuario, rememberMe);
+        const existingName = localStorage.getItem('fullName') || sessionStorage.getItem('fullName');
+        const existingUser = localStorage.getItem('userName') || sessionStorage.getItem('userName');
+        if (!existingName) {
+          const initialName = usuario.split('@')[0];
+          saveFullName(initialName, rememberMe);
+          setFullName(initialName);
+        }
+        if (!existingUser) {
+          const initialUser = usuario.split('@')[0];
+          saveUserName(initialUser, rememberMe);
+          setUserName(initialUser);
+        }
         setUserPlan(r.data.plan);
         localStorage.setItem('hasLoggedInBefore', 'true');
         setPassword('');
@@ -1191,6 +1220,18 @@ function App() {
         setToken(r.data.token, rememberMe);
         saveUserPlan(r.data.plan, rememberMe);
         saveUserEmail(r.data.email, rememberMe);
+        const existingNameGoogle = localStorage.getItem('fullName') || sessionStorage.getItem('fullName');
+        const existingUserGoogle = localStorage.getItem('userName') || sessionStorage.getItem('userName');
+        if (!existingNameGoogle) {
+          const initialNameGoogle = r.data.email.split('@')[0];
+          saveFullName(initialNameGoogle, rememberMe);
+          setFullName(initialNameGoogle);
+        }
+        if (!existingUserGoogle) {
+          const initialUserGoogle = r.data.email.split('@')[0];
+          saveUserName(initialUserGoogle, rememberMe);
+          setUserName(initialUserGoogle);
+        }
         setUserPlan(r.data.plan);
         localStorage.setItem('hasLoggedInBefore', 'true');
         showToast('¡Bienvenido! Sesión iniciada con Google.');
@@ -2289,16 +2330,16 @@ function App() {
                   {avatarLetter}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: '600', fontSize: '15px', color: 'var(--text-main)' }}>{usuario}</div>
-                  <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{usuario}</div>
+                  <div style={{ fontWeight: '600', fontSize: '15px', color: 'var(--text-main)' }}>{fullName || currentEmail}</div>
+                  <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{userName || currentEmail.split('@')[0]}</div>
                 </div>
                 <motion.button onClick={() => showToast('Cambio de avatar: proximamente')} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ padding: '6px 14px', borderRadius: '6px', border: '1px solid var(--border-color)', backgroundColor: 'transparent', color: 'var(--text-muted)', fontWeight: '500', cursor: 'pointer', fontSize: '13px' }}>
                   Cambiar avatar
                 </motion.button>
               </div>
 
-              <SectionRow label="Nombre completo" value={currentEmail} action actionLabel="Cambiar nombre" onClick={() => showToast('Cambio de nombre: proximamente')} />
-              <SectionRow label="Usuario" value={currentEmail.split('@')[0]} action actionLabel="Cambiar usuario" onClick={() => showToast('Cambio de usuario: proximamente')} />
+              <SectionRow label="Nombre completo" value={fullName || currentEmail.split('@')[0]} action actionLabel="Cambiar nombre" onClick={() => { setModalInput(fullName || currentEmail.split('@')[0]); setModal({ open: true, type: 'edit', title: 'Cambiar nombre completo', message: 'Ingresa tu nuevo nombre completo:', field: 'fullName', onConfirm: (val) => { setFullName(val); saveFullName(val, rememberMe); showToast('Nombre actualizado correctamente'); } }); }} />
+              <SectionRow label="Usuario" value={userName || currentEmail.split('@')[0]} action actionLabel="Cambiar usuario" onClick={() => { setModalInput(userName || currentEmail.split('@')[0]); setModal({ open: true, type: 'edit', title: 'Cambiar nombre de usuario', message: 'Ingresa tu nuevo nombre de usuario:', field: 'userName', onConfirm: (val) => { setUserName(val); saveUserName(val, rememberMe); showToast('Usuario actualizado correctamente'); } }); }} />
               <SectionRow label="E-mail" value={currentEmail} action={false} />
             </div>
 
@@ -2672,9 +2713,31 @@ function App() {
                 )}
               </div>
               <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '8px', color: 'var(--text-main)' }}>{modal.title}</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: '1.6', marginBottom: '24px' }}>{modal.message}</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: '1.6', marginBottom: '16px' }}>{modal.message}</p>
+              {modal.type === 'edit' && (
+                <div style={{ marginBottom: '24px' }}>
+                  <input
+                    type="text"
+                    value={modalInput}
+                    onChange={(e) => setModalInput(e.target.value)}
+                    placeholder="Escribe aquí..."
+                    autoFocus
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      borderRadius: '10px',
+                      border: '1px solid var(--border-color)',
+                      backgroundColor: 'var(--input-bg)',
+                      color: 'var(--text-main)',
+                      fontSize: '14px',
+                      outline: 'none',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+              )}
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                {modal.type === 'delete' && (
+                {(modal.type === 'delete' || modal.type === 'edit') && (
                   <motion.button
                     onClick={closeModal}
                     whileHover={{ scale: 1.03 }}
@@ -2695,7 +2758,15 @@ function App() {
                   </motion.button>
                 )}
                 <motion.button
-                  onClick={modal.onConfirm}
+                  onClick={() => {
+                    if (modal.type === 'edit' && modal.onConfirm) {
+                      modal.onConfirm(modalInput);
+                      setModalInput('');
+                    } else if (modal.onConfirm) {
+                      modal.onConfirm();
+                    }
+                    closeModal();
+                  }}
                   whileHover={{ scale: 1.03, opacity: 0.9 }}
                   whileTap={{ scale: 0.97 }}
                   style={{
@@ -2711,7 +2782,7 @@ function App() {
                     boxShadow: modal.type === 'delete' ? '0 0 20px rgba(239,68,68,0.3)' : 'var(--gold-glow-strong)'
                   }}
                 >
-                  {modal.type === 'delete' ? 'Eliminar' : 'Aceptar'}
+                  {modal.type === 'delete' ? 'Eliminar' : modal.type === 'edit' ? 'Guardar' : 'Aceptar'}
                 </motion.button>
               </div>
               <button
