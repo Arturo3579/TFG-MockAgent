@@ -2546,7 +2546,29 @@ function App() {
                   </ul>
                 </div>
                 <motion.button
-                  onClick={() => setVistaActual('signup')}
+                  onClick={async () => {
+                    const token = getToken();
+                    if (!token) {
+                      // No logueado: ir a signup
+                      setVistaActual('signup');
+                      return;
+                    }
+                    if (plan.id === 'starter') {
+                      // Ya tiene plan free, ir al dashboard
+                      setVistaActual('dashboard');
+                      return;
+                    }
+                    // Logueado y elige Pro/Premium: iniciar checkout
+                    try {
+                      const currentEmail = getUserEmail();
+                      const r = await API.post('/api/stripe/checkout', { plan: plan.id, email: currentEmail });
+                      if (r.data.url) {
+                        window.location.href = r.data.url;
+                      }
+                    } catch (e) {
+                      showToast(e.response?.data?.error || 'Error al iniciar el checkout', 'error');
+                    }
+                  }}
                   whileHover={{ scale: 1.02, backgroundColor: plan.highlighted ? '#D4B87A' : undefined }}
                   whileTap={{ scale: 0.97 }}
                   style={{

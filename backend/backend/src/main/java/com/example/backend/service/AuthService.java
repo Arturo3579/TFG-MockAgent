@@ -66,6 +66,8 @@ public class AuthService {
                     .email(user.getEmail())
                     .plan(user.getPlan().name().toLowerCase())
                     .build();
+        } catch (UserNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException("Error al autenticar con Google: " + e.getMessage());
         }
