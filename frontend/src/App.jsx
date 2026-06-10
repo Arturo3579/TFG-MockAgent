@@ -1282,7 +1282,9 @@ function App() {
         window.location.href = r.data.url;
       }
     } catch (e) {
-      showToast(e.response?.data?.error || 'Error al iniciar el checkout', 'error');
+      console.error('Stripe checkout error:', e.response?.data);
+      const errorMsg = e.response?.data?.error || e.response?.data?.message || 'Error al iniciar el checkout';
+      showToast(errorMsg, 'error');
     }
   };
 
