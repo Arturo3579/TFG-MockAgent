@@ -12,6 +12,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -43,7 +44,10 @@ public class StripeService {
         System.out.println("Pro Price ID: " + proPriceId);
         System.out.println("Premium Price ID: " + premiumPriceId);
         System.out.println("=====================");
-        if (stripeSecretKey != null && !stripeSecretKey.isEmpty()) {
+        
+        if (stripeSecretKey == null || stripeSecretKey.isEmpty()) {
+            System.err.println("ERROR: STRIPE_SECRET_KEY no está configurada. Stripe no funcionará.");
+        } else {
             Stripe.apiKey = stripeSecretKey;
         }
     }
@@ -151,5 +155,15 @@ public class StripeService {
                 userRepository.save(user);
             });
         }
+    }
+
+    public Map<String, Object> getConfigInfo() {
+        return Map.of(
+            "secretKeyConfigured", stripeSecretKey != null && !stripeSecretKey.isEmpty(),
+            "webhookSecretConfigured", webhookSecret != null && !webhookSecret.isEmpty(),
+            "proPriceId", proPriceId != null ? proPriceId : "",
+            "premiumPriceId", premiumPriceId != null ? premiumPriceId : "",
+            "stripeApiKey", stripeSecretKey != null ? stripeSecretKey.substring(0, Math.min(8, stripeSecretKey.length())) + "..." : ""
+        );
     }
 }

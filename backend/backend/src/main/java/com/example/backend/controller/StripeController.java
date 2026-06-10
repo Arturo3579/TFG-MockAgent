@@ -36,4 +36,9 @@ public class StripeController {
             return ResponseEntity.badRequest().body("Webhook error: " + e.getMessage());
         }
     }
+
+    @GetMapping("/config")
+    public ResponseEntity<?> getConfig() {
+        return ResponseEntity.ok(stripeService.getConfigInfo());
+    }
 }
