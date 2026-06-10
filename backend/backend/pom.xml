@@ -71,7 +71,7 @@
 			<scope>runtime</scope>
 		</dependency>
 		<!-- Stripe: se activa al final del despliegue -->
-		<<dependency>
+		<dependency>
 			<groupId>com.stripe</groupId>
 			<artifactId>stripe-java</artifactId>
 			<version>24.0.0</version>
