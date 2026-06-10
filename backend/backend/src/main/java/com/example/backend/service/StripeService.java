@@ -66,7 +66,8 @@ public class StripeService {
         }
 
         if (priceId == null || priceId.isEmpty()) {
-            throw new RuntimeException("Price ID no configurado para el plan: " + plan);
+            throw new RuntimeException("Price ID no configurado para el plan: " + plan + 
+                ". ProPriceId=[" + proPriceId + "] PremiumPriceId=[" + premiumPriceId + "]");
         }
 
         Optional<User> userOpt = userRepository.findByEmail(email);
