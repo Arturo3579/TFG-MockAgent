@@ -28,4 +28,7 @@ public class User {
     @Column(nullable = false)
     @Builder.Default
     private PlanType plan = PlanType.STARTER;
+
+    @Column
+    private String stripeCustomerId;
 }

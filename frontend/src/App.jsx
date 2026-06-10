@@ -2362,7 +2362,16 @@ function App() {
                     </div>
                   )}
                 </div>
-                <motion.button onClick={() => setVistaActual('pricing')} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ padding: '6px 14px', borderRadius: '6px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', fontWeight: '500', cursor: 'pointer', fontSize: '13px', whiteSpace: 'nowrap' }}>
+                <motion.button onClick={async () => {
+                  try {
+                    const r = await API.post('/api/stripe/checkout', { plan: 'pro', email: currentEmail });
+                    if (r.data.url) {
+                      window.location.href = r.data.url;
+                    }
+                  } catch (e) {
+                    showToast(e.response?.data?.error || 'Error al procesar el pago', 'error');
+                  }
+                }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ padding: '6px 14px', borderRadius: '6px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', fontWeight: '500', cursor: 'pointer', fontSize: '13px', whiteSpace: 'nowrap' }}>
                   Actualizar plan
                 </motion.button>
               </div>
