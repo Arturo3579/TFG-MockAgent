@@ -1022,6 +1022,7 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('theme') !== 'light');
   const [userPlan, setUserPlan] = useState(getUserPlan() || '');
   const [rememberMe, setRememberMe] = useState(false);
+  const [pendingPlan, setPendingPlan] = useState(null);
   const [mostrarPopupLogin, setMostrarPopupLogin] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [popupInicialCerrado, setPopupInicialCerrado] = useState(false);
@@ -1176,7 +1177,13 @@ function App() {
         setUserPlan(r.data.plan);
         localStorage.setItem('hasLoggedInBefore', 'true');
         showToast('¡Cuenta creada con éxito!');
-        setVistaActual('dashboard');
+        if (pendingPlan) {
+          const planToCheckout = pendingPlan;
+          setPendingPlan(null);
+          await iniciarCheckout(planToCheckout);
+        } else {
+          setVistaActual('dashboard');
+        }
       }
     } catch (e) { setMensajeError(e.response?.data?.message || 'Error en el servidor.'); }
     setIsLoadingSignup(false);
@@ -1206,7 +1213,13 @@ function App() {
         localStorage.setItem('hasLoggedInBefore', 'true');
         setPassword('');
         showToast('¡Bienvenido de nuevo!');
-        setVistaActual('dashboard');
+        if (pendingPlan) {
+          const planToCheckout = pendingPlan;
+          setPendingPlan(null);
+          await iniciarCheckout(planToCheckout);
+        } else {
+          setVistaActual('dashboard');
+        }
       }
     } catch (e) { setMensajeError(e.response?.data?.message || 'Credenciales no válidas.'); }
     setIsLoadingLogin(false);
@@ -1235,7 +1248,13 @@ function App() {
         setUserPlan(r.data.plan);
         localStorage.setItem('hasLoggedInBefore', 'true');
         showToast('¡Bienvenido! Sesión iniciada con Google.');
-        setVistaActual('dashboard');
+        if (pendingPlan) {
+          const planToCheckout = pendingPlan;
+          setPendingPlan(null);
+          await iniciarCheckout(planToCheckout);
+        } else {
+          setVistaActual('dashboard');
+        }
       }
     } catch (e) { setMensajeError(e.response?.data?.message || 'Error al iniciar sesión con Google.'); }
     setIsLoadingLogin(false);
@@ -1253,6 +1272,18 @@ function App() {
       hasNumber: /[0-9]/.test(pwd),
       hasSpecial: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?`~]/.test(pwd),
     };
+  };
+
+  const iniciarCheckout = async (planId) => {
+    try {
+      const currentEmail = getUserEmail();
+      const r = await API.post('/api/stripe/checkout', { plan: planId, email: currentEmail });
+      if (r.data.url) {
+        window.location.href = r.data.url;
+      }
+    } catch (e) {
+      showToast(e.response?.data?.error || 'Error al iniciar el checkout', 'error');
+    }
   };
 
   const publicarMock = async (e) => {
@@ -2549,8 +2580,9 @@ function App() {
                   onClick={async () => {
                     const token = getToken();
                     if (!token) {
-                      // No logueado: ir a signup
-                      setVistaActual('signup');
+                      // No logueado: guardar plan pendiente y ir a login
+                      setPendingPlan(plan.id);
+                      setVistaActual('login');
                       return;
                     }
                     if (plan.id === 'starter') {
@@ -2559,15 +2591,7 @@ function App() {
                       return;
                     }
                     // Logueado y elige Pro/Premium: iniciar checkout
-                    try {
-                      const currentEmail = getUserEmail();
-                      const r = await API.post('/api/stripe/checkout', { plan: plan.id, email: currentEmail });
-                      if (r.data.url) {
-                        window.location.href = r.data.url;
-                      }
-                    } catch (e) {
-                      showToast(e.response?.data?.error || 'Error al iniciar el checkout', 'error');
-                    }
+                    await iniciarCheckout(plan.id);
                   }}
                   whileHover={{ scale: 1.02, backgroundColor: plan.highlighted ? '#D4B87A' : undefined }}
                   whileTap={{ scale: 0.97 }}
