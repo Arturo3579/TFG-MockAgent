@@ -97,7 +97,7 @@ const getAIResponse = (question, context, messageHistory = []) => {
   // ============================================
   if (q.includes('login') || q.includes('registrar') || q.includes('cuenta') || q.includes('signup') || q.includes('acceso') || q.includes('entrar') || q.includes('sesion') || q.includes('password') || q.includes('contraseña') || q.includes('email') || q.includes('correo') || q.includes('usuario') || q.includes('olvide') || q.includes('recuperar')) {
     return r(
-      `**Crear cuenta en MockAgent.AI es gratis y rápido:**\n\n1. Ve a mockagentai.com y haz clic en **"Empezar Gratis"**\n2. Introduce tu email y contraseña\n   (mínimo 8 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 especial)\n3. ¡Listo! Tu token JWT se guarda automáticamente\n\n**Datos importantes:**\n• No requiere tarjeta de crédito\n• Plan Free incluido: 5 endpoints + 100 peticiones/día\n• Puedes marcar "Recuérdame" para no cerrar sesión\n• ¿Olvidaste tu contraseña? Escríbenos a hello@mockagent.ai`,
+      `**Crear cuenta en MockAgent.AI es gratis y rápido:**\n\n1. Ve a mockagentai.com y haz clic en **"Empezar Gratis"**\n2. Introduce tu email y contraseña\n   (mínimo 8 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 especial)\n3. ¡Listo! Tu token JWT se guarda automáticamente\n\n**Datos importantes:**\n• No requiere tarjeta de crédito\n• Plan Free incluido: 5 endpoints + 100 peticiones/día\n• Puedes marcar "Recuérdame" para no cerrar sesión\n• ¿Olvidaste tu contraseña? Escríbenos a mockagentai@gmail.com`,
       ['Crear cuenta ahora', 'Ver seguridad', 'Probar sin registro'],
       'auth'
     );
@@ -163,7 +163,7 @@ const getAIResponse = (question, context, messageHistory = []) => {
   // ============================================
   if (q.includes('soporte') || q.includes('ayuda') || q.includes('contacto') || q.includes('problema') || q.includes('bug') || q.includes('error') || q.includes('fallo') || q.includes('no funciona') || q.includes('broken') || q.includes('issue') || q.includes('ticket') || q.includes('reportar') || q.includes('help')) {
     return r(
-      `Estamos aquí para ayudarte con MockAgent.AI:\n\n**Canales de soporte:**\n• **Email:** hello@mockagent.ai (respuesta en 24-48h)\n• **Documentación:** Sección Docs en la web con ejemplos de curl\n• **Blog:** Artículos técnicos sobre mocking y testing\n\n**Soporte Prioritario (Premium $7.99/mes):**\n• Respuesta garantizada en menos de 24h\n• Acceso directo al equipo de ingeniería\n• Prioridad en reportes de bugs\n\n**Autodiagnóstico rápido:**\n• 401 = token JWT expirado (vuelve a loguearte)\n• 429 = has alcanzado tu límite diario\n• 500 = error inesperado del servidor`,
+      `Estamos aquí para ayudarte con MockAgent.AI:\n\n**Canales de soporte:**\n• **Email:** mockagentai@gmail.com (respuesta en 24-48h)\n• **Documentación:** Sección Docs en la web con ejemplos de curl\n• **Blog:** Artículos técnicos sobre mocking y testing\n\n**Soporte Prioritario (Premium $7.99/mes):**\n• Respuesta garantizada en menos de 24h\n• Acceso directo al equipo de ingeniería\n• Prioridad en reportes de bugs\n\n**Autodiagnóstico rápido:**\n• 401 = token JWT expirado (vuelve a loguearte)\n• 429 = has alcanzado tu límite diario\n• 500 = error inesperado del servidor`,
       ['Ver planes Premium', 'Ver documentación', 'Crear cuenta gratis'],
       'support'
     );
@@ -891,7 +891,7 @@ No utilizamos cookies de terceros ni scripts de tracking.
 MockAgent no comparte, vende ni transfiere datos personales a terceros. Los datos permanecen en tu instancia local.
 
 6. Derechos del usuario
-Puedes solicitar la eliminación completa de tu cuenta y todos los datos asociados contactando a hello@mockagent.ai. En la versión actual, también puedes borrar manualmente tus endpoints desde el dashboard.
+Puedes solicitar la eliminación completa de tu cuenta y todos los datos asociados contactando a mockagentai@gmail.com. En la versión actual, también puedes borrar manualmente tus endpoints desde el dashboard.
 
 7. Seguridad
 Autenticación JWT con expiración de 24 horas.
@@ -901,7 +901,7 @@ Aislamiento completo de datos entre usuarios.
 8. Cambios en esta política
 Cualquier modificación será notificada en esta página. La fecha de última actualización es 6 de junio de 2026.
 
-Contacto: hello@mockagent.ai`;
+Contacto: mockagentai@gmail.com`;
 
 const TERMS_TEXT = `Términos de Servicio de MockAgent
 
@@ -944,7 +944,7 @@ Nos reservamos el derecho de actualizar estos términos. Los cambios entrarán e
 Estos términos se rigen por la legislación española.
 
 10. Contacto
-Para cualquier consulta legal o de privacidad, escríbenos a hello@mockagent.ai.
+Para cualquier consulta legal o de privacidad, escríbenos a mockagentai@gmail.com.
 
 Fecha de vigencia: 6 de junio de 2026.`;
 
