@@ -1986,22 +1986,6 @@ function App() {
           <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '8px' }}>{isLogin ? 'Bienvenido de nuevo' : 'Crea tu cuenta'}</h2>
           <p style={{ color: 'var(--text-muted)', marginBottom: '28px', fontSize: '14px' }}>{isLogin ? 'Introduce tus datos para acceder.' : 'Únete a miles de desarrolladores.'}</p>
 
-          <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
-            <GoogleLogin
-              onSuccess={manejarGoogleLogin}
-              onError={() => setMensajeError('Error al iniciar sesión con Google.')}
-              theme="outline"
-              size="large"
-              text={isLogin ? "signin_with" : "signup_with"}
-            />
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
-            <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-color)' }} />
-            <span style={{ color: 'var(--text-muted)', fontSize: '12px', fontWeight: '500' }}>o</span>
-            <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-color)' }} />
-          </div>
-
           <form onSubmit={isLogin ? manejarLogin : manejarRegistro}>
             <div style={{ marginBottom: '16px' }}>
               <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '500', color: 'var(--text-muted)' }}>Email</label>
@@ -2049,6 +2033,24 @@ function App() {
               {isLogin ? 'Entrar' : 'Crear cuenta'}
             </motion.button>
           </form>
+
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px', marginBottom: '20px', gap: '12px' }}>
+            <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-color)' }} />
+            <span style={{ color: 'var(--text-muted)', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.5px' }}>o</span>
+            <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-color)' }} />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <GoogleLogin
+              onSuccess={manejarGoogleLogin}
+              onError={() => setMensajeError('Error al iniciar sesión con Google.')}
+              theme="outline"
+              size="large"
+              text={isLogin ? "signin_with" : "signup_with"}
+              shape="pill"
+              width="320"
+            />
+          </div>
           <AnimatePresence>
             {mensajeError && (
               <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ color: '#ef4444', marginTop: '16px', textAlign: 'center', fontSize: '13px', backgroundColor: 'rgba(239,68,68,0.1)', padding: '8px 12px', borderRadius: '8px' }}>{mensajeError}</motion.p>
