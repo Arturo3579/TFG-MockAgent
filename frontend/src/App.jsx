@@ -2235,6 +2235,28 @@ function App() {
   //       PERFIL DE USUARIO
   // ==========================================
   if (vistaActual === 'perfil') {
+    const avatarLetter = usuario ? usuario.charAt(0).toUpperCase() : 'A';
+    const planName = (userPlan || 'starter').toUpperCase();
+    const planColor = planName === 'PRO' ? '#10b981' : planName === 'PREMIUM' ? '#8b5cf6' : '#C9A96E';
+    const planLabel = planName === 'STARTER' ? 'Gratis' : planName === 'PRO' ? 'Pro' : 'Premium';
+    const endpointCount = endpoints.length;
+    const maxEndpoints = planName === 'STARTER' ? 5 : 'Ilimitados';
+    const usagePercent = planName === 'STARTER' ? Math.round((endpointCount / 5) * 100) : 0;
+
+    const SectionRow = ({ label, value, action, actionLabel, onClick, danger }) => (
+      <div style={{ padding: '16px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: '500', fontSize: '14px', color: 'var(--text-main)', marginBottom: '2px' }}>{label}</div>
+          {value && <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{value}</div>}
+        </div>
+        {action && (
+          <motion.button onClick={onClick} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ padding: '6px 14px', borderRadius: '6px', border: `1px solid ${danger ? 'rgba(239,68,68,0.3)' : 'var(--border-color)'}`, backgroundColor: 'transparent', color: danger ? '#ef4444' : 'var(--text-main)', fontWeight: '500', cursor: 'pointer', fontSize: '13px', whiteSpace: 'nowrap' }}>
+            {actionLabel}
+          </motion.button>
+        )}
+      </div>
+    );
+
     return (
       <div style={{ backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', minHeight: '100vh', fontFamily: 'var(--font-main)', display: 'flex', flexDirection: 'column' }}>
         <nav style={NAVBAR_STYLE}>
@@ -2249,52 +2271,94 @@ function App() {
           </div>
         </nav>
 
-        <div style={{ maxWidth: '600px', margin: '0 auto', width: '100%', padding: '48px 24px', flex: '1 0 auto' }}>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} style={{ backgroundColor: 'var(--card-bg-50)', padding: '40px', borderRadius: '16px', border: '1px solid rgba(201,169,110,0.15)', textAlign: 'center' }}>
-            <div style={{ width: '80px', height: '80px', borderRadius: '50%', backgroundColor: 'rgba(201,169,110,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', fontSize: '32px' }}>👤</div>
-            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '8px' }}>Perfil de Agente</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '32px' }}>Gestiona tu cuenta y tu plan de suscripción.</p>
-
-            <div style={{ textAlign: 'left', marginBottom: '32px' }}>
-              <div style={{ padding: '16px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Email</span>
-                <span style={{ fontWeight: '600', fontSize: '14px' }}>{usuario}</span>
-              </div>
-              <div style={{ padding: '16px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Plan actual</span>
-                <span style={{ fontWeight: '700', fontSize: '14px', color: '#C9A96E', textTransform: 'uppercase' }}>{userPlan || 'starter'}</span>
-              </div>
-              <div style={{ padding: '16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Endpoints creados</span>
-                <span style={{ fontWeight: '600', fontSize: '14px' }}>{endpoints.length}</span>
-              </div>
+        <div style={{ maxWidth: '640px', margin: '0 auto', width: '100%', padding: '32px 24px', flex: '1 0 auto' }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+            {/* Header con X para cerrar */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h2 style={{ fontSize: '22px', fontWeight: '700', margin: 0 }}>Cuenta</h2>
+              <motion.button onClick={() => setVistaActual('dashboard')} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid var(--border-color)', backgroundColor: 'transparent', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                <X size={18} />
+              </motion.button>
             </div>
 
-            {(userPlan === 'starter' || !userPlan) && (
-              <motion.button
-                onClick={async () => {
-                  try {
-                    const r = await API.post('/api/auth/upgrade');
-                    localStorage.setItem('userPlan', r.data.plan);
-                    setUserPlan(r.data.plan);
-                    setModal({ open: true, type: 'success', title: 'Plan actualizado', message: '¡Felicidades! Ahora tienes el plan PRO con endpoints ilimitados.', onConfirm: closeModal });
-                  } catch (e) {
-                    setModal({ open: true, type: 'error', title: 'Error', message: 'No se pudo actualizar el plan.', onConfirm: closeModal });
-                  }
-                }}
-                whileHover={{ scale: 1.03, backgroundColor: '#D4B87A' }}
-                whileTap={{ scale: 0.97 }}
-                style={{ width: '100%', padding: '14px', backgroundColor: '#C9A96E', color: '#0a0a1e', border: 'none', borderRadius: '12px', fontWeight: '700', fontSize: '15px', cursor: 'pointer', boxShadow: 'var(--gold-glow-strong)' }}
-              >
-                Upgrade a Pro (simulado)
-              </motion.button>
-            )}
-
-            {(userPlan === 'pro' || userPlan === 'premium') && (
-              <div style={{ padding: '12px 16px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.1)', color: '#C9A96E', fontWeight: '600', fontSize: '14px' }}>
-                ✨ Disfrutas de endpoints ilimitados
+            {/* Sección: Perfil */}
+            <div style={{ backgroundColor: 'var(--card-bg-50)', borderRadius: '12px', border: '1px solid var(--border-color)', padding: '24px', marginBottom: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'rgba(201,169,110,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: '700', color: '#C9A96E' }}>
+                  {avatarLetter}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: '600', fontSize: '15px', color: 'var(--text-main)' }}>{usuario}</div>
+                  <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{usuario}</div>
+                </div>
+                <motion.button onClick={() => showToast('Cambio de avatar: proximamente')} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ padding: '6px 14px', borderRadius: '6px', border: '1px solid var(--border-color)', backgroundColor: 'transparent', color: 'var(--text-muted)', fontWeight: '500', cursor: 'pointer', fontSize: '13px' }}>
+                  Cambiar avatar
+                </motion.button>
               </div>
-            )}
+
+              <SectionRow label="Nombre completo" value={usuario} action actionLabel="Cambiar nombre" onClick={() => showToast('Cambio de nombre: proximamente')} />
+              <SectionRow label="Usuario" value={usuario} action actionLabel="Cambiar usuario" onClick={() => showToast('Cambio de usuario: proximamente')} />
+              <SectionRow label="E-mail" value={usuario} action={false} />
+            </div>
+
+            {/* Sección: Suscripción */}
+            <div style={{ backgroundColor: 'var(--card-bg-50)', borderRadius: '12px', border: '1px solid var(--border-color)', padding: '24px', marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', marginTop: 0 }}>Tu suscripción</h3>
+              <div style={{ marginBottom: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Desbloquea la experiencia completa de MockAgent.AI</span>
+                  <span style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: planColor, color: '#fff', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase' }}>{planLabel}</span>
+                </div>
+                <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Saca el máximo partido a MockAgent con {planLabel}. <span style={{ color: '#C9A96E', cursor: 'pointer' }}>Más información</span></div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.05)', border: '1px solid rgba(201,169,110,0.1)', marginBottom: '16px' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-main)' }}>Endpoints: {endpointCount} / {maxEndpoints}</div>
+                  {planName === 'STARTER' && (
+                    <div style={{ marginTop: '6px', height: '6px', borderRadius: '3px', backgroundColor: 'var(--border-color)', overflow: 'hidden' }}>
+                      <div style={{ width: `${usagePercent}%`, height: '100%', backgroundColor: usagePercent >= 80 ? '#ef4444' : '#C9A96E', borderRadius: '3px', transition: 'width 0.3s' }} />
+                    </div>
+                  )}
+                </div>
+                <motion.button onClick={() => setVistaActual('pricing')} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ padding: '6px 14px', borderRadius: '6px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', fontWeight: '500', cursor: 'pointer', fontSize: '13px', whiteSpace: 'nowrap' }}>
+                  Actualizar plan
+                </motion.button>
+              </div>
+              {(userPlan === 'pro' || userPlan === 'premium') && (
+                <div style={{ padding: '12px', borderRadius: '8px', backgroundColor: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', color: '#10b981', fontSize: '13px', fontWeight: '500' }}>
+                  ✓ Disfrutas de endpoints ilimitados y soporte prioritario
+                </div>
+              )}
+            </div>
+
+            {/* Sección: Seguridad */}
+            <div style={{ backgroundColor: 'var(--card-bg-50)', borderRadius: '12px', border: '1px solid var(--border-color)', padding: '24px', marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', marginTop: 0 }}>Seguridad</h3>
+              <SectionRow label="Autenticación en dos factores" value="Añade una capa adicional de seguridad a tu cuenta" action actionLabel="Configurar" onClick={() => showToast('2FA: proximamente')} />
+              <SectionRow label="Contraseña" value="Última actualización: hace 30 días" action actionLabel="Cambiar" onClick={() => showToast('Cambio de contraseña: proximamente')} />
+            </div>
+
+            {/* Sección: Sistema y Tema */}
+            <div style={{ backgroundColor: 'var(--card-bg-50)', borderRadius: '12px', border: '1px solid var(--border-color)', padding: '24px', marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', marginTop: 0 }}>Sistema</h3>
+              <SectionRow label="Tema oscuro" value={isDarkMode ? 'Activado' : 'Desactivado'} action actionLabel={isDarkMode ? 'Desactivar' : 'Activar'} onClick={() => setIsDarkMode(!isDarkMode)} />
+              <SectionRow label="Idioma" value="Español" action actionLabel="Cambiar" onClick={() => showToast('Cambio de idioma: proximamente')} />
+            </div>
+
+            {/* Sección: Asistencia */}
+            <div style={{ backgroundColor: 'var(--card-bg-50)', borderRadius: '12px', border: '1px solid var(--border-color)', padding: '24px', marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', marginTop: 0 }}>Asistencia</h3>
+              <SectionRow label="Centro de ayuda" value="Documentación y preguntas frecuentes" action actionLabel="Ver docs" onClick={() => setVistaActual('docs')} />
+              <SectionRow label="Contacto" value="mockagentai@gmail.com" action actionLabel="Contacto" onClick={() => window.location.href = 'mailto:mockagentai@gmail.com'} />
+            </div>
+
+            {/* Sección: Sesión y Cuenta */}
+            <div style={{ backgroundColor: 'var(--card-bg-50)', borderRadius: '12px', border: '1px solid var(--border-color)', padding: '24px', marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', marginTop: 0 }}>Sesión</h3>
+              <SectionRow label="Cerrar sesión" value="Has iniciado sesión como {usuario}" action actionLabel="Cerrar sesión" onClick={cerrarSesion} danger />
+              <SectionRow label="Cerrar sesión en todas las sesiones" value="Dispositivos o navegadores donde estás conectado" action actionLabel="Cerrar todo" onClick={() => { localStorage.clear(); sessionStorage.clear(); cerrarSesion(); showToast('Sesión cerrada en todos los dispositivos'); }} danger />
+              <SectionRow label="Eliminar cuenta" value="Eliminar permanentemente tu cuenta y datos" action actionLabel="Más información" onClick={() => setModal({ open: true, type: 'confirm', title: 'Eliminar cuenta', message: '¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer. Todos tus endpoints y logs serán eliminados permanentemente.', onConfirm: () => { showToast('Eliminación de cuenta: contacta a mockagentai@gmail.com'); closeModal(); } })} danger />
+            </div>
           </motion.div>
         </div>
       </div>
