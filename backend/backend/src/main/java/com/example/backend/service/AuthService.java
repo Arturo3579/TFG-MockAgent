@@ -51,18 +51,10 @@ public class AuthService {
             String email = payload.getEmail();
             String googleId = payload.getSubject();
 
-            User user = userRepository.findByGoogleId(googleId)
-                    .orElseGet(() -> userRepository.findByEmail(email)
-                            .orElse(null));
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new UserNotFoundException("Usuario no registrado. Debes crear una cuenta primero con email y contraseña."));
 
-            if (user == null) {
-                user = User.builder()
-                        .email(email)
-                        .googleId(googleId)
-                        .password(passwordEncoder.encode(java.util.UUID.randomUUID().toString()))
-                        .plan(PlanType.STARTER)
-                        .build();
-            } else if (user.getGoogleId() == null) {
+            if (user.getGoogleId() == null) {
                 user.setGoogleId(googleId);
             }
 
