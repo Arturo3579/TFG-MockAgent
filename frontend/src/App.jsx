@@ -1428,7 +1428,7 @@ function App() {
         {/* NAVBAR */}
         <nav style={NAVBAR_STYLE}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={16} color="#C9A96E" /></div>
+            <img src="/logo.svg" alt="MockAgent" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
             <span style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px', whiteSpace: 'nowrap' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
           </div>
 
@@ -1766,7 +1766,7 @@ function App() {
           <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '32px' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-                <div style={{ width: '28px', height: '28px', borderRadius: '6px', backgroundColor: 'rgba(201,169,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={14} color="#C9A96E" /></div>
+                <img src="/logo.svg" alt="MockAgent" style={{ width: '28px', height: '28px', borderRadius: '6px' }} />
                 <span style={{ fontSize: '16px', fontWeight: '700' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
               </div>
               <p style={{ color: 'var(--text-muted)', fontSize: '13px', lineHeight: '1.6' }}>Infraestructura de mocking profesional para equipos de desarrollo de IA.</p>
@@ -1835,7 +1835,7 @@ function App() {
       <div style={{ backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', minHeight: '100vh', fontFamily: 'var(--font-main)', display: 'flex', flexDirection: 'column' }}>
         <nav style={{ ...NAVBAR_STYLE, position: 'sticky' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={16} color="#C9A96E" /></div>
+            <img src="/logo.svg" alt="MockAgent" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
             <span style={{ fontSize: '20px', fontWeight: '700' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
           </div>
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
@@ -1930,7 +1930,7 @@ function App() {
       <div style={{ backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', minHeight: '100vh', fontFamily: 'var(--font-main)', display: 'flex', flexDirection: 'column' }}>
         <nav style={{ ...NAVBAR_STYLE, position: 'sticky' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={16} color="#C9A96E" /></div>
+            <img src="/logo.svg" alt="MockAgent" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
             <span style={{ fontSize: '20px', fontWeight: '700' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
           </div>
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
@@ -1988,7 +1988,7 @@ function App() {
       <div style={{ backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', minHeight: '100vh', fontFamily: 'var(--font-main)', display: 'flex', flexDirection: 'column' }}>
         <nav style={{ ...NAVBAR_STYLE, position: 'sticky' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={16} color="#C9A96E" /></div>
+            <img src="/logo.svg" alt="MockAgent" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
             <span style={{ fontSize: '20px', fontWeight: '700' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
           </div>
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
@@ -2022,7 +2022,7 @@ function App() {
       <div style={{ backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', minHeight: '100vh', fontFamily: 'var(--font-main)', display: 'flex', flexDirection: 'column' }}>
         <nav style={{ ...NAVBAR_STYLE, position: 'sticky' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={16} color="#C9A96E" /></div>
+            <img src="/logo.svg" alt="MockAgent" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
             <span style={{ fontSize: '20px', fontWeight: '700' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
           </div>
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
@@ -2150,7 +2150,7 @@ function App() {
         {/* DASHBOARD NAV */}
         <nav style={NAVBAR_STYLE}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={16} color="#C9A96E" /></div>
+            <img src="/logo.svg" alt="MockAgent" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
             <span style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
           </div>
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
@@ -2173,7 +2173,7 @@ function App() {
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.1 }} style={{ backgroundColor: 'var(--card-bg-50)', padding: '32px', borderRadius: '16px', border: editingId ? '1px solid rgba(201,169,110,0.4)' : '1px solid rgba(201,169,110,0.15)', marginBottom: '24px', boxShadow: editingId ? '0 0 20px rgba(201,169,110,0.1)' : 'none' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Zap size={16} color="#C9A96E" />
+                <img src="/logo.svg" alt="MockAgent" style={{ width: '16px', height: '16px' }} />
                 <h3 style={{ margin: 0, fontSize: '15px', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{editingId ? 'Editar Endpoint' : 'Nuevo Endpoint'}</h3>
               </div>
               {editingId && (
@@ -2271,7 +2271,7 @@ function App() {
           {/* LOGS */}
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.3 }} style={{ marginTop: '24px', backgroundColor: 'var(--card-bg-50)', borderRadius: '16px', border: '1px solid var(--border-color)', overflow: 'hidden' }}>
             <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Zap size={16} color="#C9A96E" />
+              <img src="/logo.svg" alt="MockAgent" style={{ width: '16px', height: '16px' }} />
               <h3 style={{ margin: 0, fontSize: '15px', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Logs de Peticiones</h3>
             </div>
             {logs.length === 0 ? (
@@ -2339,7 +2339,7 @@ function App() {
       <div style={{ backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', minHeight: '100vh', fontFamily: 'var(--font-main)', display: 'flex', flexDirection: 'column' }}>
         <nav style={NAVBAR_STYLE}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={16} color="#C9A96E" /></div>
+            <img src="/logo.svg" alt="MockAgent" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
             <span style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
           </div>
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
@@ -2461,7 +2461,7 @@ function App() {
         {/* NAVBAR */}
         <nav style={NAVBAR_STYLE}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={16} color="#C9A96E" /></div>
+            <img src="/logo.svg" alt="MockAgent" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
             <span onClick={() => setVistaActual('landing')} style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px', cursor: 'pointer' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
           </div>
           <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
@@ -2630,7 +2630,7 @@ function App() {
         <footer style={{ padding: '40px 24px', borderTop: '1px solid var(--border-color)', backgroundColor: 'var(--bg-color)', marginTop: 'auto' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={16} color="#C9A96E" /></div>
+              <img src="/logo.svg" alt="MockAgent" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
               <span style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
             </div>
             <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
@@ -2656,7 +2656,7 @@ function App() {
       <div style={{ backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', minHeight: '100vh', fontFamily: 'var(--font-main)', display: 'flex', flexDirection: 'column' }}>
         <nav style={NAVBAR_STYLE}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(201,169,110,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={16} color="#C9A96E" /></div>
+            <img src="/logo.svg" alt="MockAgent" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
             <span style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px' }}>MOCK<span style={{ color: '#C9A96E' }}>AGENT</span>.AI</span>
           </div>
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
