@@ -2464,6 +2464,7 @@ function App() {
   //       PRICING PAGE
   // ==========================================
   if (vistaActual === 'pricing') {
+    console.log('RENDERING PRICING PAGE', {PRICING_PLANS, userPlan, isAnnual, selectedCurrency});
     return (
       <div style={{ backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', minHeight: '100vh', fontFamily: 'var(--font-main)', display: 'flex', flexDirection: 'column' }}>
         {/* NAVBAR */}
