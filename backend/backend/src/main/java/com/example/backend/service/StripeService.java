@@ -95,23 +95,35 @@ public class StripeService {
             userRepository.save(user);
         }
 
-        SessionCreateParams params = SessionCreateParams.builder()
-            .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
-            .setCustomer(customerId)
-            .setSuccessUrl("https://www.mockagentai.com/?success=true&session_id={CHECKOUT_SESSION_ID}")
-            .setCancelUrl("https://www.mockagentai.com/pricing?canceled=true")
-            .addLineItem(
-                SessionCreateParams.LineItem.builder()
-                    .setPrice(priceId)
-                    .setQuantity(1L)
-                    .build()
-            )
-            .putMetadata("userId", String.valueOf(user.getId()))
-            .putMetadata("plan", plan)
-            .build();
+        try {
+            SessionCreateParams params = SessionCreateParams.builder()
+                .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
+                .setCustomer(customerId)
+                .setSuccessUrl("https://www.mockagentai.com/?success=true&session_id={CHECKOUT_SESSION_ID}")
+                .setCancelUrl("https://www.mockagentai.com/pricing?canceled=true")
+                .addLineItem(
+                    SessionCreateParams.LineItem.builder()
+                        .setPrice(priceId)
+                        .setQuantity(1L)
+                        .build()
+                )
+                .putMetadata("userId", String.valueOf(user.getId()))
+                .putMetadata("plan", plan)
+                .build();
 
-        Session session = Session.create(params);
-        return session.getUrl();
+            Session session = Session.create(params);
+            return session.getUrl();
+        } catch (com.stripe.exception.StripeException e) {
+            if (e.getMessage() != null && e.getMessage().contains("No such customer")) {
+                // Customer no existe en Stripe, limpiar y reintentar
+                System.out.println("Customer no existe en Stripe, reintentando con nuevo customer: " + e.getMessage());
+                user.setStripeCustomerId(null);
+                userRepository.save(user);
+                // Llamar recursivamente a createCheckoutSession con customer limpiado
+                return createCheckoutSession(plan, email);
+            }
+            throw e;
+        }
     }
 
     public void handleWebhook(String payload, String sigHeader) throws Exception {
