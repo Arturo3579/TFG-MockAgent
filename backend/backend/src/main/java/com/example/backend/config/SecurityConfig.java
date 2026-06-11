@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/instant/**").permitAll()
                 .requestMatchers("/api/stripe/webhook").permitAll()
+                .requestMatchers("/api/stripe/reset-customer").permitAll()
                 .requestMatchers("/mock/**").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated()

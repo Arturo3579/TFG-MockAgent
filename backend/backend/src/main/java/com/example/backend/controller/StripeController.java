@@ -36,4 +36,15 @@ public class StripeController {
             return ResponseEntity.badRequest().body("Webhook error: " + e.getMessage());
         }
     }
+
+    @PostMapping("/reset-customer")
+    public ResponseEntity<?> resetCustomer(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            stripeService.resetCustomer(email);
+            return ResponseEntity.ok(Map.of("message", "Customer reset successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }

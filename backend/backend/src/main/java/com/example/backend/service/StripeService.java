@@ -164,4 +164,12 @@ public class StripeService {
         }
     }
 
+    public void resetCustomer(String email) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setStripeCustomerId(null);
+            userRepository.save(user);
+        }
+    }
 
