@@ -1452,6 +1452,21 @@ function App() {
           {/* Mobile Nav */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} className="mobile-nav">
             <ThemeToggle />
+            {getToken() && (
+              <button
+                onClick={() => setVistaActual('dashboard')}
+                style={{
+                  width: '36px', height: '36px', borderRadius: '8px',
+                  backgroundColor: 'var(--card-bg)',
+                  border: '1px solid var(--border-color)',
+                  color: 'var(--text-main)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer'
+                }}
+              >
+                <User size={20} />
+              </button>
+            )}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               style={{
