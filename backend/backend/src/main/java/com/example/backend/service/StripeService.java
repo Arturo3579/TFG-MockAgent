@@ -12,7 +12,6 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -38,16 +37,7 @@ public class StripeService {
 
     @PostConstruct
     public void init() {
-        System.out.println("=== STRIPE CONFIG ===");
-        System.out.println("Secret Key present: " + (stripeSecretKey != null && !stripeSecretKey.isEmpty()));
-        System.out.println("Webhook Secret present: " + (webhookSecret != null && !webhookSecret.isEmpty()));
-        System.out.println("Pro Price ID: " + proPriceId);
-        System.out.println("Premium Price ID: " + premiumPriceId);
-        System.out.println("=====================");
-        
-        if (stripeSecretKey == null || stripeSecretKey.isEmpty()) {
-            System.err.println("ERROR: STRIPE_SECRET_KEY no está configurada. Stripe no funcionará.");
-        } else {
+        if (stripeSecretKey != null && !stripeSecretKey.isEmpty()) {
             Stripe.apiKey = stripeSecretKey;
         }
     }
@@ -158,33 +148,4 @@ public class StripeService {
         }
     }
 
-    public Map<String, Object> getConfigInfo() {
-        return Map.of(
-            "secretKeyConfigured", stripeSecretKey != null && !stripeSecretKey.isEmpty(),
-            "webhookSecretConfigured", webhookSecret != null && !webhookSecret.isEmpty(),
-            "proPriceId", proPriceId != null ? proPriceId : "",
-            "premiumPriceId", premiumPriceId != null ? premiumPriceId : "",
-            "stripeApiKeyPrefix", stripeSecretKey != null ? stripeSecretKey.substring(0, Math.min(20, stripeSecretKey.length())) : ""
-        );
-    }
 
-    public Map<String, Object> testStripeConnection() throws Exception {
-        try {
-            // Intentar recuperar el Price object de Stripe
-            com.stripe.model.Price price = com.stripe.model.Price.retrieve(proPriceId);
-            return Map.of(
-                "success", true,
-                "priceId", price.getId(),
-                "productId", price.getProduct(),
-                "amount", price.getUnitAmount()
-            );
-        } catch (com.stripe.exception.StripeException e) {
-            return Map.of(
-                "success", false,
-                "error", e.getMessage(),
-                "errorCode", e.getCode() != null ? e.getCode() : "unknown",
-                "stripeApiKeyPrefix", stripeSecretKey != null ? stripeSecretKey.substring(0, Math.min(20, stripeSecretKey.length())) : ""
-            );
-        }
-    }
-}
