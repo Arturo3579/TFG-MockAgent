@@ -68,6 +68,18 @@ public class StripeService {
         User user = userOpt.get();
         String customerId = user.getStripeCustomerId();
 
+        // Si no tiene customer o el customer no existe en Stripe (cuenta cambiada), crear nuevo
+        if (customerId != null) {
+            try {
+                // Verificar si el customer existe en Stripe
+                Customer.retrieve(customerId);
+            } catch (com.stripe.exception.StripeException e) {
+                // Customer no existe, limpiar el ID guardado
+                customerId = null;
+                user.setStripeCustomerId(null);
+            }
+        }
+
         if (customerId == null) {
             Customer customer = Customer.create(
                 new com.stripe.param.CustomerCreateParams.Builder()
