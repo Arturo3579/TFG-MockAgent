@@ -69,20 +69,22 @@ public class StripeService {
         String customerId = user.getStripeCustomerId();
 
         // Si no tiene customer o el customer no existe en Stripe (cuenta cambiada), crear nuevo
+        boolean customerValido = false;
         if (customerId != null) {
             try {
                 // Verificar si el customer existe en Stripe
                 Customer.retrieve(customerId);
-            } catch (com.stripe.exception.StripeException e) {
-                // Customer no existe en Stripe, limpiar el ID guardado
-                System.out.println("Customer no encontrado en Stripe, creando nuevo: " + e.getMessage());
+                customerValido = true;
+            } catch (Exception e) {
+                // Cualquier excepción (Stripe o no), el customer no existe
+                System.out.println("Customer invalido, limpiando: " + e.getMessage());
                 customerId = null;
                 user.setStripeCustomerId(null);
                 userRepository.save(user);
             }
         }
 
-        if (customerId == null) {
+        if (!customerValido) {
             Customer customer = Customer.create(
                 new com.stripe.param.CustomerCreateParams.Builder()
                     .setEmail(email)
