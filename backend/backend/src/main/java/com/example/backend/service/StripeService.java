@@ -78,6 +78,7 @@ public class StripeService {
                 System.out.println("Customer no encontrado en Stripe, creando nuevo: " + e.getMessage());
                 customerId = null;
                 user.setStripeCustomerId(null);
+                userRepository.save(user);
             }
         }
 
