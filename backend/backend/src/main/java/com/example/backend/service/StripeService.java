@@ -74,7 +74,8 @@ public class StripeService {
                 // Verificar si el customer existe en Stripe
                 Customer.retrieve(customerId);
             } catch (com.stripe.exception.StripeException e) {
-                // Customer no existe, limpiar el ID guardado
+                // Customer no existe en Stripe, limpiar el ID guardado
+                System.out.println("Customer no encontrado en Stripe, creando nuevo: " + e.getMessage());
                 customerId = null;
                 user.setStripeCustomerId(null);
             }
