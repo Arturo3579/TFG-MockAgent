@@ -2159,15 +2159,23 @@ function App() {
               <Activity size={12} /> {apiStatus === 'online' ? 'API Online' : 'API Offline'}
             </div>
             <motion.button onClick={() => setVistaActual('perfil')} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--border-color)', backgroundColor: 'transparent', color: 'var(--text-muted)', fontWeight: '600', cursor: 'pointer', fontSize: '13px' }}>Perfil</motion.button>
-            <button onClick={cerrarSesion} style={{ padding: '8px 16px', borderRadius: '8px', border: 'none', backgroundColor: '#ef4444', color: '#fff', fontWeight: '600', cursor: 'pointer', fontSize: '13px' }}>Salir</button>
+            <motion.button onClick={() => setVistaActual('pricing')} whileHover={{ scale: 1.03, backgroundColor: 'rgba(201,169,110,0.15)' }} whileTap={{ scale: 0.97 }} style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid rgba(201,169,110,0.3)', backgroundColor: 'transparent', color: '#C9A96E', fontWeight: '600', cursor: 'pointer', fontSize: '13px' }}>Actualizar plan</motion.button>
+            <button onClick={cerrarSesion} style={{ padding: '8px 16px', borderRadius: '8px', border: 'none', backgroundColor: '#ef4444', color: '#fff', fontWeight: '600', cursor: 'pointer', fontSize: '13px' }}>Cerrar sesión</button>
             <ThemeToggle />
           </div>
         </nav>
 
         <div style={{ maxWidth: '1280px', margin: '0 auto', width: '100%', padding: '24px', flex: '1 0 auto' }}>
-          <motion.header initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} style={{ marginBottom: '24px' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: '700', letterSpacing: '-0.3px' }}>Dashboard de Control</h1>
-            <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginTop: '4px' }}>Sesión: <span style={{ color: '#C9A96E', fontWeight: '500' }}>{usuario}</span> · Plan: <span style={{ color: '#C9A96E', fontWeight: '600', textTransform: 'uppercase' }}>{userPlan || 'starter'}</span> · Endpoints: <span style={{ fontWeight: '600' }}>{endpoints.length}{(userPlan !== 'pro' && userPlan !== 'premium') ? '/' + PLAN_LIMITS.starter : ''}</span></p>
+          <motion.header initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div>
+              <h1 style={{ fontSize: '24px', fontWeight: '700', letterSpacing: '-0.3px' }}>Dashboard de Control</h1>
+              <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginTop: '4px' }}>Sesión: <span style={{ color: '#C9A96E', fontWeight: '500' }}>{usuario}</span> · Plan: <span style={{ color: '#C9A96E', fontWeight: '600', textTransform: 'uppercase' }}>{userPlan || 'starter'}</span> · Endpoints: <span style={{ fontWeight: '600' }}>{endpoints.length}{(userPlan !== 'pro' && userPlan !== 'premium') ? '/' + PLAN_LIMITS.starter : ''}</span></p>
+            </div>
+            {(userPlan !== 'pro' && userPlan !== 'premium') && (
+              <motion.button onClick={() => setVistaActual('pricing')} whileHover={{ scale: 1.03, backgroundColor: 'rgba(201,169,110,0.15)' }} whileTap={{ scale: 0.97 }} style={{ padding: '10px 20px', borderRadius: '10px', border: '1px solid rgba(201,169,110,0.4)', backgroundColor: 'rgba(201,169,110,0.08)', color: '#C9A96E', fontWeight: '600', cursor: 'pointer', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Sparkles size={14} /> Actualizar plan
+              </motion.button>
+            )}
           </motion.header>
 
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.1 }} style={{ backgroundColor: 'var(--card-bg-50)', padding: '32px', borderRadius: '16px', border: editingId ? '1px solid rgba(201,169,110,0.4)' : '1px solid rgba(201,169,110,0.15)', marginBottom: '24px', boxShadow: editingId ? '0 0 20px rgba(201,169,110,0.1)' : 'none' }}>
