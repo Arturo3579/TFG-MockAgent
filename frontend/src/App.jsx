@@ -1126,14 +1126,17 @@ function App() {
   const hasLoggedInBefore = localStorage.getItem('hasLoggedInBefore');
 
   useEffect(() => {
+    // Si hay token activo (localStorage o sessionStorage), nunca mostrar popup
+    if (getToken()) {
+      setMostrarPopupLogin(false);
+      return;
+    }
     if (vistaActual === 'dashboard') { setMostrarPopupLogin(false); return; }
-    // Si hay sesión recordada, no mostrar popup (el usuario tiene botón "Mi cuenta")
-    if (hasRememberedSession()) return;
     if (vistaActual === 'landing' && !popupInicialCerrado) {
       const t = setTimeout(() => setMostrarPopupLogin(true), 1000);
       return () => clearTimeout(t);
     }
-    const intervalo = setInterval(() => { if (vistaActual === 'landing') setMostrarPopupLogin(true); }, 120000);
+    const intervalo = setInterval(() => { if (vistaActual === 'landing' && !getToken()) setMostrarPopupLogin(true); }, 120000);
     return () => clearInterval(intervalo);
   }, [vistaActual, popupInicialCerrado]);
 
