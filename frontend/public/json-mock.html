@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador JSON Mock - Crea respuestas JSON simuladas gratis | MockAgent.AI</title>
+  <meta name="description" content="Generador de JSON mocks gratuito. Crea respuestas JSON simuladas, genera datos falsos para testear tus aplicaciones sin backend real. Sin registro." />
+  <meta name="keywords" content="generador json mock, respuestas json falsas, json simulado, fake json, crear json mock, json mock generator, mock json data, respuestas json de prueba, simular json, json dummy" />
+  <meta name="author" content="MockAgent.AI" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.mockagentai.com/json-mock" />
+  
+  <meta property="og:title" content="Generador JSON Mock - Crea respuestas JSON simuladas gratis" />
+  <meta property="og:description" content="Generador de JSON mocks gratuito. Crea respuestas JSON simuladas para testear tus aplicaciones sin backend real." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.mockagentai.com/json-mock" />
+  <meta property="og:image" content="https://www.mockagentai.com/og-image.png" />
+  <meta property="og:site_name" content="MockAgent.AI" />
+  <meta property="og:locale" content="es_ES" />
+  
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Generador JSON Mock - Crea respuestas JSON simuladas gratis" />
+  <meta name="twitter:description" content="Generador de JSON mocks gratuito. Crea respuestas JSON simuladas para testear tus aplicaciones sin backend real." />
+  <meta name="twitter:image" content="https://www.mockagentai.com/og-image.png" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Generador JSON Mock Gratuito",
+    "description": "Generador de JSON mocks gratuito. Crea respuestas JSON simuladas para testing y desarrollo.",
+    "url": "https://www.mockagentai.com/json-mock",
+    "mainEntity": {
+      "@type": "SoftwareApplication",
+      "name": "MockAgent.AI",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      }
+    }
+  }
+  </script>
+  
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #0a0a1e;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+    .navbar {
+      background: rgba(10, 10, 30, 0.95);
+      border-bottom: 1px solid rgba(201, 169, 110, 0.2);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo img { width: 32px; height: 32px; border-radius: 8px; }
+    .logo-text { font-size: 20px; font-weight: 700; color: #e2e8f0; letter-spacing: -0.5px; }
+    .logo-text span { color: #C9A96E; }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.2s; }
+    .nav-links a:hover { color: #C9A96E; }
+    .cta-btn {
+      background: #C9A96E;
+      color: #0a0a1e;
+      padding: 10px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    .cta-btn:hover { background: #D4B87A; transform: scale(1.02); }
+    .hero {
+      padding: 80px 24px 60px;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      color: #f8fafc;
+    }
+    .hero h1 span { color: #C9A96E; }
+    .hero p {
+      font-size: 18px;
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+    .hero-cta {
+      display: inline-flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn-primary {
+      background: #C9A96E;
+      color: #0a0a1e;
+      padding: 14px 32px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      transition: 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: #D4B87A; transform: translateY(-2px); box-shadow: 0 10px 40px rgba(201, 169, 110, 0.3); }
+    .btn-secondary {
+      background: transparent;
+      color: #C9A96E;
+      padding: 14px 32px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      border: 1px solid rgba(201, 169, 110, 0.4);
+      transition: 0.2s;
+      display: inline-block;
+    }
+    .btn-secondary:hover { background: rgba(201, 169, 110, 0.1); }
+    .content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+    .section {
+      margin-bottom: 60px;
+    }
+    .section h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #f8fafc;
+    }
+    .section h2 span { color: #C9A96E; }
+    .section h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 24px 0 12px;
+      color: #e2e8f0;
+    }
+    .section p { color: #94a3b8; margin-bottom: 16px; font-size: 16px; }
+    .section ul { margin: 16px 0; padding-left: 24px; }
+    .section ul li { color: #94a3b8; margin-bottom: 8px; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin: 32px 0;
+    }
+    .feature-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .feature-card h4 { color: #C9A96E; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .feature-card p { color: #94a3b8; font-size: 14px; margin: 0; }
+    .code-block {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: #e2e8f0;
+      overflow-x: auto;
+    }
+    .faq-item {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 20px 0;
+    }
+    .faq-item h4 { color: #e2e8f0; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .faq-item p { color: #94a3b8; font-size: 14px; margin: 0; }
+    .lang-switch {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(10, 10, 30, 0.9);
+      border: 1px solid rgba(201, 169, 110, 0.3);
+      border-radius: 12px;
+      padding: 12px 16px;
+      z-index: 100;
+    }
+    .lang-switch a { color: #94a3b8; text-decoration: none; font-size: 13px; font-weight: 500; }
+    .lang-switch a:hover { color: #C9A96E; }
+    .lang-switch .active { color: #C9A96E; font-weight: 600; }
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 40px 24px;
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
+    }
+    footer a { color: #94a3b8; text-decoration: none; }
+    footer a:hover { color: #C9A96E; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero h1 { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="MockAgent.AI" />
+      <span class="logo-text">MOCK<span>AGENT</span>.AI</span>
+    </a>
+    <div class="nav-links">
+      <a href="/mock-server">Mock Server</a>
+      <a href="/api-mocking">API Mocking</a>
+      <a href="/mock-api">Mock API</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/" class="cta-btn">Crear JSON Mock</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Generador <span>JSON Mock</span> Gratuito</h1>
+    <p>Crea respuestas JSON simuladas al instante. Sin registro, sin backend. Genera datos JSON falsos para testear tu aplicación, frontend o agente de IA.</p>
+    <div class="hero-cta">
+      <a href="/" class="btn-primary">Generar JSON Mock Gratis</a>
+      <a href="#ejemplo" class="btn-secondary">Ver ejemplo</a>
+    </div>
+  </section>
+
+  <div class="content">
+    <section class="section">
+      <h2>¿Qué es un <span>JSON Mock</span>?</h2>
+      <p>Un <strong>JSON mock</strong> es una respuesta en formato JSON simulada que imita los datos que devolvería una API real. Es el componente fundamental de cualquier mock server o API de prueba.</p>
+      <p>En vez de esperar a que el backend esté listo, generas un JSON con la estructura exacta que necesitas y tu frontend o agente de IA lo consume como si fuera real.</p>
+    </section>
+
+    <section class="section">
+      <h2>Ejemplo de <span>JSON Mock</span></h2>
+      <p>Imagina que necesitas simular una API de usuarios. Con MockAgent.AI creas este JSON:</p>
+      <div class="code-block">
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Ana García",
+      "email": "ana@example.com",
+      "role": "admin",
+      "active": true
+    },
+    {
+      "id": 2,
+      "name": "Carlos López",
+      "email": "carlos@example.com",
+      "role": "user",
+      "active": false
+    }
+  ],
+  "total": 2,
+  "page": 1
+}
+      </div>
+      <p>Y obtienes una URL pública: <code>https://tfg-mockagent-production.up.railway.app/mock/api/users</code></p>
+    </section>
+
+    <section class="section">
+      <h2>¿Para qué sirve un <span>Generador JSON Mock</span>?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h4>🎨 Frontend Development</h4>
+          <p>Desarrolla tu UI con datos reales desde el día 1. No esperes al backend para ver cómo se renderiza tu lista, tabla o gráfico.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🧪 Testing</h4>
+          <p>Testea casos edge: listas vacías, arrays enormes, objetos anidados, valores null. Todo sin depender de una base de datos real.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🤖 Agentes de IA</h4>
+          <p>Entrena tu agente con datos JSON estructurados. Simula APIs de CRM, ERP, e-commerce o cualquier servicio que tu agente necesite consumir.</p>
+        </div>
+        <div class="feature-card">
+          <h4>📱 Prototipado</h4>
+          <p>Valida ideas con stakeholders mostrando datos reales. Un JSON mock hace que tu prototipo se vea funcional y profesional.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Tipos de <span>JSON Mocks</span> que puedes crear</h2>
+      <h3>JSON Mock Simple</h3>
+      <p>Un objeto básico con pocos campos. Ideal para tests rápidos y endpoints simples.</p>
+      <h3>JSON Mock con Arrays</h3>
+      <p>Listas de objetos JSON. Perfecto para simular colecciones de usuarios, productos, pedidos, etc.</p>
+      <h3>JSON Mock Anidado</h3>
+      <p>Objetos dentro de objetos. Útil para APIs complejas con relaciones (usuario → empresa → departamentos).</p>
+      <h3>JSON Mock con Errores</h3>
+      <p>Simula errores de validación con status 400 y JSON de errores: <code>{"errors": [{"field": "email", "message": "Invalid format"}]}</code></p>
+    </section>
+
+    <section class="section">
+      <h2>¿Cómo crear un <span>JSON Mock</span> con MockAgent?</h2>
+      <ul>
+        <li><strong>Entra a MockAgent.AI</strong> (sin registro necesario para Mock Express)</li>
+        <li><strong>Define tu endpoint:</strong> Elige una ruta como <code>/api/products</code></li>
+        <li><strong>Escribe el JSON:</strong> Pega tu JSON en el editor con validación en tiempo real</li>
+        <li><strong>Configura el status:</strong> 200, 201, 400, 404, 500... el que necesites</li>
+        <li><strong>Publica:</strong> Obtén la URL instantánea y úsala en tu app</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Preguntas frecuentes sobre <span>JSON Mocks</span></h2>
+      <div class="faq-item">
+        <h4>¿El JSON mock tiene que ser válido?</h4>
+        <p>Sí, el editor de MockAgent valida la sintaxis JSON en tiempo real. Si hay errores, te lo indica antes de publicar.</p>
+      </div>
+      <div class="faq-item">
+        <h4>¿Puedo cambiar el JSON después de publicar?</h4>
+        <p>Sí, con cuenta gratuita. Edita el endpoint, modifica el JSON y guarda. La URL se mantiene igual.</p>
+      </div>
+      <div class="faq-item">
+        <h4>¿Puedo generar JSON dinámico?</h4>
+        <p>Actualmente es estático. En el futuro añadiremos templates dinámicos con variables y generación aleatoria.</p>
+      </div>
+      <div class="faq-item">
+        <h4>¿Es gratuito el generador JSON mock?</h4>
+        <p>Sí, el plan Free incluye 5 endpoints con JSON completamente personalizable. Sin límite de tamaño del JSON.</p>
+      </div>
+    </section>
+
+    <section class="section" style="text-align: center; padding: 40px 0; background: rgba(201, 169, 110, 0.05); border-radius: 16px;">
+      <h2>¿Listo para crear tu <span>JSON Mock</span>?</h2>
+      <p style="margin-bottom: 24px;">Genera respuestas JSON simuladas en 30 segundos. Sin registro, sin tarjeta.</p>
+      <a href="/" class="btn-primary" style="font-size: 18px; padding: 16px 40px;">Crear JSON Mock Gratis</a>
+    </section>
+  </div>
+
+  <div class="lang-switch">
+    <span class="active">ES</span> | <a href="/en/json-mock">EN</a>
+  </div>
+
+  <footer>
+    <p>© 2026 MockAgent.AI — <a href="/">Infraestructura de Mocking para Agentes de IA</a></p>
+    <p style="margin-top: 8px; font-size: 12px;">
+      <a href="/mock-server">Mock Server</a> · 
+      <a href="/api-mocking">API Mocking</a> · 
+      <a href="/json-mock">JSON Mock</a> · 
+      <a href="/mock-api">Mock API</a>
+    </p>
+  </footer>
+</body>
+</html>

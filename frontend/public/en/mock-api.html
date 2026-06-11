@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock API - Create Fake APIs for Testing Without Real Backend | MockAgent.AI</title>
+  <meta name="description" content="Create fake APIs (mock APIs) free for testing and development. Simulate REST endpoints, generate JSON responses and test without a backend. No registration." />
+  <meta name="keywords" content="mock api, fake api, dummy api, mock rest api, api simulator, test api endpoint, create fake api, mock api tool, dummy api rest, api testing mock" />
+  <meta name="author" content="MockAgent.AI" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.mockagentai.com/en/mock-api" />
+  <link rel="alternate" hreflang="es" href="https://www.mockagentai.com/mock-api" />
+  <link rel="alternate" hreflang="en" href="https://www.mockagentai.com/en/mock-api" />
+  
+  <meta property="og:title" content="Mock API - Create Fake APIs for Testing Without Real Backend" />
+  <meta property="og:description" content="Create fake APIs free for testing. Simulate REST endpoints, generate JSON responses and test without a real backend." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.mockagentai.com/en/mock-api" />
+  <meta property="og:image" content="https://www.mockagentai.com/og-image.png" />
+  <meta property="og:site_name" content="MockAgent.AI" />
+  <meta property="og:locale" content="en_US" />
+  
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mock API - Create Fake APIs for Testing Without Real Backend" />
+  <meta name="twitter:description" content="Create fake APIs free for testing. Simulate REST endpoints, generate JSON responses and test without a real backend." />
+  <meta name="twitter:image" content="https://www.mockagentai.com/og-image.png" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Mock API - Create Fake APIs Free",
+    "description": "Create fake APIs free for testing and development. Simulate REST endpoints and generate JSON responses.",
+    "url": "https://www.mockagentai.com/en/mock-api",
+    "mainEntity": {
+      "@type": "SoftwareApplication",
+      "name": "MockAgent.AI",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  }
+  </script>
+  
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #0a0a1e;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+    .navbar {
+      background: rgba(10, 10, 30, 0.95);
+      border-bottom: 1px solid rgba(201, 169, 110, 0.2);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo img { width: 32px; height: 32px; border-radius: 8px; }
+    .logo-text { font-size: 20px; font-weight: 700; color: #e2e8f0; letter-spacing: -0.5px; }
+    .logo-text span { color: #C9A96E; }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.2s; }
+    .nav-links a:hover { color: #C9A96E; }
+    .cta-btn {
+      background: #C9A96E;
+      color: #0a0a1e;
+      padding: 10px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    .cta-btn:hover { background: #D4B87A; transform: scale(1.02); }
+    .hero {
+      padding: 80px 24px 60px;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      color: #f8fafc;
+    }
+    .hero h1 span { color: #C9A96E; }
+    .hero p {
+      font-size: 18px;
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+    .hero-cta {
+      display: inline-flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn-primary {
+      background: #C9A96E;
+      color: #0a0a1e;
+      padding: 14px 32px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      transition: 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: #D4B87A; transform: translateY(-2px); box-shadow: 0 10px 40px rgba(201, 169, 110, 0.3); }
+    .btn-secondary {
+      background: transparent;
+      color: #C9A96E;
+      padding: 14px 32px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      border: 1px solid rgba(201, 169, 110, 0.4);
+      transition: 0.2s;
+      display: inline-block;
+    }
+    .btn-secondary:hover { background: rgba(201, 169, 110, 0.1); }
+    .content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+    .section {
+      margin-bottom: 60px;
+    }
+    .section h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #f8fafc;
+    }
+    .section h2 span { color: #C9A96E; }
+    .section h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 24px 0 12px;
+      color: #e2e8f0;
+    }
+    .section p { color: #94a3b8; margin-bottom: 16px; font-size: 16px; }
+    .section ul { margin: 16px 0; padding-left: 24px; }
+    .section ul li { color: #94a3b8; margin-bottom: 8px; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin: 32px 0;
+    }
+    .feature-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .feature-card h4 { color: #C9A96E; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .feature-card p { color: #94a3b8; font-size: 14px; margin: 0; }
+    .faq-item {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 20px 0;
+    }
+    .faq-item h4 { color: #e2e8f0; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .faq-item p { color: #94a3b8; font-size: 14px; margin: 0; }
+    .lang-switch {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(10, 10, 30, 0.9);
+      border: 1px solid rgba(201, 169, 110, 0.3);
+      border-radius: 12px;
+      padding: 12px 16px;
+      z-index: 100;
+    }
+    .lang-switch a { color: #94a3b8; text-decoration: none; font-size: 13px; font-weight: 500; }
+    .lang-switch a:hover { color: #C9A96E; }
+    .lang-switch .active { color: #C9A96E; font-weight: 600; }
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 40px 24px;
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
+    }
+    footer a { color: #94a3b8; text-decoration: none; }
+    footer a:hover { color: #C9A96E; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero h1 { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="MockAgent.AI" />
+      <span class="logo-text">MOCK<span>AGENT</span>.AI</span>
+    </a>
+    <div class="nav-links">
+      <a href="/en/mock-server">Mock Server</a>
+      <a href="/en/api-mocking">API Mocking</a>
+      <a href="/en/json-mock">JSON Mock</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/" class="cta-btn">Create Mock API</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Create <span>Mock APIs</span> Without Backend</h1>
+    <p>Generate fake APIs for testing, prototyping and development. Simulate REST endpoints, configure JSON responses and start testing without depending on a real backend.</p>
+    <div class="hero-cta">
+      <a href="/" class="btn-primary">Create Mock API Free</a>
+      <a href="#what-is" class="btn-secondary">What is a Mock API?</a>
+    </div>
+  </section>
+
+  <div class="content">
+    <section class="section" id="what-is">
+      <h2>What is a <span>Mock API</span>?</h2>
+      <p>A <strong>mock API</strong> (or fake API) is a simulated programming interface that mimics the behavior of a real API but without a backend. It returns predefined responses with the status codes, headers and JSON that you configure.</p>
+      <p>It is the perfect tool for developers who need to <strong>test applications</strong>, <strong>prototype interfaces</strong> or <strong>develop AI agents</strong> without depending on expensive or unstable external services.</p>
+    </section>
+
+    <section class="section">
+      <h2>Why Use a <span>Fake API</span>?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h4>⚡ Speed</h4>
+          <p>A fake API responds in <10ms. A real API can take seconds. Your development flows without interruptions.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🔒 Privacy</h4>
+          <p>You don't send real data to third parties. Your test data stays in your mock, with no risk of leaks.</p>
+        </div>
+        <div class="feature-card">
+          <h4>💰 Free</h4>
+          <p>Avoid paid API costs during development. MockAgent.AI offers free mock APIs forever.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🎮 Total Control</h4>
+          <p>Generate errors, timeouts, empty responses and any edge case you need to test. You decide.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Mock API <span>vs</span> Dummy API</h2>
+      <p>There are several related terms:</p>
+      <ul>
+        <li><strong>Mock API:</strong> Simulates the complete behavior of a real API with routes, methods and responses.</li>
+        <li><strong>Dummy API:</strong> Generally returns simple, static data without logic. More basic.</li>
+        <li><strong>Fake API:</strong> Broad term that includes mocks and dummies. Used interchangeably.</li>
+        <li><strong>Stub API:</strong> Returns predefined responses for unit tests. Simpler than a mock.</li>
+      </ul>
+      <p>MockAgent.AI is a <strong>complete mock API</strong>: supports multiple endpoints, HTTP methods, custom status codes, headers and logs.</p>
+    </section>
+
+    <section class="section">
+      <h2>How to Create a <span>Mock API</span> with MockAgent?</h2>
+      <ul>
+        <li><strong>1. Define the endpoint:</strong> Choose a route like <code>/api/orders</code> and the HTTP method</li>
+        <li><strong>2. Configure the response:</strong> Write the JSON with the data you want to return</li>
+        <li><strong>3. Choose the status code:</strong> 200, 201, 400, 401, 404, 500... any</li>
+        <li><strong>4. Publish:</strong> Get an instant public URL</li>
+        <li><strong>5. Integrate:</strong> Use the URL in your frontend, tests or AI agent</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Use Cases for <span>Test APIs</span></h2>
+      <ul>
+        <li><strong>Frontend Development:</strong> Your UI needs data before the backend is ready</li>
+        <li><strong>E2E Testing:</strong> Simulate third-party APIs in automated tests without depending on their availability</li>
+        <li><strong>Prototyping:</strong> Validate ideas with stakeholders by showing a functional app with real data</li>
+        <li><strong>AI Agents:</strong> Train agents that consume APIs without depending on external services</li>
+        <li><strong>Training:</strong> Teach juniors how to consume APIs without needing a complex backend</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>FAQ About <span>Mock APIs</span></h2>
+      <div class="faq-item">
+        <h4>Is it free to create a mock API?</h4>
+        <p>Yes. With MockAgent.AI you get 5 free endpoints with 100 requests/day forever. No credit card.</p>
+      </div>
+      <div class="faq-item">
+        <h4>How long does it take to create a fake API?</h4>
+        <p>Less than 30 seconds. Choose the route, paste the JSON and publish. Instant public URL.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I use the mock API in production?</h4>
+        <p>It is designed for development, testing and staging. For production use real APIs.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What HTTP methods are supported?</h4>
+        <p>GET, POST, PUT, DELETE, PATCH. All common REST methods. You can configure each endpoint with its method and response.</p>
+      </div>
+    </section>
+
+    <section class="section" style="text-align: center; padding: 40px 0; background: rgba(201, 169, 110, 0.05); border-radius: 16px;">
+      <h2>Ready to Create Your <span>Mock API</span>?</h2>
+      <p style="margin-bottom: 24px;">Start free in 30 seconds. No registration, no credit card.</p>
+      <a href="/" class="btn-primary" style="font-size: 18px; padding: 16px 40px;">Create Mock API Free</a>
+    </section>
+  </div>
+
+  <div class="lang-switch">
+    <a href="/mock-api">ES</a> | <span class="active">EN</span>
+  </div>
+
+  <footer>
+    <p>© 2026 MockAgent.AI — <a href="/">Mocking Infrastructure for AI Agents</a></p>
+    <p style="margin-top: 8px; font-size: 12px;">
+      <a href="/en/mock-server">Mock Server</a> · 
+      <a href="/en/api-mocking">API Mocking</a> · 
+      <a href="/en/json-mock">JSON Mock</a> · 
+      <a href="/en/mock-api">Mock API</a>
+    </p>
+  </footer>
+</body>
+</html>

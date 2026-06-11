@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Mock Server Online - Simulate APIs in Seconds | MockAgent.AI</title>
+  <meta name="description" content="Create a free mock server without registration. Simulate REST APIs, generate JSON responses, configure status codes. Perfect for testing, development and rapid prototyping." />
+  <meta name="keywords" content="mock server, free mock server, mock server online, api mock server, test server, mock api server, mock rest server, fake api server, api testing server, mock server tool" />
+  <meta name="author" content="MockAgent.AI" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.mockagentai.com/en/mock-server" />
+  <link rel="alternate" hreflang="es" href="https://www.mockagentai.com/mock-server" />
+  <link rel="alternate" hreflang="en" href="https://www.mockagentai.com/en/mock-server" />
+  
+  <meta property="og:title" content="Free Mock Server Online - Simulate APIs in Seconds" />
+  <meta property="og:description" content="Create a free mock server without registration. Simulate REST APIs and generate JSON responses instantly." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.mockagentai.com/en/mock-server" />
+  <meta property="og:image" content="https://www.mockagentai.com/og-image.png" />
+  <meta property="og:site_name" content="MockAgent.AI" />
+  <meta property="og:locale" content="en_US" />
+  
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Mock Server Online - Simulate APIs in Seconds" />
+  <meta name="twitter:description" content="Create a free mock server without registration. Simulate REST APIs and generate JSON responses instantly." />
+  <meta name="twitter:image" content="https://www.mockagentai.com/og-image.png" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Free Mock Server Online",
+    "description": "Create a free mock server without registration. Simulate REST APIs, generate JSON responses, configure status codes.",
+    "url": "https://www.mockagentai.com/en/mock-server",
+    "mainEntity": {
+      "@type": "SoftwareApplication",
+      "name": "MockAgent.AI",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  }
+  </script>
+  
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #0a0a1e;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+    .navbar {
+      background: rgba(10, 10, 30, 0.95);
+      border-bottom: 1px solid rgba(201, 169, 110, 0.2);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo img { width: 32px; height: 32px; border-radius: 8px; }
+    .logo-text { font-size: 20px; font-weight: 700; color: #e2e8f0; letter-spacing: -0.5px; }
+    .logo-text span { color: #C9A96E; }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.2s; }
+    .nav-links a:hover { color: #C9A96E; }
+    .cta-btn {
+      background: #C9A96E;
+      color: #0a0a1e;
+      padding: 10px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    .cta-btn:hover { background: #D4B87A; transform: scale(1.02); }
+    .hero {
+      padding: 80px 24px 60px;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      color: #f8fafc;
+    }
+    .hero h1 span { color: #C9A96E; }
+    .hero p {
+      font-size: 18px;
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+    .hero-cta {
+      display: inline-flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn-primary {
+      background: #C9A96E;
+      color: #0a0a1e;
+      padding: 14px 32px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      transition: 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: #D4B87A; transform: translateY(-2px); box-shadow: 0 10px 40px rgba(201, 169, 110, 0.3); }
+    .btn-secondary {
+      background: transparent;
+      color: #C9A96E;
+      padding: 14px 32px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      border: 1px solid rgba(201, 169, 110, 0.4);
+      transition: 0.2s;
+      display: inline-block;
+    }
+    .btn-secondary:hover { background: rgba(201, 169, 110, 0.1); }
+    .content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+    .section {
+      margin-bottom: 60px;
+    }
+    .section h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #f8fafc;
+    }
+    .section h2 span { color: #C9A96E; }
+    .section h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 24px 0 12px;
+      color: #e2e8f0;
+    }
+    .section p { color: #94a3b8; margin-bottom: 16px; font-size: 16px; }
+    .section ul { margin: 16px 0; padding-left: 24px; }
+    .section ul li { color: #94a3b8; margin-bottom: 8px; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin: 32px 0;
+    }
+    .feature-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .feature-card h4 { color: #C9A96E; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .feature-card p { color: #94a3b8; font-size: 14px; margin: 0; }
+    .faq-item {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 20px 0;
+    }
+    .faq-item h4 { color: #e2e8f0; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .faq-item p { color: #94a3b8; font-size: 14px; margin: 0; }
+    .lang-switch {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(10, 10, 30, 0.9);
+      border: 1px solid rgba(201, 169, 110, 0.3);
+      border-radius: 12px;
+      padding: 12px 16px;
+      z-index: 100;
+    }
+    .lang-switch a { color: #94a3b8; text-decoration: none; font-size: 13px; font-weight: 500; }
+    .lang-switch a:hover { color: #C9A96E; }
+    .lang-switch .active { color: #C9A96E; font-weight: 600; }
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 40px 24px;
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
+    }
+    footer a { color: #94a3b8; text-decoration: none; }
+    footer a:hover { color: #C9A96E; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero h1 { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="MockAgent.AI" />
+      <span class="logo-text">MOCK<span>AGENT</span>.AI</span>
+    </a>
+    <div class="nav-links">
+      <a href="/en/api-mocking">API Mocking</a>
+      <a href="/en/json-mock">JSON Mock</a>
+      <a href="/en/mock-api">Mock API</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/" class="cta-btn">Use Mock Server</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Free <span>Mock Server</span> Online</h1>
+    <p>Create a mock server in seconds without registration. Simulate REST APIs, generate JSON responses and configure status codes for testing and development.</p>
+    <div class="hero-cta">
+      <a href="/" class="btn-primary">Create Mock Server Free</a>
+      <a href="#how-it-works" class="btn-secondary">How it works</a>
+    </div>
+  </section>
+
+  <div class="content">
+    <section class="section">
+      <h2>What is a <span>Mock Server</span>?</h2>
+      <p>A <strong>mock server</strong> is a simulated server that mimics the behavior of a real API. Instead of connecting to an expensive or unstable backend, the mock server returns predefined responses with the status codes, headers and JSON body that you configure.</p>
+      <p>It is the essential tool for developers working with <strong>REST APIs</strong>, <strong>microservices</strong> or <strong>AI agents</strong> that need test data without depending on external services.</p>
+    </section>
+
+    <section class="section">
+      <h2>What is a Mock Server <span>For</span>?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h4>🧪 Testing Without Backend</h4>
+          <p>Test your frontend or AI agent without needing the backend to be ready. Simulate errors 500, 404, 401 and edge cases.</p>
+        </div>
+        <div class="feature-card">
+          <h4>⚡ Rapid Prototyping</h4>
+          <p>Validate ideas in minutes. Create a mock endpoint with JSON response and share the URL with your team.</p>
+        </div>
+        <div class="feature-card">
+          <h4>💰 Reduce Costs</h4>
+          <p>Avoid expensive calls to third-party APIs (Stripe, OpenAI, etc.) during development. Save up to 65% on costs.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🤖 AI Agents</h4>
+          <p>Develop autonomous agents that consume APIs without depending on real services. Iterate faster.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how-it-works">
+      <h2>How to Create a <span>Mock Server</span> in 3 Steps</h2>
+      <h3>1. Define Your Endpoint</h3>
+      <p>Choose your API route (e.g. <code>/api/v1/users</code>), the HTTP method (GET, POST, PUT, DELETE) and the status code you want to simulate.</p>
+      <h3>2. Configure the JSON Response</h3>
+      <p>Paste your response JSON in the editor. Validate syntax in real-time. You can simulate anything from a simple user list to complex nested arrays.</p>
+      <h3>3. Get Your URL</h3>
+      <p>Publish your mock and receive an instant public URL like <code>https://tfg-mockagent-production.up.railway.app/mock/your-route</code>. Use it in your AI agent, frontend or tests.</p>
+    </section>
+
+    <section class="section">
+      <h2>Features of Our <span>Test Server</span></h2>
+      <ul>
+        <li><strong>Free Mock Server</strong> — 5 endpoints and 100 requests/day without a card</li>
+        <li><strong>JSON Responses</strong> — Configure any JSON body with real-time validation</li>
+        <li><strong>Status Codes</strong> — Simulate 200, 201, 400, 401, 403, 404, 500, 502, 503...</li>
+        <li><strong>Custom Headers</strong> — Define response headers for CORS, auth, etc.</li>
+        <li><strong>Request Logs</strong> — Review what called your mock and with what data</li>
+        <li><strong>Rate Limiting</strong> — Configurable protection per plan</li>
+        <li><strong>SSL/HTTPS</strong> — All endpoints use free HTTPS</li>
+        <li><strong>No Installation</strong> — Everything from the browser, no Docker or config needed</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Mock Server <span>vs</span> Real API</h2>
+      <p>Why use a mock server instead of a real API during development?</p>
+      <ul>
+        <li><strong>Cost:</strong> Real APIs (Stripe, OpenAI, etc.) charge per call. A mock server is free.</li>
+        <li><strong>Speed:</strong> Response <10ms vs seconds for a real API.</li>
+        <li><strong>Stability:</strong> Your mock server never goes down. Real APIs do.</li>
+        <li><strong>Control:</strong> Generate errors on demand to test edge cases.</li>
+        <li><strong>Privacy:</strong> Don't send real data to third parties during development.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>FAQ About <span>Mock Servers</span></h2>
+      <div class="faq-item">
+        <h4>Do I need to know programming to use a mock server?</h4>
+        <p>No. MockAgent.AI is visual. You write the response JSON, choose the status code and done. No code needed.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I use the mock server for production?</h4>
+        <p>It is designed for development, testing and staging. For production we recommend using real APIs, although it supports considerable load.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is it really free?</h4>
+        <p>Yes. The Free plan includes 5 endpoints and 100 requests/day forever, no credit card.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What is the difference between mock server, stub and fake API?</h4>
+        <p>A mock server simulates all server behavior (routes, status, headers). A stub is simpler (just returns data). Fake API is a broader term. MockAgent.AI is a complete mock server.</p>
+      </div>
+    </section>
+
+    <section class="section" style="text-align: center; padding: 40px 0; background: rgba(201, 169, 110, 0.05); border-radius: 16px;">
+      <h2>Ready to Create Your <span>Mock Server</span>?</h2>
+      <p style="margin-bottom: 24px;">Start free in seconds. No card, no registration required.</p>
+      <a href="/" class="btn-primary" style="font-size: 18px; padding: 16px 40px;">Create Mock Server Free</a>
+    </section>
+  </div>
+
+  <div class="lang-switch">
+    <a href="/mock-server">ES</a> | <span class="active">EN</span>
+  </div>
+
+  <footer>
+    <p>© 2026 MockAgent.AI — <a href="/">Mocking Infrastructure for AI Agents</a></p>
+    <p style="margin-top: 8px; font-size: 12px;">
+      <a href="/en/mock-server">Mock Server</a> · 
+      <a href="/en/api-mocking">API Mocking</a> · 
+      <a href="/en/json-mock">JSON Mock</a> · 
+      <a href="/en/mock-api">Mock API</a>
+    </p>
+  </footer>
+</body>
+</html>
