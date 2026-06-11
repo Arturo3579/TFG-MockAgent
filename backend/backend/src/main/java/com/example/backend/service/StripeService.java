@@ -67,15 +67,33 @@ public class StripeService {
 
         User user = userOpt.get();
         
-        // Siempre crear un nuevo customer en Stripe para evitar problemas con cuentas cambiadas
-        Customer customer = Customer.create(
-            new com.stripe.param.CustomerCreateParams.Builder()
-                .setEmail(email)
-                .build()
-        );
-        String customerId = customer.getId();
-        user.setStripeCustomerId(customerId);
-        userRepository.save(user);
+        // Reutilizar customer existente si es válido, o crear uno nuevo
+        String customerId;
+        if (user.getStripeCustomerId() != null && !user.getStripeCustomerId().isEmpty()) {
+            try {
+                Customer.retrieve(user.getStripeCustomerId());
+                customerId = user.getStripeCustomerId();
+            } catch (Exception e) {
+                // Customer no existe en Stripe (cuenta cambiada, etc.), crear nuevo
+                Customer customer = Customer.create(
+                    new com.stripe.param.CustomerCreateParams.Builder()
+                        .setEmail(email)
+                        .build()
+                );
+                customerId = customer.getId();
+                user.setStripeCustomerId(customerId);
+                userRepository.save(user);
+            }
+        } else {
+            Customer customer = Customer.create(
+                new com.stripe.param.CustomerCreateParams.Builder()
+                    .setEmail(email)
+                    .build()
+            );
+            customerId = customer.getId();
+            user.setStripeCustomerId(customerId);
+            userRepository.save(user);
+        }
 
         SessionCreateParams params = SessionCreateParams.builder()
             .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
