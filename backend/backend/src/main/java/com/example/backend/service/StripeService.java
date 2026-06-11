@@ -66,64 +66,34 @@ public class StripeService {
         }
 
         User user = userOpt.get();
-        String customerId = user.getStripeCustomerId();
+        
+        // Siempre crear un nuevo customer en Stripe para evitar problemas con cuentas cambiadas
+        Customer customer = Customer.create(
+            new com.stripe.param.CustomerCreateParams.Builder()
+                .setEmail(email)
+                .build()
+        );
+        String customerId = customer.getId();
+        user.setStripeCustomerId(customerId);
+        userRepository.save(user);
 
-        // Si no tiene customer o el customer no existe en Stripe (cuenta cambiada), crear nuevo
-        boolean customerValido = false;
-        if (customerId != null) {
-            try {
-                // Verificar si el customer existe en Stripe
-                Customer.retrieve(customerId);
-                customerValido = true;
-            } catch (Exception e) {
-                // Cualquier excepción (Stripe o no), el customer no existe
-                System.out.println("Customer invalido, limpiando: " + e.getMessage());
-                customerId = null;
-                user.setStripeCustomerId(null);
-                userRepository.save(user);
-            }
-        }
-
-        if (!customerValido) {
-            Customer customer = Customer.create(
-                new com.stripe.param.CustomerCreateParams.Builder()
-                    .setEmail(email)
+        SessionCreateParams params = SessionCreateParams.builder()
+            .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
+            .setCustomer(customerId)
+            .setSuccessUrl("https://www.mockagentai.com/?success=true&session_id={CHECKOUT_SESSION_ID}")
+            .setCancelUrl("https://www.mockagentai.com/pricing?canceled=true")
+            .addLineItem(
+                SessionCreateParams.LineItem.builder()
+                    .setPrice(priceId)
+                    .setQuantity(1L)
                     .build()
-            );
-            customerId = customer.getId();
-            user.setStripeCustomerId(customerId);
-            userRepository.save(user);
-        }
+            )
+            .putMetadata("userId", String.valueOf(user.getId()))
+            .putMetadata("plan", plan)
+            .build();
 
-        try {
-            SessionCreateParams params = SessionCreateParams.builder()
-                .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
-                .setCustomer(customerId)
-                .setSuccessUrl("https://www.mockagentai.com/?success=true&session_id={CHECKOUT_SESSION_ID}")
-                .setCancelUrl("https://www.mockagentai.com/pricing?canceled=true")
-                .addLineItem(
-                    SessionCreateParams.LineItem.builder()
-                        .setPrice(priceId)
-                        .setQuantity(1L)
-                        .build()
-                )
-                .putMetadata("userId", String.valueOf(user.getId()))
-                .putMetadata("plan", plan)
-                .build();
-
-            Session session = Session.create(params);
-            return session.getUrl();
-        } catch (com.stripe.exception.StripeException e) {
-            if (e.getMessage() != null && e.getMessage().contains("No such customer")) {
-                // Customer no existe en Stripe, limpiar y reintentar
-                System.out.println("Customer no existe en Stripe, reintentando con nuevo customer: " + e.getMessage());
-                user.setStripeCustomerId(null);
-                userRepository.save(user);
-                // Llamar recursivamente a createCheckoutSession con customer limpiado
-                return createCheckoutSession(plan, email);
-            }
-            throw e;
-        }
+        Session session = Session.create(params);
+        return session.getUrl();
     }
 
     public void handleWebhook(String payload, String sigHeader) throws Exception {
