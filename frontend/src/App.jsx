@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoogleLogin } from '@react-oauth/google';
-import { Sun, Moon, Zap, Check, Sparkles, ArrowLeft, Mail, UserPlus, AlertTriangle, Trash2, X, Terminal, Play, Code, HelpCircle, Shield, Clock, Server, ChevronDown, ChevronUp, ExternalLink, Lock, FileJson, Globe, CreditCard, Users, BookOpen, FileText, Scale, Calendar, Copy, CheckCircle, ArrowUp, Loader2, Activity, MessageCircle, Send, Menu } from 'lucide-react';
+import { Sun, Moon, Zap, Check, Sparkles, ArrowLeft, Mail, UserPlus, AlertTriangle, Trash2, X, Terminal, Play, Code, HelpCircle, Shield, Clock, Server, ChevronDown, ChevronUp, ExternalLink, Lock, FileJson, Globe, CreditCard, Users, BookOpen, FileText, Scale, Calendar, Copy, CheckCircle, ArrowUp, Loader2, Activity, MessageCircle, Send, Menu, User } from 'lucide-react';
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:9090',
@@ -1488,7 +1488,7 @@ function App() {
                 <span onClick={() => { setVistaActual('pricing'); setMobileMenuOpen(false); }} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '15px', color: 'var(--text-muted)', padding: '8px 0', borderBottom: '1px solid var(--border-color)' }}>Pricing</span>
                 {getToken() ? (
                   <>
-                    <span onClick={() => { setVistaActual('dashboard'); setMobileMenuOpen(false); }} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '15px', color: 'var(--text-muted)', padding: '8px 0', borderBottom: '1px solid var(--border-color)' }}>Mi cuenta</span>
+                    <span onClick={() => { setVistaActual('dashboard'); setMobileMenuOpen(false); }} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '15px', color: 'var(--text-muted)', padding: '8px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '8px' }}><User size={16} /> Mi cuenta</span>
                     <span onClick={() => { cerrarSesion(); setMobileMenuOpen(false); }} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '15px', color: '#ef4444', padding: '8px 0' }}>Cerrar sesión</span>
                   </>
                 ) : (
