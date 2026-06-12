@@ -2269,7 +2269,7 @@ function App() {
                     <td style={{ padding: '14px 16px', fontSize: '14px', color: 'var(--text-muted)' }}>{ep.id}</td>
                     <td style={{ padding: '14px 16px', fontFamily: "'JetBrains Mono', monospace", color: '#C9A96E', fontSize: '14px', fontWeight: '500' }}>
                       {ep.path}
-                      <button onClick={() => { navigator.clipboard.writeText(`https://tfg-mockagent-production.up.railway.app/mock${ep.path}`); showToast('URL copiada al portapapeles'); }} style={{ marginLeft: '8px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', opacity: 0.5, transition: '0.2s' }} title="Copiar URL">
+                      <button onClick={() => { const path = ep.path.startsWith('/') ? ep.path : '/' + ep.path; navigator.clipboard.writeText(`https://tfg-mockagent-production.up.railway.app/mock${path}`); showToast('URL copiada al portapapeles'); }} style={{ marginLeft: '8px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', opacity: 0.5, transition: '0.2s' }} title="Copiar URL">
                         <Copy size={14} />
                       </button>
                     </td>
@@ -2315,7 +2315,7 @@ function App() {
                       <td style={{ padding: '12px 16px' }}><span className={getMethodBadge(log.method)} style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: '600' }}>{log.method}</span></td>
                       <td style={{ padding: '12px 16px', fontFamily: "'JetBrains Mono', monospace", color: '#C9A96E', fontSize: '13px', fontWeight: '500' }}>
                         {log.path}
-                        <button onClick={() => { navigator.clipboard.writeText(`https://tfg-mockagent-production.up.railway.app/mock${log.path}`); showToast('URL copiada al portapapeles'); }} style={{ marginLeft: '6px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', opacity: 0.5, transition: '0.2s' }} title="Copiar URL">
+                        <button onClick={() => { const path = log.path.startsWith('/') ? log.path : '/' + log.path; navigator.clipboard.writeText(`https://tfg-mockagent-production.up.railway.app/mock${path}`); showToast('URL copiada al portapapeles'); }} style={{ marginLeft: '6px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', opacity: 0.5, transition: '0.2s' }} title="Copiar URL">
                           <Copy size={12} />
                         </button>
                       </td>
