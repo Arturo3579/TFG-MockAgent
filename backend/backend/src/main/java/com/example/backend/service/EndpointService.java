@@ -10,11 +10,13 @@ import com.example.backend.model.MockEndpoint;
 import com.example.backend.model.PlanType;
 import com.example.backend.model.User;
 import com.example.backend.repository.MockEndpointRepository;
+import com.example.backend.repository.RequestLogRepository;
 import com.example.backend.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class EndpointService {
 
     private final MockEndpointRepository endpointRepository;
     private final UserRepository userRepository;
+    private final RequestLogRepository requestLogRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final int STARTER_LIMIT = 5;
@@ -85,6 +88,7 @@ public class EndpointService {
         return toDto(endpointRepository.save(endpoint));
     }
 
+    @Transactional
     public void deleteEndpoint(String email, Long id) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
@@ -96,6 +100,9 @@ public class EndpointService {
             throw new UnauthorizedEndpointException("No tienes permiso para eliminar este endpoint");
         }
 
+        // Borrar logs asociados primero para evitar error de foreign key
+        requestLogRepository.deleteByEndpoint_Id(id);
+        
         endpointRepository.delete(endpoint);
     }
 

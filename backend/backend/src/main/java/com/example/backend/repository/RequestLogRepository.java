@@ -12,4 +12,5 @@ import java.util.List;
 public interface RequestLogRepository extends JpaRepository<RequestLog, Long> {
     List<RequestLog> findTop50ByUserOrderByTimestampDesc(User user);
     List<RequestLog> findTop50ByUserAndTimestampAfterOrderByTimestampDesc(User user, LocalDateTime since);
+    void deleteByEndpoint_Id(Long endpointId);
 }
