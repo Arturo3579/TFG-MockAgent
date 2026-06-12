@@ -100,7 +100,20 @@ public class EndpointService {
     }
 
     public List<MockEndpoint> findMatchingEndpoint(String path, String method) {
-        return endpointRepository.findByPathAndMethod(path, method.toUpperCase());
+        String upperMethod = method.toUpperCase();
+        // Buscar primero con el path exacto
+        List<MockEndpoint> matches = endpointRepository.findByPathAndMethod(path, upperMethod);
+        if (!matches.isEmpty()) {
+            return matches;
+        }
+        // Si no se encuentra y el path empieza con /, buscar sin el /
+        if (path.startsWith("/")) {
+            matches = endpointRepository.findByPathAndMethod(path.substring(1), upperMethod);
+        } else {
+            // Si no empieza con /, buscar con /
+            matches = endpointRepository.findByPathAndMethod("/" + path, upperMethod);
+        }
+        return matches;
     }
 
     private void checkPlanLimit(PlanType plan, long currentCount) {
