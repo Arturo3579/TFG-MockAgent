@@ -2563,7 +2563,7 @@ function App() {
             </div>
           </div>
 
-          <motion.div initial="hidden" animate="visible" variants={stagger} style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
             {PRICING_PLANS.map((plan) => (
               <motion.div
                 key={plan.id}
@@ -2636,7 +2636,7 @@ function App() {
                 </motion.button>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
 
           {/* FAQ */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} style={{ maxWidth: '700px', margin: '64px auto 0' }}>
