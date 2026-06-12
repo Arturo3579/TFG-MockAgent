@@ -5,7 +5,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { Sun, Moon, Zap, Check, Sparkles, ArrowLeft, Mail, UserPlus, AlertTriangle, Trash2, X, Terminal, Play, Code, HelpCircle, Shield, Clock, Server, ChevronDown, ChevronUp, ExternalLink, Lock, FileJson, Globe, CreditCard, Users, BookOpen, FileText, Scale, Calendar, Copy, CheckCircle, ArrowUp, Loader2, Activity, MessageCircle, Send, Menu, User } from 'lucide-react';
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:9090',
+  baseURL: import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:9090' : 'https://tfg-mockagent-production.up.railway.app'),
 });
 
 const getToken = () => sessionStorage.getItem('token') || localStorage.getItem('token');
