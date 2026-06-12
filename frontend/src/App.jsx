@@ -1355,7 +1355,8 @@ function App() {
           cargarEndpoints();
         } catch (e) {
           console.error(e);
-          setModal({ open: true, type: 'error', title: 'Error', message: 'No se pudo borrar el mock.', onConfirm: closeModal });
+          const errorMsg = e.response?.data?.message || e.response?.data?.error || e.message || 'Error desconocido';
+          setModal({ open: true, type: 'error', title: 'Error', message: `No se pudo borrar el mock: ${errorMsg}`, onConfirm: closeModal });
         }
       }
     });
