@@ -1434,7 +1434,7 @@ function App() {
 
           {/* Desktop Nav */}
           <div style={{ display: 'none', gap: '12px', alignItems: 'center' }} className="desktop-nav">
-            <span onClick={() => setVistaActual('pricing')} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '14px', color: 'var(--text-muted)', transition: '0.2s' }}>Pricing</span>
+            <motion.button onClick={() => setVistaActual('pricing')} whileHover={{ scale: 1.04, backgroundColor: 'rgba(201,169,110,0.15)' }} whileTap={{ scale: 0.97 }} style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid rgba(201,169,110,0.3)', backgroundColor: 'transparent', color: '#C9A96E', fontWeight: '600', cursor: 'pointer', fontSize: '14px' }}>Pricing</motion.button>
             {getToken() ? (
               <>
                 <motion.button onClick={() => { setVistaActual('dashboard'); }} whileHover={{ scale: 1.04, backgroundColor: '#D4B87A' }} whileTap={{ scale: 0.97 }} style={CTA_PRIMARY}>Mi cuenta</motion.button>
