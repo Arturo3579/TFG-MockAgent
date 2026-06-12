@@ -27,6 +27,10 @@ public class MockController {
             @RequestBody(required = false) String body) {
 
         String path = request.getRequestURI().replaceFirst("/mock", "");
+        // Normalizar path: asegurar que empieza con /
+        if (!path.startsWith("/")) {
+            path = "/" + path;
+        }
         String method = request.getMethod();
 
         List<MockEndpoint> matches = endpointService.findMatchingEndpoint(path, method);

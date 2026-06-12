@@ -47,8 +47,14 @@ public class EndpointService {
 
         validateJson(request.getResponseBody());
 
+        // Normalizar path: asegurar que empieza con /
+        String normalizedPath = request.getPath();
+        if (!normalizedPath.startsWith("/")) {
+            normalizedPath = "/" + normalizedPath;
+        }
+
         MockEndpoint endpoint = MockEndpoint.builder()
-                .path(request.getPath())
+                .path(normalizedPath)
                 .method(request.getMethod().toUpperCase())
                 .status(request.getStatus() != null ? request.getStatus() : 200)
                 .responseBody(request.getResponseBody() != null ? request.getResponseBody() : "{}")
