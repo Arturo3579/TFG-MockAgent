@@ -684,7 +684,7 @@ const trustItems = [
 const HOW_IT_WORKS_STEPS = [
   { num: "01", title: "Define tu endpoint", desc: "Elige la ruta (ej. /api/v1/users), el método HTTP y el código de status que quieres simular.", icon: <Globe size={20} /> },
   { num: "02", title: "Configura la respuesta", desc: "Pega tu JSON de respuesta en el editor. Valida la sintaxis en tiempo real antes de publicar.", icon: <FileJson size={20} /> },
-  { num: "03", title: "Llama a tu mock", desc: "Usa la URL http://localhost:9090/mock/tu-ruta en tu agente de IA o cliente HTTP. Respuesta instantánea.", icon: <Play size={20} /> }
+  { num: "03", title: "Llama a tu mock", desc: "Usa la URL https://tfg-mockagent-production.up.railway.app/mock/tu-ruta en tu agente de IA o cliente HTTP. Respuesta instantánea.", icon: <Play size={20} /> }
 ];
 
 const COMPARISON_DATA = [
@@ -797,7 +797,7 @@ const DOCS_SECTIONS = [
   {
     id: 'intro',
     title: 'Introducción',
-    content: 'Base URL: http://localhost:9090. Todas las rutas administrativas requieren autenticación via JWT Bearer token en el header Authorization. El mock server (/mock/**) es público una vez publicado el endpoint.'
+    content: 'Base URL: https://tfg-mockagent-production.up.railway.app. Todas las rutas administrativas requieren autenticación via JWT Bearer token en el header Authorization. El mock server (/mock/**) es público una vez publicado el endpoint.'
   },
   {
     id: 'auth',
@@ -2269,7 +2269,7 @@ function App() {
                     <td style={{ padding: '14px 16px', fontSize: '14px', color: 'var(--text-muted)' }}>{ep.id}</td>
                     <td style={{ padding: '14px 16px', fontFamily: "'JetBrains Mono', monospace", color: '#C9A96E', fontSize: '14px', fontWeight: '500' }}>
                       {ep.path}
-                      <button onClick={() => { navigator.clipboard.writeText(`http://localhost:9090/mock${ep.path}`); showToast('URL copiada al portapapeles'); }} style={{ marginLeft: '8px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', opacity: 0.5, transition: '0.2s' }} title="Copiar URL">
+                      <button onClick={() => { navigator.clipboard.writeText(`https://tfg-mockagent-production.up.railway.app/mock${ep.path}`); showToast('URL copiada al portapapeles'); }} style={{ marginLeft: '8px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', opacity: 0.5, transition: '0.2s' }} title="Copiar URL">
                         <Copy size={14} />
                       </button>
                     </td>
@@ -2315,7 +2315,7 @@ function App() {
                       <td style={{ padding: '12px 16px' }}><span className={getMethodBadge(log.method)} style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: '600' }}>{log.method}</span></td>
                       <td style={{ padding: '12px 16px', fontFamily: "'JetBrains Mono', monospace", color: '#C9A96E', fontSize: '13px', fontWeight: '500' }}>
                         {log.path}
-                        <button onClick={() => { navigator.clipboard.writeText(`http://localhost:9090/mock${log.path}`); showToast('URL copiada al portapapeles'); }} style={{ marginLeft: '6px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', opacity: 0.5, transition: '0.2s' }} title="Copiar URL">
+                        <button onClick={() => { navigator.clipboard.writeText(`https://tfg-mockagent-production.up.railway.app/mock${log.path}`); showToast('URL copiada al portapapeles'); }} style={{ marginLeft: '6px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', opacity: 0.5, transition: '0.2s' }} title="Copiar URL">
                           <Copy size={12} />
                         </button>
                       </td>
