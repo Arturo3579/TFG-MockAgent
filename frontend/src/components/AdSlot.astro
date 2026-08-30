@@ -1,10 +1,16 @@
 ---
+import { ADS_ENABLED } from '../lib/config';
+
 export interface Props {
   position?: 'inline' | 'sidebar';
   label?: string;
 }
 
 const { position = 'inline', label = 'Advertisement' } = Astro.props;
+
+if (!ADS_ENABLED) {
+  return null;
+}
 ---
 
 <div class={`ad-slot ad-slot--${position}`} aria-label={label}>
