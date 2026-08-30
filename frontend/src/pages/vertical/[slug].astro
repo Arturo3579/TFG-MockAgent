@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getArticlesByVertical } from '../../lib/articles';
+
+export function getStaticPaths() {
+  return ['life', 'auto', 'health', 'home', 'general'].map(slug => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const articles = getArticlesByVertical(slug);
+
+const labels: Record<string, string> = {
+  life: 'Life Insurance',
+  auto: 'Auto Insurance',
+  health: 'Health Insurance',
+  home: 'Home & Property Insurance',
+  general: 'General'
+};
+
+const title = `${labels[slug]} AI Tools | MockAgent.AI`;
+const description = `Field-reviewed AI tools for ${labels[slug].toLowerCase()} agents and small agencies.`;
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="page-header">
+    <div class="container container-narrow">
+      <h1>{labels[slug]} AI Tools</h1>
+      <p class="page-lead">{description}</p>
+    </div>
+  </div>
+
+  <section class="articles-list">
+    <div class="container container-narrow">
+      {articles.length > 0 ? (
+        articles.map(article => (
+          <article class="list-item">
+            <h2><a href={`/articles/${article.slug}`}>{article.title}</a></h2>
+            <p>{article.description}</p>
+            <span class="list-date">Last reviewed {article.lastReviewed}</span>
+          </article>
+        ))
+      ) : (
+        <p class="empty">No articles in this vertical yet. Check back soon.</p>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding: 3rem 0 1.5rem;
+    text-align: center;
+    background-color: var(--white);
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .page-lead {
+    color: var(--slate-gray);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .articles-list {
+    padding: 2rem 0 4rem;
+  }
+
+  .list-item {
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .list-item h2 {
+    border: none;
+    margin: 0 0 0.5rem;
+    font-size: 1.35rem;
+  }
+
+  .list-item h2 a {
+    color: var(--ink-navy);
+    text-decoration: none;
+  }
+
+  .list-item p {
+    color: var(--slate-gray);
+    margin-bottom: 0.75rem;
+  }
+
+  .list-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .empty {
+    text-align: center;
+    color: var(--slate-gray);
+    padding: 3rem 0;
+  }
+</style>

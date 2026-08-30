@@ -1,0 +1,373 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdSlot from '../components/AdSlot.astro';
+import { articles } from '../lib/articles';
+
+const featured = articles[0];
+const recent = articles.slice(1, 7);
+
+const verticals = [
+  { slug: 'life', label: 'Life', description: 'Long-cycle sales, underwriting, and policy review automation.' },
+  { slug: 'auto', label: 'Auto', description: 'Speed-to-lead, comparative rating, and claims support.' },
+  { slug: 'health', label: 'Health', description: 'Enrollment-season tools, plan matching, and client communication.' },
+  { slug: 'home', label: 'Home & Property', description: 'Climate risk, aerial imagery, and property claims AI.' }
+];
+
+const topics = [
+  { slug: 'workflows', label: 'Workflows', count: articles.filter(a => a.topic === 'workflows').length },
+  { slug: 'tutorials', label: 'Tutorials', count: articles.filter(a => a.topic === 'tutorials').length },
+  { slug: 'compliance', label: 'Compliance', count: articles.filter(a => a.topic === 'compliance').length }
+];
+---
+
+<BaseLayout 
+  title="MockAgent.AI — AI Tools for Independent Insurance Agents"
+  description="Field-reviewed guides to AI tools for independent P&C and life/health insurance agents. Lead intake, quoting, CRM, claims, and compliance."
+>
+  <section class="hero">
+    <div class="container container-narrow">
+      <span class="hero-eyebrow">Field-reviewed research for independent agents</span>
+      <h1>AI tools built for the insurance desk, not the engineering lab</h1>
+      <p class="hero-lead">
+        Independent agents spend an estimated 2.5 hours a day on paperwork and admin. 
+        We review the AI tools that actually reduce that load — from lead qualification 
+        and comparative rating to renewal CRM and claims support.
+      </p>
+      <div class="hero-actions">
+        <a href="/articles" class="btn btn-primary">Browse all articles</a>
+        <a href="/articles/ai-tools-for-independent-insurance-agents" class="btn btn-secondary">Read the 2026 guide</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="featured-section">
+    <div class="container">
+      <div class="featured-card">
+        <div class="featured-meta">
+          <span class="featured-label">Featured Guide</span>
+          <span class="vertical-badge">{featured.vertical}</span>
+        </div>
+        <h2><a href={`/articles/${featured.slug}`}>{featured.title}</a></h2>
+        <p>{featured.description}</p>
+        <a href={`/articles/${featured.slug}`} class="read-link">Read the complete guide →</a>
+      </div>
+    </div>
+  </section>
+
+  <AdSlot position="inline" />
+
+  <section class="verticals-section">
+    <div class="container">
+      <h2>Browse by insurance vertical</h2>
+      <div class="verticals-grid">
+        {verticals.map(v => (
+          <a href={`/vertical/${v.slug}`} class="vertical-card">
+            <h3>{v.label}</h3>
+            <p>{v.description}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="recent-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Latest articles</h2>
+        <a href="/articles">View all →</a>
+      </div>
+      <div class="articles-grid">
+        {recent.map(article => (
+          <article class="article-card">
+            <div class="article-card-meta">
+              <span class="vertical-badge">{article.vertical}</span>
+              {article.topic && <span class="topic-badge">{article.topic}</span>}
+            </div>
+            <h3><a href={`/articles/${article.slug}`}>{article.title}</a></h3>
+            <p>{article.description}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="topics-section">
+    <div class="container container-narrow">
+      <h2>Explore by topic</h2>
+      <div class="topics-list">
+        {topics.map(t => (
+          <a href={`/topic/${t.slug}`} class="topic-card">
+            <span class="topic-name">{t.label}</span>
+            <span class="topic-count">{t.count} articles</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: 4rem 0 3rem;
+    text-align: center;
+    background-color: var(--white);
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .hero-eyebrow {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ledger-green);
+    margin-bottom: 1rem;
+  }
+
+  .hero-lead {
+    font-size: 1.15rem;
+    color: var(--slate-gray);
+    max-width: 640px;
+    margin: 0 auto 1.75rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.85rem 1.5rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+  }
+
+  .btn-primary {
+    background-color: var(--brass);
+    color: var(--white);
+  }
+
+  .btn-primary:hover {
+    background-color: #9A763B;
+    color: var(--white);
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    color: var(--ink-navy);
+    border: 1.5px solid var(--border-light);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--brass);
+    color: var(--brass);
+  }
+
+  .featured-section {
+    padding: 3rem 0 1rem;
+  }
+
+  .featured-card {
+    background-color: var(--white);
+    border: 1px solid var(--border-light);
+    border-left: 4px solid var(--brass);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+  }
+
+  .featured-meta {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .featured-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--brass);
+    font-weight: 600;
+  }
+
+  .featured-card h2 {
+    border: none;
+    margin: 0 0 0.75rem;
+    font-size: 1.6rem;
+  }
+
+  .featured-card h2 a {
+    color: var(--ink-navy);
+    text-decoration: none;
+  }
+
+  .featured-card p {
+    color: var(--slate-gray);
+    margin-bottom: 1rem;
+  }
+
+  .read-link {
+    font-weight: 600;
+  }
+
+  .verticals-section,
+  .recent-section,
+  .topics-section {
+    padding: 2.5rem 0;
+  }
+
+  .verticals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .vertical-card {
+    background-color: var(--white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .vertical-card:hover {
+    border-color: var(--brass);
+    box-shadow: 0 4px 12px rgba(22, 35, 63, 0.06);
+  }
+
+  .vertical-card h3 {
+    margin: 0 0 0.5rem;
+    color: var(--ink-navy);
+  }
+
+  .vertical-card p {
+    margin: 0;
+    color: var(--slate-gray);
+    font-size: 0.95rem;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-header h2 {
+    margin: 0;
+    border: none;
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .article-card {
+    background-color: var(--white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    transition: box-shadow var(--transition-fast);
+  }
+
+  .article-card:hover {
+    box-shadow: 0 4px 12px rgba(22, 35, 63, 0.06);
+  }
+
+  .article-card-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .vertical-badge,
+  .topic-badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.2rem 0.5rem;
+    border-radius: 100px;
+  }
+
+  .vertical-badge {
+    background-color: rgba(22, 35, 63, 0.06);
+    color: var(--ink-navy);
+  }
+
+  .topic-badge {
+    background-color: rgba(184, 147, 74, 0.12);
+    color: var(--brass);
+  }
+
+  .article-card h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.15rem;
+  }
+
+  .article-card h3 a {
+    color: var(--ink-navy);
+    text-decoration: none;
+  }
+
+  .article-card p {
+    margin: 0;
+    color: var(--slate-gray);
+    font-size: 0.95rem;
+  }
+
+  .topics-list {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+
+  .topic-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem;
+    background-color: var(--white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    min-width: 140px;
+  }
+
+  .topic-name {
+    font-weight: 600;
+    color: var(--ink-navy);
+  }
+
+  .topic-count {
+    font-size: 0.85rem;
+    color: var(--slate-gray);
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      padding: 2.5rem 0 2rem;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .btn {
+      justify-content: center;
+    }
+  }
+</style>

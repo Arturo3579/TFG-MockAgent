@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout 
+  title="About | MockAgent.AI"
+  description="How MockAgent.AI researches and reviews AI tools for independent insurance agents."
+>
+  <div class="page-header">
+    <div class="container container-narrow">
+      <h1>About MockAgent.AI</h1>
+      <p class="page-lead">Field-reviewed research for independent agents navigating the AI tool landscape.</p>
+    </div>
+  </div>
+
+  <section class="content-section">
+    <div class="container container-narrow">
+      <h2>What we do</h2>
+      <p>
+        MockAgent.AI publishes practical guides to AI tools for independent P&C and life/health insurance agents 
+        in the United States. We focus on software that agents actually use: lead qualification, comparative rating, 
+        CRM and renewal automation, claims and FNOL support, and customer service.
+      </p>
+
+      <h2>How we evaluate tools</h2>
+      <p>
+        Our comparisons are based on publicly available documentation, vendor materials, pricing pages, and aggregated 
+        user feedback from review sites such as G2, Capterra, and TrustRadius. We do not claim to have hands-on tested 
+        every feature of every product unless that is explicitly stated in the article.
+      </p>
+      <p>
+        When we recommend a tool, we explain the trade-off. When a category has no clear winner, we say so. We do not 
+        accept payment for placement, and any future affiliate or sponsored relationship will be disclosed clearly on 
+        the relevant page.
+      </p>
+
+      <h2>AI-assistance disclosure</h2>
+      <p>
+        Some content on this site is drafted with the assistance of AI writing tools and then reviewed, fact-checked, 
+        and edited by a human editor before publication. We verify pricing, feature claims, and regulatory references 
+        against primary sources where possible, but you should always confirm details with the vendor or your state 
+        Department of Insurance before making a purchase or compliance decision.
+      </p>
+
+      <h2>Who we are</h2>
+      <p>
+        MockAgent.AI is run by an independent research desk. We are not insurance agents, brokers, or licensed 
+        professionals, and we do not provide legal, compliance, or insurance advice. Our value is in organizing and 
+        explaining a crowded software market so you can make faster, better-informed decisions.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions, corrections, or partnership inquiries? <a href="/contact">Reach out here</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding: 3rem 0 1.5rem;
+    text-align: center;
+    background-color: var(--white);
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .page-lead {
+    color: var(--slate-gray);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .content-section {
+    padding: 2rem 0 4rem;
+  }
+</style>

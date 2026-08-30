@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout 
+  title="Contact | MockAgent.AI"
+  description="Contact MockAgent.AI with questions, corrections, or partnership inquiries about AI tools for insurance agents."
+>
+  <div class="page-header">
+    <div class="container container-narrow">
+      <h1>Contact</h1>
+      <p class="page-lead">Questions, corrections, or partnership inquiries.</p>
+    </div>
+  </div>
+
+  <section class="content-section">
+    <div class="container container-narrow">
+      <p>
+        We read every message. Typical response time is 2-3 business days.
+      </p>
+
+      <div class="contact-options">
+        <a href="mailto:hello@mockagentai.com" class="contact-card">
+          <h2>General inquiries</h2>
+          <p>hello@mockagentai.com</p>
+        </a>
+
+        <a href="mailto:corrections@mockagentai.com" class="contact-card">
+          <h2>Corrections</h2>
+          <p>corrections@mockagentai.com</p>
+        </a>
+      </div>
+
+      <div class="notice">
+        <strong>We do not provide insurance, legal, or compliance advice.</strong> 
+        For questions about your specific licensing, appointments, or regulatory obligations, please contact your 
+        state Department of Insurance or a qualified attorney.
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding: 3rem 0 1.5rem;
+    text-align: center;
+    background-color: var(--white);
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .page-lead {
+    color: var(--slate-gray);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .content-section {
+    padding: 2rem 0 4rem;
+  }
+
+  .contact-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+    margin: 2rem 0;
+  }
+
+  .contact-card {
+    display: block;
+    padding: 1.5rem;
+    background-color: var(--white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color var(--transition-fast);
+  }
+
+  .contact-card:hover {
+    border-color: var(--brass);
+  }
+
+  .contact-card h2 {
+    border: none;
+    margin: 0 0 0.5rem;
+    font-size: 1.2rem;
+    color: var(--ink-navy);
+  }
+
+  .contact-card p {
+    margin: 0;
+    color: var(--brass);
+    font-weight: 600;
+  }
+
+  .notice {
+    padding: 1.25rem;
+    background-color: rgba(201, 122, 43, 0.08);
+    border-left: 3px solid var(--risk-amber);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    color: var(--ink-navy);
+  }
+</style>

@@ -2,6 +2,7 @@
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/
+frontend/.astro/
 frontend/*.log
 frontend/npm-debug.log*
 frontend/yarn-debug.log*

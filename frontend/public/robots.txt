@@ -1,7 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /api/
-Disallow: /admin/
-Disallow: /mock/
 
-Sitemap: https://www.mockagentai.com/sitemap.xml
+Sitemap: https://www.mockagentai.com/sitemap-index.xml

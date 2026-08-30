@@ -1,0 +1,32 @@
+---
+import { getCollection, render } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { getArticleBySlug, getRelatedArticles } from '../../lib/articles';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  return articles.map(entry => ({
+    params: { slug: entry.id },
+    props: { entry }
+  }));
+}
+
+const { entry } = Astro.props;
+const articleData = getArticleBySlug(entry.id);
+const related = articleData ? getRelatedArticles(articleData, 3) : [];
+
+if (!articleData) {
+  throw new Error(`Article metadata not found for slug: ${entry.id}`);
+}
+
+const article = {
+  ...articleData,
+  related: related.map(r => ({ slug: r.slug, title: r.title, description: r.description }))
+};
+
+const { Content } = await render(entry);
+---
+
+<ArticleLayout article={article}>
+  <Content />
+</ArticleLayout>

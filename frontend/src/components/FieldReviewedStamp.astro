@@ -1,0 +1,62 @@
+---
+export interface Props {
+  date: string;
+}
+
+const { date } = Astro.props;
+---
+
+<div class="field-reviewed-stamp" aria-label="Field-reviewed on {date}">
+  <span class="stamp-ring">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+  </span>
+  <div class="stamp-text">
+    <span class="stamp-label">FIELD-REVIEWED</span>
+    <span class="stamp-date">{date}</span>
+  </div>
+</div>
+
+<style>
+  .field-reviewed-stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    color: var(--ledger-green);
+  }
+
+  .stamp-ring {
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--ledger-green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .stamp-ring svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .stamp-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .stamp-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+
+  .stamp-date {
+    font-size: 0.8rem;
+    color: var(--slate-gray);
+  }
+</style>

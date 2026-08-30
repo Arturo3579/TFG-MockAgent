@@ -1,0 +1,225 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import CaseSummary from '../components/CaseSummary.astro';
+import FieldReviewedStamp from '../components/FieldReviewedStamp.astro';
+import AdSlot from '../components/AdSlot.astro';
+import type { Article } from '../lib/articles';
+
+export interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": article.title,
+  "description": article.description,
+  "author": { "@type": "Organization", "name": "MockAgent.AI" },
+  "publisher": { 
+    "@type": "Organization", 
+    "name": "MockAgent.AI",
+    "logo": { "@type": "ImageObject", "url": "https://www.mockagentai.com/favicon.svg" }
+  },
+  "datePublished": article.publishDate,
+  "dateModified": article.lastReviewed || article.publishDate,
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": `https://www.mockagentai.com/articles/${article.slug}`
+  }
+};
+
+const formatDate = (dateStr: string) => {
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+---
+
+<BaseLayout 
+  title={`${article.title} | MockAgent.AI`}
+  description={article.description}
+  type="article"
+  publishedAt={article.publishDate}
+  modifiedAt={article.lastReviewed || article.publishDate}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  
+  <article class="article-page">
+    <div class="container container-narrow">
+      <header class="article-header">
+        <div class="article-meta">
+          <a href={`/vertical/${article.vertical}`} class="vertical-link">{article.vertical}</a>
+          {article.topic && <span class="topic-tag">{article.topic}</span>}
+        </div>
+        <h1>{article.title}</h1>
+        <p class="article-description">{article.description}</p>
+        <div class="article-byline">
+          <FieldReviewedStamp date={formatDate(article.lastReviewed || article.publishDate)} />
+          <span class="publish-date">Published {formatDate(article.publishDate)}</span>
+        </div>
+      </header>
+
+      <AdSlot position="inline" />
+
+      {article.caseSummary && <CaseSummary points={article.caseSummary} />}
+
+      <div class="article-body">
+        <slot />
+      </div>
+
+      <AdSlot position="inline" />
+
+      {article.related && article.related.length > 0 && (
+        <section class="related-articles" aria-labelledby="related-heading">
+          <h2 id="related-heading">Related Articles</h2>
+          <ul>
+            {article.related.map(related => (
+              <li>
+                <a href={`/articles/${related.slug}`}>{related.title}</a>
+                <p>{related.description}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-page {
+    padding: 2.5rem 0 4rem;
+  }
+
+  .article-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .article-meta {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+  }
+
+  .vertical-link {
+    color: var(--ledger-green);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.75rem;
+    text-decoration: none;
+  }
+
+  .vertical-link:hover {
+    text-decoration: underline;
+  }
+
+  .topic-tag {
+    color: var(--slate-gray);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .article-description {
+    font-size: 1.15rem;
+    color: var(--slate-gray);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .article-byline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .publish-date {
+    font-size: 0.85rem;
+    color: var(--slate-gray);
+  }
+
+  .article-body {
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+
+  .article-body h2 {
+    margin-top: 2.5rem;
+  }
+
+  .article-body h3 {
+    margin-top: 2rem;
+  }
+
+  .article-body blockquote {
+    border-left: 3px solid var(--brass);
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    background-color: var(--white);
+    font-style: italic;
+    color: var(--slate-gray);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .article-body code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background-color: rgba(22, 35, 63, 0.05);
+    padding: 0.15rem 0.35rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .related-articles {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-light);
+  }
+
+  .related-articles ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .related-articles li {
+    padding: 1rem;
+    background-color: var(--white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+  }
+
+  .related-articles a {
+    font-weight: 600;
+    font-size: 1.05rem;
+    text-decoration: none;
+  }
+
+  .related-articles p {
+    margin: 0.35rem 0 0;
+    font-size: 0.9rem;
+    color: var(--slate-gray);
+  }
+
+  @media (max-width: 640px) {
+    .article-page {
+      padding: 1.5rem 0 3rem;
+    }
+
+    .article-byline {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

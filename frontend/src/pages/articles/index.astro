@@ -1,0 +1,165 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { articles, getArticlesByVertical, getArticlesByTopic } from '../../lib/articles';
+
+const verticals = ['life', 'auto', 'health', 'home', 'general'];
+const topics = ['workflows', 'tutorials', 'compliance', 'reviews'];
+---
+
+<BaseLayout 
+  title="All Articles | MockAgent.AI"
+  description="Browse every field-reviewed guide to AI tools for independent insurance agents."
+>
+  <div class="page-header">
+    <div class="container container-narrow">
+      <h1>All articles</h1>
+      <p class="page-lead">Field-reviewed guides to AI tools for independent P&C and life/health insurance agents.</p>
+    </div>
+  </div>
+
+  <section class="filter-section">
+    <div class="container container-narrow">
+      <h2>Filter by vertical</h2>
+      <div class="filter-list">
+        {verticals.map(v => (
+          <a href={`/vertical/${v}`} class="filter-chip">{v}</a>
+        ))}
+      </div>
+
+      <h2>Filter by topic</h2>
+      <div class="filter-list">
+        {topics.map(t => (
+          <a href={`/topic/${t}`} class="filter-chip">{t}</a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="articles-list">
+    <div class="container container-narrow">
+      {articles.map(article => (
+        <article class="list-item">
+          <div class="list-meta">
+            <span class="vertical-badge">{article.vertical}</span>
+            {article.topic && <span class="topic-badge">{article.topic}</span>}
+          </div>
+          <h2><a href={`/articles/${article.slug}`}>{article.title}</a></h2>
+          <p>{article.description}</p>
+          <span class="list-date">Last reviewed {article.lastReviewed}</span>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding: 3rem 0 1.5rem;
+    text-align: center;
+    background-color: var(--white);
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .page-lead {
+    color: var(--slate-gray);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .filter-section {
+    padding: 2rem 0 1rem;
+  }
+
+  .filter-section h2 {
+    font-size: 1rem;
+    border: none;
+    margin: 1.5rem 0 0.75rem;
+    color: var(--slate-gray);
+  }
+
+  .filter-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filter-chip {
+    display: inline-block;
+    padding: 0.4rem 0.85rem;
+    background-color: var(--white);
+    border: 1px solid var(--border-light);
+    border-radius: 100px;
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--ink-navy);
+    text-transform: capitalize;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .filter-chip:hover {
+    border-color: var(--brass);
+    background-color: rgba(184, 147, 74, 0.05);
+  }
+
+  .articles-list {
+    padding: 1rem 0 4rem;
+  }
+
+  .list-item {
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .list-item:last-child {
+    border-bottom: none;
+  }
+
+  .list-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .vertical-badge,
+  .topic-badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.2rem 0.5rem;
+    border-radius: 100px;
+  }
+
+  .vertical-badge {
+    background-color: rgba(22, 35, 63, 0.06);
+    color: var(--ink-navy);
+  }
+
+  .topic-badge {
+    background-color: rgba(184, 147, 74, 0.12);
+    color: var(--brass);
+  }
+
+  .list-item h2 {
+    border: none;
+    margin: 0 0 0.5rem;
+    font-size: 1.35rem;
+  }
+
+  .list-item h2 a {
+    color: var(--ink-navy);
+    text-decoration: none;
+  }
+
+  .list-item p {
+    color: var(--slate-gray);
+    margin-bottom: 0.75rem;
+  }
+
+  .list-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+</style>
