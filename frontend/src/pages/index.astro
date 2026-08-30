@@ -1,10 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import AdSlot from '../components/AdSlot.astro';
+import { getCollection } from 'astro:content';
 import { articles } from '../lib/articles';
+import { getReadingTimes } from '../lib/readingTime';
 
 const featured = articles[0];
 const recent = articles.slice(1, 7);
+
+const contentEntries = await getCollection('articles');
+const readingTimes = getReadingTimes(contentEntries);
 
 const verticals = [
   { slug: 'life', label: 'Life', description: 'Long-cycle sales, underwriting, and policy review automation.' },
@@ -49,7 +54,10 @@ const topics = [
         </div>
         <h2><a href={`/articles/${featured.slug}`}>{featured.title}</a></h2>
         <p>{featured.description}</p>
-        <a href={`/articles/${featured.slug}`} class="read-link">Read the complete guide →</a>
+        <div class="featured-footer">
+          <a href={`/articles/${featured.slug}`} class="read-link">Read the complete guide →</a>
+          <span class="read-time">{readingTimes[featured.slug]}</span>
+        </div>
       </div>
     </div>
   </section>
@@ -85,6 +93,7 @@ const topics = [
             </div>
             <h3><a href={`/articles/${article.slug}`}>{article.title}</a></h3>
             <p>{article.description}</p>
+            <span class="read-time">{readingTimes[article.slug]}</span>
           </article>
         ))}
       </div>
@@ -214,6 +223,20 @@ const topics = [
 
   .read-link {
     font-weight: 600;
+  }
+
+  .featured-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .read-time {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
   }
 
   .verticals-section,

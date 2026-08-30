@@ -1,20 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import readingTime from 'reading-time';
 import { articles, getArticlesByVertical, getArticlesByTopic } from '../../lib/articles';
+import { getReadingTimes } from '../../lib/readingTime';
 
 const verticals = ['life', 'auto', 'health', 'home', 'general'];
 const topics = ['workflows', 'tutorials', 'compliance', 'reviews'];
 
 const contentEntries = await getCollection('articles');
-const readingTimes: Record<string, string> = {};
-contentEntries.forEach(entry => {
-  const cleaned = entry.body
-    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '')
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
-  readingTimes[entry.id] = readingTime(cleaned).text;
-});
+const readingTimes = getReadingTimes(contentEntries);
 
 const pillarSlug = 'ai-tools-for-independent-insurance-agents';
 const pillar = articles.find(a => a.slug === pillarSlug) || articles[0];
