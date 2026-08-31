@@ -1,0 +1,63 @@
+---
+title: "How to Use ChatGPT or Claude to Draft Insurance Policy Summaries for Clients"
+description: "Manually summarizing a policy for a client eats time you don't have. Here's a prompt framework that works, and the privacy line you shouldn't cross with client data."
+vertical: "general"
+topic: "tutorials"
+targetKeyword: "ChatGPT for insurance agents"
+publishDate: "2026-08-29"
+lastReviewed: "2026-08-29"
+---
+
+Policy documents are written for underwriters and lawyers, not for the person who just bought the coverage. Translating a 40-page policy into "here's what you're actually covered for" is valuable work — and it's exactly the kind of task general-purpose AI assistants are good at, provided you use them carefully.
+
+## Why manual summarizing eats your day
+
+Every agent has done this: a client calls asking "does my policy cover water damage from a burst pipe," and answering well means re-reading declarations pages, endorsements, and exclusion language that wasn't written for a five-minute phone call. Doing this from scratch for every renewal, every client question, and every mid-term change adds up to real hours every week — hours that don't generate new business.
+
+A language model can't replace your judgment about what a policy means, but it's very good at a narrower task: taking the actual policy text and restating it clearly, once you tell it exactly what structure you want.
+
+## A prompt framework for policy summaries
+
+The difference between a mediocre AI summary and a genuinely useful one is almost always in the prompt. Vague requests like "summarize this policy" produce vague, inconsistent output. Asking for a specific structure produces something you can actually hand to a client with light editing.
+
+A prompt that works well:
+
+> "Here is a homeowners insurance policy [paste the relevant declarations page and policy language, with any client-identifying information removed]. Summarize it for the policyholder in plain English, organized under these headings: (1) What's covered, in a short list. (2) Coverage limits, stated in dollars. (3) Key exclusions — things a homeowner might assume are covered but aren't. (4) Deductibles that apply. Keep sentences short. Do not add any coverage interpretation beyond what's stated in the text — if something is ambiguous, say so instead of guessing."
+
+That last instruction matters more than it might seem. Without it, a model will sometimes fill gaps with a plausible-sounding but unsupported interpretation. Explicitly telling it to flag ambiguity instead of guessing produces a more honest — and more useful — summary.
+
+For a renewal where coverage changed, a second useful prompt:
+
+> "Here is last year's policy declarations and this year's renewal declarations [paste both]. List only what changed: new or removed coverages, limit changes, deductible changes, and premium change. Do not restate anything that stayed the same."
+
+This produces a short, scannable "what changed" note that's far more useful to a client than reading two full declarations pages side by side.
+
+## What not to paste into consumer AI tools
+
+This is the part worth taking seriously. Consumer-tier AI tools — the free or standard paid versions of ChatGPT, Claude, and similar products — are not, by default, covered by the kind of data-processing agreement most agencies would want in place for client personal information, and consumer terms of service vary in whether conversation data may be used to improve the underlying model.
+
+Before pasting anything into a general AI tool, strip out:
+
+- Full name, address, and date of birth
+- Policy or claim numbers
+- Social Security numbers or other government ID numbers
+- Any health information, in the case of life or health policies
+- Anything else that would identify the specific client if the text were ever exposed
+
+In practice, this usually means editing the pasted policy text to remove the declarations page's identifying fields, or replacing them with placeholders like "[Client Name]" before pasting. The coverage language itself — the actual insuring agreement, exclusions, and endorsement text — is typically standard carrier boilerplate, not client-specific, so it doesn't carry the same risk.
+
+If your agency wants to use AI tools with actual client data attached, look into each vendor's business or enterprise tier, which typically comes with different data-handling terms than the free consumer product — and confirm with your E&O carrier and your state's data-privacy requirements before making that a standard workflow, since this varies by state and by carrier appointment agreement.
+
+## Always verify before you send
+
+A generated summary is a draft, not a final answer. Before it goes to a client:
+
+- Check every dollar figure against the actual declarations page. Models can transpose numbers or pull the wrong limit if the source document is long or poorly formatted.
+- Confirm the exclusions list matches what's actually in the policy, not a generic list of "common homeowners exclusions" the model may default to if the source text was unclear.
+- Read it once as if you were the client — does it accurately represent what they're covered for, without overstating certainty on anything ambiguous?
+
+This step isn't optional. A summary that's 95% accurate but wrong about one exclusion can create a coverage-expectation problem that's worse than not sending a summary at all.
+
+## Where to go next
+
+For a related use of the same tools, see [AI prompt templates for insurance lead follow-up emails](/articles/ai-prompts-insurance-follow-up-emails). For the compliance context around AI-assisted client communication generally, see [the NAIC AI Model Bulletin explained for agents](/articles/naic-ai-model-bulletin-insurance-agents).

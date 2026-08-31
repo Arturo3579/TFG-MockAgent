@@ -133,6 +133,118 @@ export const articles: Article[] = [
       'AI CRM tools identify cross-sell timing and flag policies likely to lapse.',
       'Integration with the existing AMS or agency management system is usually the biggest implementation hurdle.'
     ]
+  },
+  {
+    slug: 'ai-claims-fnol-insurance-agents',
+    title: 'AI for Claims and FNOL: What Agents Need to Know',
+    description: "Agents aren't adjusters, but they're often the first call after a loss. Here's how AI is changing FNOL intake, fraud review, and damage estimation — and what stays outside the agent's control.",
+    publishDate: '2026-08-29',
+    lastReviewed: '2026-08-29',
+    targetKeyword: 'AI claims FNOL insurance',
+    vertical: 'general',
+    topic: 'workflows',
+    caseSummary: [
+      `Claims experience is consistently one of the strongest drivers of whether a client renews — even though the agent doesn't process the claim.`,
+      `AI-assisted FNOL (first notice of loss) intake replaces phone tag and paper forms with structured, faster data capture.`,
+      `Fraud-detection models run on the carrier side and can delay a legitimate claim for review — agents should know this exists without speculating about specific cases.`,
+      `Claims triage/routing tools and damage-estimation tools solve different problems; don't confuse the two when evaluating vendors.`
+    ]
+  },
+  {
+    slug: 'ai-chatbots-insurance-customer-service',
+    title: 'Best AI Chatbots for 24/7 Insurance Customer Service',
+    description: 'After-hours calls are expensive to staff and often simple to answer. Here\'s what makes an insurance chatbot actually useful — and the failure modes that erode client trust.',
+    publishDate: '2026-08-29',
+    lastReviewed: '2026-08-29',
+    targetKeyword: 'AI chatbot insurance customer service',
+    vertical: 'general',
+    topic: 'workflows',
+    caseSummary: [
+      `Most after-hours contact is simple and repetitive: status checks, document requests, proof-of-insurance, appointment scheduling.`,
+      `A good insurance chatbot knows exactly when to hand off to a human — the failure mode is a bot that pretends to know more than it does.`,
+      `General customer-service platforms (Intercom, HubSpot, Zendesk) and custom bots built on OpenAI or Anthropic APIs both show up in this space, with different tradeoffs.`,
+      `Coverage questions and privacy-sensitive requests should always escalate to a licensed human, not stay with the bot.`
+    ]
+  },
+  {
+    slug: 'chatgpt-claude-insurance-policy-summaries',
+    title: 'How to Use ChatGPT or Claude to Draft Insurance Policy Summaries for Clients',
+    description: 'Manually summarizing a policy for a client eats time you don\'t have. Here\'s a prompt framework that works, and the privacy line you shouldn\'t cross with client data.',
+    publishDate: '2026-08-29',
+    lastReviewed: '2026-08-29',
+    targetKeyword: 'ChatGPT for insurance agents',
+    vertical: 'general',
+    topic: 'tutorials',
+    caseSummary: [
+      `General AI assistants like ChatGPT and Claude are genuinely useful for turning dense policy language into a plain-English summary a client can actually read.`,
+      `A good prompt asks for structure (coverage, limits, exclusions, what changed) rather than a free-form paraphrase.`,
+      `Never paste a client's full policy document, claim number, or personal details into a consumer-tier AI tool without checking your data-handling obligations first.`,
+      `Always verify the AI-generated summary against the actual policy document before sending it to a client — the model can miss or misstate a detail.`
+    ]
+  },
+  {
+    slug: 'ai-prompts-insurance-follow-up-emails',
+    title: 'AI Prompt Templates for Insurance Lead Follow-Up Emails',
+    description: 'Five ready-to-adapt prompts for common follow-up scenarios, plus the compliance guardrails that matter more than the wording.',
+    publishDate: '2026-08-29',
+    lastReviewed: '2026-08-29',
+    targetKeyword: 'insurance follow up email AI prompt',
+    vertical: 'general',
+    topic: 'tutorials',
+    caseSummary: [
+      `Follow-up timing matters more than follow-up wording — responding within the first five minutes has a bigger effect on conversion than a perfectly worded email sent hours later.`,
+      `These five prompt templates cover the most common follow-up scenarios independent agents face.`,
+      `Never let an AI-written email include guaranteed-savings language, promised approval odds, or anything that implies a quote before underwriting is complete.`,
+      `Check your state's rules on required disclosures in client communication before sending AI-assisted messages at scale.`
+    ]
+  },
+  {
+    slug: 'free-ai-tools-insurance-agencies',
+    title: 'Best Free & Budget AI Tools for Small Insurance Agencies',
+    description: 'The vendor blogs push their own paid product. Here\'s what a solo agent or small agency can actually do with free and low-cost AI tools before spending anything.',
+    publishDate: '2026-08-31',
+    lastReviewed: '2026-08-31',
+    targetKeyword: 'free AI tools insurance agency',
+    vertical: 'general',
+    topic: 'reviews',
+    caseSummary: [
+      `Most published "best AI tools for insurance agents" content is written by the software companies themselves, who have no reason to cover free options.`,
+      `General-purpose AI assistants (ChatGPT, Claude, Gemini) offer genuinely useful free tiers for writing, summarizing, and drafting tasks — but message limits and features change frequently, so check current terms before relying on one.`,
+      `Insurance-specific point tools rarely have a meaningful free tier; look for free trials instead, and use the 90-day proof-of-concept approach before paying for anything.`,
+      `The right sequence for a solo agent is: exhaust free general-purpose tools first, then pay only for the one workflow that's your actual bottleneck.`
+    ]
+  },
+  {
+    slug: 'naic-ai-model-bulletin-insurance-agents',
+    title: 'The NAIC AI Model Bulletin, Explained for Insurance Agents (Not Just Carriers)',
+    description: 'The NAIC\'s AI bulletin is written for insurers, but it shapes what carriers expect from agents too. Here\'s what it actually says, which states have adopted it, and what to ask your carrier partners.',
+    publishDate: '2026-08-31',
+    lastReviewed: '2026-08-31',
+    targetKeyword: 'NAIC AI model bulletin insurance agents',
+    vertical: 'general',
+    topic: 'compliance',
+    caseSummary: [
+      `The NAIC adopted its Model Bulletin on the Use of Artificial Intelligence Systems by Insurers on December 4, 2023.`,
+      `By mid-2026, roughly 25 states plus DC had formally adopted it, with about 8 more in progress — this figure changes regularly, so verify current status.`,
+      `The bulletin binds insurers directly, not agents — but it shapes what carriers require of agents during market-conduct exams and appointment renewals.`,
+      `California, Colorado, New York, and Texas run their own separate AI-related insurance frameworks instead of adopting the NAIC bulletin outright.`
+    ]
+  },
+  {
+    slug: 'ai-vs-manual-underwriting-insurance-agents',
+    title: 'AI vs. Manual Underwriting Support: What Independent Agents Should Know in 2026',
+    description: 'Underwriting is moving faster with AI, but speed and accuracy trade off differently than agents might expect — and regulators are watching the fairness question closely.',
+    publishDate: '2026-08-31',
+    lastReviewed: '2026-08-31',
+    targetKeyword: 'AI underwriting insurance agents',
+    vertical: 'general',
+    topic: 'workflows',
+    caseSummary: [
+      `AI-assisted underwriting has mainly changed turnaround time, not the fundamental judgment involved in complex or borderline risks.`,
+      `Faster isn't always more accurate — algorithmic pre-screening can clear straightforward risks quickly while still routing complex cases to a human underwriter.`,
+      `Bias and fairness in algorithmic underwriting are the specific focus of the regulatory frameworks covered in our NAIC bulletin guide.`,
+      `Agents don't control underwriting outcomes, but they do control how clearly they set expectations with clients about what AI-accelerated underwriting can and can't guarantee.`
+    ]
   }
 ];
 
