@@ -39,8 +39,8 @@ const topics = [
         and comparative rating to renewal CRM and claims support.
       </p>
       <div class="hero-actions">
-        <a href="/articles" class="btn btn-primary">Browse all articles</a>
-        <a href="/articles/ai-tools-for-independent-insurance-agents" class="btn btn-secondary">Read the 2026 guide</a>
+        <a href="/articles/" class="btn btn-primary">Browse all articles</a>
+        <a href="/articles/ai-tools-for-independent-insurance-agents/" class="btn btn-secondary">Read the 2026 guide</a>
       </div>
     </div>
   </section>
@@ -52,10 +52,10 @@ const topics = [
           <span class="featured-label">Featured Guide</span>
           <span class="vertical-badge">{featured.vertical}</span>
         </div>
-        <h2><a href={`/articles/${featured.slug}`}>{featured.title}</a></h2>
+        <h2><a href={`/articles/${featured.slug}/`}>{featured.title}</a></h2>
         <p>{featured.description}</p>
         <div class="featured-footer">
-          <a href={`/articles/${featured.slug}`} class="read-link">Read the complete guide →</a>
+          <a href={`/articles/${featured.slug}/`} class="read-link">Read the complete guide →</a>
           <span class="read-time">{readingTimes[featured.slug]}</span>
         </div>
       </div>
@@ -69,7 +69,7 @@ const topics = [
       <h2>Browse by insurance vertical</h2>
       <div class="verticals-grid">
         {verticals.map(v => (
-          <a href={`/vertical/${v.slug}`} class="vertical-card">
+          <a href={`/vertical/${v.slug}/`} class="vertical-card">
             <h3>{v.label}</h3>
             <p>{v.description}</p>
           </a>
@@ -82,7 +82,7 @@ const topics = [
     <div class="container">
       <div class="section-header">
         <h2>Latest articles</h2>
-        <a href="/articles">View all →</a>
+        <a href="/articles/">View all →</a>
       </div>
       <div class="articles-grid">
         {recent.map(article => (
@@ -91,7 +91,7 @@ const topics = [
               <span class="vertical-badge">{article.vertical}</span>
               {article.topic && <span class="topic-badge">{article.topic}</span>}
             </div>
-            <h3><a href={`/articles/${article.slug}`}>{article.title}</a></h3>
+            <h3><a href={`/articles/${article.slug}/`}>{article.title}</a></h3>
             <p>{article.description}</p>
             <span class="read-time">{readingTimes[article.slug]}</span>
           </article>
@@ -105,7 +105,7 @@ const topics = [
       <h2>Explore by topic</h2>
       <div class="topics-list">
         {topics.map(t => (
-          <a href={`/topic/${t.slug}`} class="topic-card">
+          <a href={`/topic/${t.slug}/`} class="topic-card">
             <span class="topic-name">{t.label}</span>
             <span class="topic-count">{t.count} articles</span>
           </a>

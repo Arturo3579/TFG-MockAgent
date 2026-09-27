@@ -34,7 +34,7 @@ const description = `Field-reviewed AI tools for ${labels[slug].toLowerCase()} a
       {articles.length > 0 ? (
         articles.map(article => (
           <article class="list-item">
-            <h2><a href={`/articles/${article.slug}`}>{article.title}</a></h2>
+            <h2><a href={`/articles/${article.slug}/`}>{article.title}</a></h2>
             <p>{article.description}</p>
             <span class="list-date">Last reviewed {article.lastReviewed}</span>
           </article>

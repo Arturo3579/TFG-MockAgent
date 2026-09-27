@@ -8,6 +8,7 @@ export default defineConfig({
   site: 'https://www.mockagentai.com',
   output: 'static',
   integrations: [sitemap(), mdx()],
+  trailingSlash: 'always',
   prefetch: {
     prefetchAll: true,
     defaultStrategy: 'hover'

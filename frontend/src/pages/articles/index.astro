@@ -31,14 +31,14 @@ const rest = articles.filter(a => a.slug !== pillar.slug);
       <h2>Filter by vertical</h2>
       <div class="filter-list">
         {verticals.map(v => (
-          <a href={`/vertical/${v}`} class="filter-chip">{v}</a>
+          <a href={`/vertical/${v}/`} class="filter-chip">{v}</a>
         ))}
       </div>
 
       <h2>Filter by topic</h2>
       <div class="filter-list">
         {topics.map(t => (
-          <a href={`/topic/${t}`} class="filter-chip">{t}</a>
+          <a href={`/topic/${t}/`} class="filter-chip">{t}</a>
         ))}
       </div>
     </div>
@@ -52,10 +52,10 @@ const rest = articles.filter(a => a.slug !== pillar.slug);
           <span class="vertical-badge">{pillar.vertical}</span>
           {pillar.topic && <span class="topic-badge">{pillar.topic}</span>}
         </div>
-        <h2><a href={`/articles/${pillar.slug}`}>{pillar.title}</a></h2>
+        <h2><a href={`/articles/${pillar.slug}/`}>{pillar.title}</a></h2>
         <p>{pillar.description}</p>
         <div class="pillar-footer">
-          <a href={`/articles/${pillar.slug}`} class="read-link">Read the complete guide →</a>
+          <a href={`/articles/${pillar.slug}/`} class="read-link">Read the complete guide →</a>
           <span class="read-time">{readingTimes[pillar.slug]}</span>
         </div>
       </div>
@@ -70,7 +70,7 @@ const rest = articles.filter(a => a.slug !== pillar.slug);
             <span class="vertical-badge">{article.vertical}</span>
             {article.topic && <span class="topic-badge">{article.topic}</span>}
           </div>
-          <h2><a href={`/articles/${article.slug}`}>{article.title}</a></h2>
+          <h2><a href={`/articles/${article.slug}/`}>{article.title}</a></h2>
           <p>{article.description}</p>
           <div class="list-footer">
             <span class="list-date">Last reviewed {article.lastReviewed}</span>

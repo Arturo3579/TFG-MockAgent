@@ -52,7 +52,7 @@ const formatDate = (dateStr: string) => {
     <div class="container container-narrow">
       <header class="article-header">
         <div class="article-meta">
-          <a href={`/vertical/${article.vertical}`} class="vertical-link">{article.vertical}</a>
+          <a href={`/vertical/${article.vertical}/`} class="vertical-link">{article.vertical}</a>
           {article.topic && <span class="topic-tag">{article.topic}</span>}
         </div>
         <h1>{article.title}</h1>
@@ -79,7 +79,7 @@ const formatDate = (dateStr: string) => {
           <ul>
             {article.related.map(related => (
               <li>
-                <a href={`/articles/${related.slug}`}>{related.title}</a>
+                <a href={`/articles/${related.slug}/`}>{related.title}</a>
                 <p>{related.description}</p>
               </li>
             ))}
