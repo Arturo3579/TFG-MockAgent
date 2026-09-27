@@ -18,6 +18,7 @@ const currentYear = new Date().getFullYear();
       <a href="/contact/">Contact</a>
       <a href="/privacy/">Privacy Policy</a>
       <a href="/terms/">Terms & Disclaimer</a>
+      <button type="button" id="cookie-settings" class="footer-link">Cookie settings</button>
     </nav>
 
     <p class="footer-legal">
@@ -89,8 +90,22 @@ const currentYear = new Date().getFullYear();
     transition: color var(--transition-fast);
   }
 
-  .footer-nav a:hover {
+  .footer-nav a:hover,
+  .footer-link:hover {
     color: var(--white);
+  }
+
+  .footer-link {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: inherit;
+    font-size: 0.9rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color var(--transition-fast);
   }
 
   .footer-legal {

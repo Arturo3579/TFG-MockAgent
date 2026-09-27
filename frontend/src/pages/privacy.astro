@@ -10,7 +10,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <div class="page-header">
     <div class="container container-narrow">
       <h1>Privacy Policy</h1>
-      <p class="page-lead">Last updated: August 24, 2026</p>
+      <p class="page-lead">Last updated: September 27, 2026</p>
     </div>
   </div>
 
@@ -35,14 +35,54 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       <h2>Cookies and similar technologies</h2>
       <p>
-        We use cookies and similar technologies to understand how visitors use the site, to personalize content, 
-        and to serve advertising. Some cookies are placed by third-party services, including Google AdSense, 
-        Google Analytics, and social media platforms.
+        Cookies are small text files stored on your device when you visit a website. We use cookies and similar 
+        technologies to keep the site working, understand how visitors use it, and deliver relevant content and 
+        advertising.
+      </p>
+
+      <h3>Types of cookies we use</h3>
+      <table class="cookie-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Provider</th>
+            <th>Purpose</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Essential</td>
+            <td>MockAgent.AI</td>
+            <td>Remember your cookie preference and keep the site secure.</td>
+            <td>1 year</td>
+          </tr>
+          <tr>
+            <td>Analytics</td>
+            <td>Google Analytics</td>
+            <td>Understand how visitors navigate the site and which content is most useful.</td>
+            <td>Up to 2 years</td>
+          </tr>
+          <tr>
+            <td>Advertising</td>
+            <td>Google AdSense and partners</td>
+            <td>Serve ads and measure their performance. May be personalized if you consent.</td>
+            <td>Up to 2 years</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Managing your consent</h3>
+      <p>
+        When you first visit MockAgent.AI, we show a cookie banner where you can accept or reject non-essential 
+        cookies. You can update your choice at any time by clicking <strong>Cookie settings</strong> in the footer.
+        Rejecting non-essential cookies means we will not load Google Analytics or Google AdSense scripts, but the 
+        site will continue to work normally.
       </p>
       <p>
-        Visitors in the European Economic Area (EEA) and United Kingdom are shown a cookie consent banner on their 
-        first visit. Non-essential cookies, including advertising cookies, are blocked until consent is given. 
-        You can change your preference at any time by clearing cookies for this site in your browser.
+        You can also manage or delete cookies through your browser settings. For more information, visit 
+        <a href="https://www.aboutads.info/choices/">AboutAds.info</a> or 
+        <a href="https://www.google.com/settings/ads">Google Ads Settings</a>.
       </p>
 
       <h2>Google AdSense</h2>
@@ -108,5 +148,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .content-section {
     padding: 2rem 0 4rem;
+  }
+
+  .cookie-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.95rem;
+  }
+
+  .cookie-table th,
+  .cookie-table td {
+    padding: 0.75rem;
+    border: 1px solid var(--border-light);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .cookie-table th {
+    background-color: var(--white);
+    font-weight: 600;
+  }
+
+  .cookie-table tbody tr:nth-child(even) {
+    background-color: rgba(22, 35, 63, 0.02);
   }
 </style>

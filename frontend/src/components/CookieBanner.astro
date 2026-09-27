@@ -22,22 +22,23 @@
     const banner = document.getElementById('cookie-banner');
     const acceptBtn = document.getElementById('cookie-accept');
     const rejectBtn = document.getElementById('cookie-reject');
+    const settingsBtn = document.getElementById('cookie-settings');
     const STORAGE_KEY = 'mockagentai_cookie_consent';
 
-    function shouldShowBanner() {
+    function hasConsent() {
       try {
-        // Simple EU timezone / locale heuristic
-        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const euTimezones = ['Europe/', 'GMT', 'UTC', 'WET', 'CET', 'EET'];
-        const isEuTimezone = euTimezones.some(prefix => tz.startsWith(prefix));
-        return isEuTimezone && !localStorage.getItem(STORAGE_KEY);
+        return !!localStorage.getItem(STORAGE_KEY);
       } catch (e) {
-        return false;
+        return true;
       }
     }
 
     function hideBanner() {
       if (banner) banner.hidden = true;
+    }
+
+    function showBanner() {
+      if (banner) banner.hidden = false;
     }
 
     function setConsent(value) {
@@ -49,8 +50,17 @@
       hideBanner();
     }
 
-    if (banner && shouldShowBanner()) {
-      banner.hidden = false;
+    function resetConsent() {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {
+        // ignore
+      }
+      window.location.reload();
+    }
+
+    if (banner && !hasConsent()) {
+      showBanner();
     }
 
     if (acceptBtn) {
@@ -59,6 +69,10 @@
 
     if (rejectBtn) {
       rejectBtn.addEventListener('click', () => setConsent('essential'));
+    }
+
+    if (settingsBtn) {
+      settingsBtn.addEventListener('click', resetConsent);
     }
   })();
 </script>
