@@ -20,10 +20,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </p>
 
       <div class="contact-options">
-        <a href="mailto:mockagentai@gmail.com" class="contact-card">
+        <div class="contact-card">
           <h2>Email us</h2>
-          <p>mockagentai@gmail.com</p>
-        </a>
+          <div class="email-row">
+            <a href="mailto:mockagentai@gmail.com" class="email-link">mockagentai@gmail.com</a>
+            <button type="button" class="copy-btn" data-copy="mockagentai@gmail.com" aria-label="Copy email address">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="notice">
@@ -34,6 +43,53 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  (function() {
+    document.querySelectorAll('[data-copy]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const text = btn.getAttribute('data-copy');
+        const label = btn.querySelector('.copy-label');
+        const originalLabel = label ? label.textContent : 'Copy';
+
+        function showCopied() {
+          btn.classList.add('copied');
+          if (label) label.textContent = 'Copied!';
+          setTimeout(function() {
+            btn.classList.remove('copied');
+            if (label) label.textContent = originalLabel;
+          }, 2000);
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(showCopied).catch(function() {
+            fallbackCopy(text);
+            showCopied();
+          });
+        } else {
+          fallbackCopy(text);
+          showCopied();
+        }
+
+        function fallbackCopy(value) {
+          const input = document.createElement('input');
+          input.value = value;
+          input.setAttribute('readonly', '');
+          input.style.position = 'absolute';
+          input.style.left = '-9999px';
+          document.body.appendChild(input);
+          input.select();
+          try {
+            document.execCommand('copy');
+          } catch (e) {
+            // ignore
+          }
+          document.body.removeChild(input);
+        }
+      });
+    });
+  })();
+</script>
 
 <style>
   .page-header {
@@ -83,10 +139,46 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     color: var(--ink-navy);
   }
 
-  .contact-card p {
-    margin: 0;
+  .email-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .email-link {
     color: var(--brass);
     font-weight: 600;
+    text-decoration: none;
+  }
+
+  .email-link:hover {
+    text-decoration: underline;
+  }
+
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.6rem;
+    background-color: var(--white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    color: var(--slate-gray);
+    font-size: 0.85rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .copy-btn:hover {
+    border-color: var(--brass);
+    color: var(--brass);
+  }
+
+  .copy-btn.copied {
+    border-color: var(--success-green, #2e7d32);
+    color: var(--success-green, #2e7d32);
   }
 
   .notice {
